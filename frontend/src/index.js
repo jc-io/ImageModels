@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import AboutPage from './pages/AboutPage/AboutPage';
+// import HomePage from './pages/HomePage/HomePage';
+import NotFoundPage from './pages//NotFoundPage/NotFoundPage';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -12,7 +14,9 @@ root.render(
     <Router>
       <Routes>
         <Route path="/" exact element={<App/>} />
+        {/* <Route path="/home" exact element={<HomePage/>} /> */}
         <Route path="/about" element={<AboutPage/>} />
+        <Route path="*" exact={true} element={<NotFoundPage/>} />
       </Routes>
     </Router>
   </React.StrictMode>
