@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function Upload() {
     const [count, setCount] = useState(0);
     const [selectedFile, setSelectedFile] = useState(0);
+    const [files, setFile] = useState(0);
   
     function handleClick() {
       setCount(count + 1);
     }
     const handleFileChange = (event) => {
         const file = event.target.files[0];
+        setFile(files);
         setSelectedFile(file);
     };
     const handleUpload = () => {
@@ -17,17 +19,24 @@ function Upload() {
           // Example: send the file to a server
           const formData = new FormData();
           formData.append('image', selectedFile);
-          console.log(selectedFile)
+    
     
           // Add your API call or upload logic here
           // For example using fetch or Axios
-          // fetch('/upload', {
-          //   method: 'POST',
-          //   body: formData,
-          // })
-          //   .then(response => response.json())
-          //   .then(data => console.log(data))
-          //   .catch(error => console.error('Error:', error));
+          fetch('http://127.0.0.1:5000/upload', {
+            method: 'POST',
+            body: formData
+          }).then((res)=>{
+            return res.text();
+        })
+        .then((data)=>{
+            console.log(data);
+            return new Promise((resolve, reject)=>{
+                resolve(data ? JSON.parse(data) : {})
+            })
+        })
+
+
         }
       };
   
@@ -68,7 +77,7 @@ function Upload() {
           <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
             <span className="font-semibold">Click to upload</span> or drag and drop
           </p>
-          {/* <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG, or GIF (MAX. 800x400px)</p> */}
+          <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG, or GIF (MAX. 800x400px)</p>
         </div>
         <input
           id="dropzone-file"
@@ -77,6 +86,10 @@ function Upload() {
           onChange={handleFileChange}
         />
       </label>
+    
+
+
+
       <br/>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
         Upload
