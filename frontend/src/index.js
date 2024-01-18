@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import AboutPage from './pages/AboutPage/AboutPage';
+import UploadPage from './pages/UploadPage/UploadPage';
+
 // import HomePage from './pages/HomePage/HomePage';
 import NotFoundPage from './pages//NotFoundPage/NotFoundPage';
 import reportWebVitals from './reportWebVitals';
@@ -16,6 +18,7 @@ root.render(
         <Route path="/" exact element={<App/>} />
         {/* <Route path="/home" exact element={<HomePage/>} /> */}
         <Route path="/about" element={<AboutPage/>} />
+        <Route path="/upload" element={<UploadPage/>} />
         <Route path="*" exact={true} element={<NotFoundPage/>} />
       </Routes>
     </Router>
