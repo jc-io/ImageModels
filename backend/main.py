@@ -26,6 +26,11 @@ def test_image():
           print("Saving File Name: "+file.filename);
           file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename));
           secure_filename(file.filename);
+        try: 
+          imagecaption = request.form.get('caption');
+          print("Caption to use: " + str(imagecaption));
+        except Exception as e:
+          print("Unable to determine caption");
         ##image.save("/.")
 
         return jsonify({'message': 'File uploaded successfully'})
