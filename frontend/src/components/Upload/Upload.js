@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 function Upload() {
-    const [count, setCount] = useState(0);
     const [selectedFiles, setSelectedFile] = useState([]);
     const [caption, setCaption] = useState('');
   
-    function handleClick() {
-      setCount(count + 1);
-    }
+
     const handleDragOver = (event) => {
       event.preventDefault();
     };
@@ -73,9 +70,7 @@ function Upload() {
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
             <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl"><span className="text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span></h1>
             </div>
-        {/* <button onClick={handleClick}>
-            Clicked {count} times
-        </button> */}
+
         <br/>
         <br/>
         {/* <input type="file" onChange={handleFileChange} /> */}
