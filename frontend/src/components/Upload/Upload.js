@@ -2,23 +2,49 @@ import { useEffect, useState } from 'react';
 
 function Upload() {
     const [count, setCount] = useState(0);
-    const [selectedFile, setSelectedFile] = useState(0);
-    const [files, setFile] = useState(0);
+    const [selectedFiles, setSelectedFile] = useState([]);
   
     function handleClick() {
       setCount(count + 1);
     }
+    const handleDragOver = (event) => {
+      event.preventDefault();
+    };
+  
+    const handleDrop = (event) => {
+      event.preventDefault();
+      const files = event.dataTransfer.files;
+      setSelectedFile(Array.from(files));
+    };
     const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        setFile(files);
-        setSelectedFile(file);
+        const files = event.target.files;
+     
+        setSelectedFile(Array.from(files));
+    };
+    const handleRemoveFile =(index)=> {
+      // console.log("remove: " + index);
+      // console.log(selectedFiles);
+      // setSelectedFile(selectedFiles.splice(selectedFiles.indexOf(index)));
+      // console.log(selectedFiles);
+      console.log(selectedFiles);
+      setSelectedFile((prevFiles) => {
+        const updatedFiles = [...prevFiles];
+        updatedFiles.splice(index, 1);
+        return updatedFiles;
+      });
+      //console.log(selectedFiles);
+      
+  
     };
     const handleUpload = () => {
         // You can implement your file upload logic here
-        if (selectedFile) {
+        if (selectedFiles.length > 0) {
           // Example: send the file to a server
           const formData = new FormData();
-          formData.append('image', selectedFile);
+          // Append each file to the FormData
+          selectedFiles.forEach((file, index) => {
+            formData.append(`file`, file);
+          });
     
     
           // Add your API call or upload logic here
@@ -41,9 +67,9 @@ function Upload() {
       };
   
     return (
-        <div>
+        <div className="scrollable-container">
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
-                <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">ImageGen</h1>
+            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl"><span className="text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span></h1>
             </div>
         {/* <button onClick={handleClick}>
             Clicked {count} times
@@ -53,7 +79,7 @@ function Upload() {
         {/* <input type="file" onChange={handleFileChange} /> */}
           
 
-        <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
+        <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center" onDrop={handleDrop} onDragOver={handleDragOver}>
       <label
         htmlFor="dropzone-file"
         className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -81,18 +107,34 @@ function Upload() {
         </div>
         <input
           id="dropzone-file"
+          multiple
           type="file"
           className="hidden"
           onChange={handleFileChange}
         />
       </label>
     
-
+      {/* Display the list of selected files */}
+      {selectedFiles.length > 0 && (selectedFiles.length > 0 && (
+        <div>
+          <h2>Selected Files:</h2>
+          <ul className="">
+            {selectedFiles.map((file, index) => (
+              <li key={index}>
+                {file.name} - <button type="button" className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" onClick={() => handleRemoveFile(index)}>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+    <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+  </svg></button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )) }
 
 
       <br/>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
-        Upload
+        Upload 
         </button>
 </div>
 

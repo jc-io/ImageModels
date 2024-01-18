@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 
 import os
 
-UPLOAD_FOLDER = './uploads'
+UPLOAD_FOLDER = 'uploads'
 
 app = Flask(__name__)
 CORS(app)
@@ -21,10 +21,11 @@ def hello_world():
 @app.route("/upload", methods=['post'])
 def test_image():
     try:
-
-        image = request.files['image']
-        image.save(os.path.join(app.config['UPLOAD_FOLDER'],
-        secure_filename(image.filename)));
+        uploaded_files = request.files.getlist('file')  
+        for file in uploaded_files:
+          print("Saving File Name: "+file.filename);
+          file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename));
+          secure_filename(file.filename);
         ##image.save("/.")
 
         return jsonify({'message': 'File uploaded successfully'})
