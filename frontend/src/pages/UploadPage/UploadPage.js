@@ -3,14 +3,7 @@ import React from 'react';
 import Upload from './../../components/Upload/Upload';
 
 const UploadPage = () => {
-  const styles = {
-    container: {
-      height: '100%'
-    },
-    first: {
-      
-    }
-  }
+
   return (//From https://freefrontend.com/tailwind-404-page-templates/
   <>
       <div className="bg-indigo-900 min-h-screen from-gray-100 to-gray-300">

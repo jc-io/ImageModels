@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 import json
-import base64
+# from PIL import Image #uncomment if u want to see images pop up
+
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
@@ -21,18 +22,28 @@ def hello_world():
 @app.route("/upload", methods=['post'])
 def test_image():
     try:
+        try: 
+          imagecaption = request.form.get('caption');
+          print("Caption to use: " + str(imagecaption));
+        except Exception as e:
+          print("Unable to determine caption");
+        
         uploaded_files = request.files.getlist('file')  
+
         for file in uploaded_files:
           print("Saving File Name: "+file.filename);
           file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename));
+          # pil_img = Image.open(file); #uncommet to see images pop up
+          # pil_img.show();
           secure_filename(file.filename);
         ##image.save("/.")
-
-        return jsonify({'message': 'File uploaded successfully'})
+        res = {'message': 'File uploaded successfully'}
+        res_message = jsonify(res);
+        return res_message;
 
     except Exception as e:
         print(str(e));
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-   app.run(port=5000)
+   app.run(port=5000, debug=True)
