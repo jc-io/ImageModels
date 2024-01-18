@@ -2,23 +2,40 @@ import { useEffect, useState } from 'react';
 
 function Upload() {
     const [count, setCount] = useState(0);
-    const [selectedFile, setSelectedFile] = useState(0);
-    const [files, setFile] = useState(0);
+    const [selectedFiles, setSelectedFile] = useState([]);
   
     function handleClick() {
       setCount(count + 1);
     }
     const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        setFile(files);
-        setSelectedFile(file);
+        const files = event.target.files;
+     
+        setSelectedFile(Array.from(files));
+    };
+    const handleRemoveFile =(index)=> {
+      // console.log("remove: " + index);
+      // console.log(selectedFiles);
+      // setSelectedFile(selectedFiles.splice(selectedFiles.indexOf(index)));
+      // console.log(selectedFiles);
+      console.log(selectedFiles);
+      setSelectedFile((prevFiles) => {
+        const updatedFiles = [...prevFiles];
+        updatedFiles.splice(index, 1);
+        return updatedFiles;
+      });
+      //console.log(selectedFiles);
+      
+  
     };
     const handleUpload = () => {
         // You can implement your file upload logic here
-        if (selectedFile) {
+        if (selectedFiles.length > 0) {
           // Example: send the file to a server
           const formData = new FormData();
-          formData.append('image', selectedFile);
+          // Append each file to the FormData
+          selectedFiles.forEach((file, index) => {
+            formData.append(`file`, file);
+          });
     
     
           // Add your API call or upload logic here
@@ -41,9 +58,9 @@ function Upload() {
       };
   
     return (
-        <div>
+        <div className="scrollable-container">
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
-                <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">ImageGen</h1>
+            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl"><span className="text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span></h1>
             </div>
         {/* <button onClick={handleClick}>
             Clicked {count} times
@@ -81,13 +98,27 @@ function Upload() {
         </div>
         <input
           id="dropzone-file"
+          multiple
           type="file"
           className="hidden"
           onChange={handleFileChange}
         />
       </label>
     
-
+      {/* Display the list of selected files */}
+      {selectedFiles.length > 0 && (selectedFiles.length > 0 && (
+        <div>
+          <h2>Selected Files:</h2>
+          <ul>
+            {selectedFiles.map((file, index) => (
+              <li key={index}>
+                {file.name} - <button type="button" className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" onClick={() => handleRemoveFile(index)}>
+                  X</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )) }
 
 
       <br/>
