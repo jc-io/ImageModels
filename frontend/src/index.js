@@ -5,6 +5,8 @@ import './index.css';
 import App from './App';
 import AboutPage from './pages/AboutPage/AboutPage';
 import UploadPage from './pages/UploadPage/UploadPage';
+import HomePage from './pages/HomePage/HomePage';
+
 import NavBar from './components/NavBar/NavBar';
 
 // import HomePage from './pages/HomePage/HomePage';
@@ -17,7 +19,7 @@ root.render(
     <NavBar></NavBar>
     <Router>
       <Routes>
-        <Route path="/" exact element={<App/>} />
+        <Route path="/" exact element={<HomePage/>} />
         {/* <Route path="/home" exact element={<HomePage/>} /> */}
         <Route path="/about" element={<AboutPage/>} />
         <Route path="/upload" element={<UploadPage/>} />
