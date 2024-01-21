@@ -6,6 +6,8 @@ import App from './App';
 import AboutPage from './pages/AboutPage/AboutPage';
 import UploadPage from './pages/UploadPage/UploadPage';
 import HomePage from './pages/HomePage/HomePage';
+import EditImagePage from './pages/EditImagePage/EditImagePage';
+import ImageGenPage from './pages/ImageGenPage/ImageGenPage';
 
 import NavBar from './components/NavBar/NavBar';
 
@@ -16,13 +18,16 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <NavBar></NavBar>
+    <NavBar/>
     <Router>
       <Routes>
         <Route path="/" exact element={<HomePage/>} />
         {/* <Route path="/home" exact element={<HomePage/>} /> */}
-        <Route path="/about" element={<AboutPage/>} />
-        <Route path="/upload" element={<UploadPage/>} />
+        <Route path="/About" element={<AboutPage/>} />
+        {/* CaptionGen */}
+        <Route path="/CaptionGen" element={<UploadPage/>} />
+        <Route path="/EditImage" element={<EditImagePage/>} />
+        <Route path="/ImgGen" element={<ImageGenPage/>} />
         <Route path="*" exact={true} element={<NotFoundPage/>} />
       </Routes>
     </Router>
