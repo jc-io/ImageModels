@@ -5,6 +5,7 @@ import './index.css';
 import App from './App';
 import AboutPage from './pages/AboutPage/AboutPage';
 import UploadPage from './pages/UploadPage/UploadPage';
+import NavBar from './components/NavBar/NavBar';
 
 // import HomePage from './pages/HomePage/HomePage';
 import NotFoundPage from './pages//NotFoundPage/NotFoundPage';
@@ -13,6 +14,7 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <NavBar></NavBar>
     <Router>
       <Routes>
         <Route path="/" exact element={<App/>} />
