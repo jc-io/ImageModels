@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/jenkins_testing']], extensions: [], userRemoteConfigs: [[credentialsId: '7739a11d-4710-4b22-a7ff-8735144939e5', url: 'https://github.com/jc-io/ImageModels.git']])
+            }
+        }
+        stage('Build') {
+            steps {
+                git branch: 'jenkins_testing', credentialsId: '7739a11d-4710-4b22-a7ff-8735144939e5', url: 'https://github.com/jc-io/ImageModels.git'
+                sh 'python3 hello_world.py'
+                }
+        }
+        stage('Test') {
+            steps {
+                echo 'the job has been tested'
+            }
+        }
+    }
+}
