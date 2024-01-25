@@ -4,7 +4,15 @@ const AboutPage = () => {
   return (
     <>
       <div className="bg-blue-400 relative overflow-hidden h-screen flex items-center justify-center">
-        <div className="text-center text-white">
+      
+      <img
+        src="https://images.unsplash.com/photo-1498496294664-d9372eb521f3?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        className="absolute h-full w-full object-cover"
+        alt="404 Background"
+      />
+        {/* <div className="text-center text-white"> */}
+        <div className="container text-center relative items-center">
+
           <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold tracking-tight leading-none mb-4 dark:text-black">
             About
           </h1>
