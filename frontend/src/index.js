@@ -8,6 +8,8 @@ import UploadPage from './pages/UploadPage/UploadPage';
 import HomePage from './pages/HomePage/HomePage';
 import EditImagePage from './pages/EditImagePage/EditImagePage';
 import ImageGenPage from './pages/ImageGenPage/ImageGenPage';
+import CaptionGenPage from './pages/CaptionGenPage/CaptionGenPage';
+
 
 import NavBar from './components/NavBar/NavBar';
 
@@ -25,9 +27,9 @@ root.render(
         {/* <Route path="/home" exact element={<HomePage/>} /> */}
         <Route path="/About" element={<AboutPage/>} />
         {/* CaptionGen */}
-        <Route path="/CaptionGen" element={<UploadPage/>} />
+        <Route path="/CaptionGen" element={<CaptionGenPage/>} />
         <Route path="/EditImage" element={<EditImagePage/>} />
-        <Route path="/ImgGen" element={<ImageGenPage/>} />
+        <Route path="/ImageGen" element={<ImageGenPage/>} />
         <Route path="*" exact={true} element={<NotFoundPage/>} />
       </Routes>
     </Router>
