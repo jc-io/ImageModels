@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 function CaptionGenPage() {
     const [selectedFiles, setSelectedFile] = useState([]);
+    //State var to store caption
+    const [caption, setCaption] = useState('')
   
 
     const handleDragOver = (event) => {
