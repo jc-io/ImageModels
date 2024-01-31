@@ -1,2 +1,5 @@
 flask
 flask-cors
+transformers==4.16.0 
+timm==0.4.12 
+fairscale==0.4.4
