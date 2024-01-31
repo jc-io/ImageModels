@@ -32,6 +32,7 @@ function CaptionGenPage() {
         return updatedFiles;
       });
       //console.log(selectedFiles);
+      setCaption('');
       
   
     };
@@ -52,14 +53,22 @@ function CaptionGenPage() {
             method: 'POST',
             body: formData
           }).then((res)=>{
-            return res.text();
-        })
-        .then((data)=>{
-            console.log(data);
-            return new Promise((resolve, reject)=>{
-                resolve(data ? JSON.parse(data) : {})
-            })
-        })
+            // return res.text();
+            return res.json();
+        }).then((data) => {
+          console.log(data);
+          if (data.caption) {
+              setCaption(data.caption); // Set the caption in the state
+          }
+      }).catch((error) => {
+          console.error('Error:', error);
+      });
+        // .then((data)=>{
+        //     console.log(data);
+        //     return new Promise((resolve, reject)=>{
+        //         resolve(data ? JSON.parse(data) : {})
+        //     })
+        // })
 
 
         }
@@ -130,6 +139,15 @@ function CaptionGenPage() {
           </ul>
         </div>
       )) }
+
+{/*Caption Display*/}
+        {caption && (
+
+      <div className="caption-display">
+          <h3 className="text-white font-bold">Generated Caption:</h3>
+            <div className='text-white font-extrabold font-size: 20px justify-center'>{caption}</div>
+      </div>
+  )}
 
         <br/>
  
