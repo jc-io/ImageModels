@@ -7,10 +7,10 @@ from torchvision.transforms.functional import InterpolationMode
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
    
-def load_demo_image(image_size,device, imagepath):
-    img_url = imagepath
+def load_demo_image(image_size,device,imageurl):
+
     #replace with url we can use s3
-    raw_image = Image.open(img_url).convert('RGB')   
+    raw_image = Image.open(imageurl).convert('RGB')   
 
     w,h = raw_image.size
     # Image.open(raw_image.resize((w//5,h//5)))
@@ -22,18 +22,15 @@ def load_demo_image(image_size,device, imagepath):
         ]) 
     image = transform(raw_image).unsqueeze(0).to(device)   
     return image
-
-
-
 class captionGen:
     def __init__(self):
         pass;
     #change to imagepath
-    def predict(imageurl):
+    def predict(self, imageurl):
         from models.blip import blip_decoder
 
         image_size = 384
-        image = load_demo_image(image_size=image_size, device=device,imagepath=imageurl)
+        image = load_demo_image(image_size=image_size, device=device,imageurl=imageurl)
 
         model_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_base_capfilt_large.pth'
             
@@ -48,8 +45,3 @@ class captionGen:
             # caption = model.generate(image, sample=True, top_p=0.9, max_length=20, min_length=5) 
             print('caption: '+caption[0])
             return caption[0]
-    
-if __name__ == '__main__':
-    #git clone https://github.com/salesforce/BLIP
-    captionThing = captionGen();
-    captionThing.predict();
