@@ -49,6 +49,16 @@ def test_image():
     except Exception as e:
         print(str(e));
         return jsonify({'error': str(e)}), 500
+@app.route("/generate", methods=['post'])
+def generate_image():
+    try:
+        prompt = request.form.get('prompt');
+        res = {'message': 'File uploaded successfully','prompt':prompt}
+        res_message = jsonify(res);
+        return res_message;
+    except Exception as e:
+        print(str(e));
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
    app.run(port=5000, debug=True)
