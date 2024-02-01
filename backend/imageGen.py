@@ -16,9 +16,23 @@ refiner = DiffusionPipeline.from_pretrained(
 )
 refiner.to("cuda")
 
+<<<<<<< HEAD
 # Define how many steps and what % of steps to be run on each experts (80/20) here
 n_steps = 40
 high_noise_frac = 0.8
+=======
+class imageGen:
+    def __init__(self):
+        self.model_id = "runwayml/stable-diffusion-v1-5"
+        
+        self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16,safety_checker = None)
+        # self.pipe = self.pipe.to("cuda")
+        self.pipe.enable_model_cpu_offload()
+    def generate(self,prompt="Didn't work sorry"):
+        image = self.pipe(prompt).images[0]  
+        Image.show(image);
+        return image;
+>>>>>>> 55f5213 (t)
 
 prompt = "A majestic lion jumping from a big stone at night"
 
