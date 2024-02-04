@@ -58,7 +58,11 @@ function ImageGenPage() {
       </div>
 </div>
   </>
+
   );
 };
 
 export default ImageGenPage;
+
+
+
