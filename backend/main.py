@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import json
+from imageGen import imageGen
 from captionGen import captionGen
 # from PIL import Image #uncomment if u want to see images pop up
 
@@ -46,6 +47,19 @@ def test_image():
         res_message = jsonify(res);
         return res_message;
 
+    except Exception as e:
+        print(str(e));
+        return jsonify({'error': str(e)}), 500
+@app.route("/generate", methods=['post'])
+def generate_image():
+    try:
+        prompt = request.form.get('prompt');
+        print("Recieved prompt: " + prompt)
+        generator = imageGen();
+        image = generator.generate(prompt);
+        res = {'message': 'File uploaded successfully','prompt':prompt,'image':image.encode("base64")}
+        res_message = jsonify(res);
+        return res_message;
     except Exception as e:
         print(str(e));
         return jsonify({'error': str(e)}), 500
