@@ -1,50 +1,51 @@
-from PIL import Image
 import requests
-import torch
-from torchvision import transforms
-from torchvision.transforms.functional import InterpolationMode
+from PIL import Image
+from transformers import BlipProcessor, BlipForConditionalGeneration, AutoModelForCausalLM, AutoTokenizer
 
 
+
+#https://huggingface.co/docs/transformers/en/llm_tutorial
+#https://huggingface.co/Salesforce/blip-image-captioning-large
    
 
 class captionGen:
     def __init__(self):
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    def load_demo_image(self, image_size, device, imageurl):
-        raw_image = Image.open(imageurl).convert('RGB')
-        raw_image = raw_image.resize((image_size, image_size), resample=Image.BICUBIC)
-
-        transform = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711))
-        ])
-        image = transform(raw_image).unsqueeze(0).to(device)
-        return image
+        self.processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+        self.model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
    
 
     #change to imagepath
     def predict(self, imageurl):
-        from models.blip import blip_decoder
+        # img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg' 
+        # raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
+        raw_image = Image.open(imageurl).convert('RGB')
 
-        image_size = 384
-        image = self.load_demo_image(image_size=image_size, device=self.device,imageurl=imageurl)
+        # conditional image captioning
+        text = "a photography of"
+        inputs = self.processor(raw_image, text, return_tensors="pt")
 
-        model_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_base_capfilt_large.pth'
-            
-        model = blip_decoder(pretrained=model_url, image_size=image_size, vit='base')
-        model.eval()
-        model = model.to(self.device)
+        out = self.model.generate(**inputs)
+        return self.processor.decode(out[0], skip_special_tokens=True)
 
-        with torch.no_grad():
-            # beam search
-            caption = model.generate(image, sample=False, num_beams=3, max_length=20, min_length=5) 
-            # nucleus sampling
-            # caption = model.generate(image, sample=True, top_p=0.9, max_length=20, min_length=5) 
-            print('caption: '+caption[0])
-            return caption[0]
-        
+        # unconditional image captioning
+        # inputs = processor(raw_image, return_tensors="pt")
+
+        # out = model.generate(**inputs)
+        # return processor.decode(out[0], skip_special_tokens=True)
+    def makeFunny(self, caption):
+        model = AutoModelForCausalLM.from_pretrained(
+            "mistralai/Mistral-7B-v0.1", device_map="auto", load_in_4bit=True
+        )
+        tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1", padding_side="left")
+        model_inputs = tokenizer(["Say something funny about this scene: "+ caption], return_tensors="pt").to("cuda")
+        generated_ids = model.generate(**model_inputs)
+        result = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0];
+        print(result);
+        return result;
+
 if __name__ == '__main__':
    location = "/Users/mattiwosbelachew/Repos/github.com/CSE115A/ImageModels/backend/uploads/wildcamping.jpg"
    gen = captionGen();
-   gen.predict(location);
+   caption = gen.predict(location);
+   print(caption);
+   funnycaption = gen.makeFunny(caption);
