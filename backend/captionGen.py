@@ -35,11 +35,16 @@ class captionGen:
     def makeFunny(self, caption):
         tokenizer = AutoTokenizer.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
         model = AutoModelForCausalLM.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
-        model_inputs = tokenizer(["A short witty and funny instagram caption for a image of a, "+ caption +" is:"], return_tensors="pt").to("cuda")
-        generated_ids = model.generate(**model_inputs)
-        result = tokenizer.batch_decode(generated_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0];
-        print(result);
-        return result;
+        text = "A short witty and funny instagram caption for a image of a, "+ caption +" is:"
+        input_ids = tokenizer.encode(text, return_tensors="pt")
+
+        # Generate text based on the scene description
+        output = model.generate(input_ids, max_length=100, num_return_sequences=1, temperature=0.7)
+
+        generated_joke = tokenizer.decode(output[0], skip_special_tokens=True)
+
+        print(generated_joke);
+        return generated_joke;
 
 if __name__ == '__main__':
    location = "/Users/mattiwosbelachew/Repos/github.com/CSE115A/ImageModels/backend/uploads/wildcamping.jpg"
