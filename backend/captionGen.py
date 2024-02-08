@@ -16,9 +16,9 @@ class captionGen:
 
     #change to imagepath
     def predict(self, imageurl):
-        # img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg' 
-        # raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
-        raw_image = Image.open(imageurl).convert('RGB')
+        img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg' 
+        raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
+        # raw_image = Image.open(imageurl).convert('RGB')
 
         # conditional image captioning
         text = "a photography of"
@@ -33,13 +33,11 @@ class captionGen:
         # out = model.generate(**inputs)
         # return processor.decode(out[0], skip_special_tokens=True)
     def makeFunny(self, caption):
-        model = AutoModelForCausalLM.from_pretrained(
-            "mistralai/Mistral-7B-v0.1", device_map="auto", load_in_4bit=True
-        )
-        tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1", padding_side="left")
-        model_inputs = tokenizer(["Say something funny about this scene: "+ caption], return_tensors="pt").to("cuda")
+        tokenizer = AutoTokenizer.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
+        model = AutoModelForCausalLM.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
+        model_inputs = tokenizer(["A short witty and funny instagram caption for a image of a, "+ caption +" is:"], return_tensors="pt").to("cuda")
         generated_ids = model.generate(**model_inputs)
-        result = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0];
+        result = tokenizer.batch_decode(generated_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0];
         print(result);
         return result;
 
