@@ -23,10 +23,12 @@ class imageGen:
 
         # Convert the base64 bytes to a string (if needed)
         base64_encoded_image_string = base64_encoded_image.decode('utf-8')
+        data_url = f"data:image/jpeg;base64,{base64_encoded_image_string}"
+
 
         # Print or use the base64 encoded image string
         # Image.show(image);
-        return base64_encoded_image_string;
+        return data_url;
 
 if __name__ == '__main__':
    prompt = "horse space walk"

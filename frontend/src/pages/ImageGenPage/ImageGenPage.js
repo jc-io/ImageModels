@@ -97,7 +97,7 @@ function ImageGenPage() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.map((imageUrl, index) => (
                 <div>
-                  <img className="h-auto max-w-full rounded-lg" key={index} alt={`Image ${index + 1}`} src={`data:image/jpeg;base64,${imageUrl}`} />
+                  <img className="h-auto max-w-full rounded-lg" key={index} alt={`Image ${index + 1}`} src={imageUrl} />
                 </div>
               ))
               }
