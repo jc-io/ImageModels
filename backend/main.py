@@ -44,8 +44,10 @@ def test_image():
           pathurl = os.path.join(app.config['UPLOAD_FOLDER'],file.filename);
           print(pathurl)
           captionGenerated = caption.predict(pathurl)
+          print(captionGenerated);
+          funnycaption = caption.makeFunny(captionGenerated);
         ##image.save("/.")
-        res = {'message': 'File uploaded successfully',"caption":captionGenerated}
+        res = {'message': 'File uploaded successfully',"caption":funnycaption}
         res_message = jsonify(res);
         return res_message;
 
