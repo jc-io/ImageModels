@@ -1,6 +1,7 @@
 from diffusers import StableDiffusionPipeline  # latest version transformers (clips)
 import torch
 import base64
+import io
 from PIL import Image
 
 class ImageGen:
@@ -13,9 +14,13 @@ class ImageGen:
         try:
             image = self.pipe(prompt).images[0]  
             image = image.convert('RGB')
+                        # Convert the image to a byte array
+            with io.BytesIO() as buffer:
+                image.save(buffer, format="JPEG")
+                image_byte_array = buffer.getvalue()
 
             # Convert the image to a byte array
-            image_byte_array = image.tobytes()
+            # image_byte_array = image.tobytes()
 
             # Encode the byte array to base64
             base64_encoded_image = base64.b64encode(image_byte_array)
