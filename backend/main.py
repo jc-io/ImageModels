@@ -63,15 +63,9 @@ def generate_image():
         generator = imageGen();
         image = generator.generate(prompt);
         images = []
-        image_byte_array = image.tobytes()
 
-        # Encode the byte array to base64
-        base64_encoded_image = base64.b64encode(image_byte_array)
-
-        # Convert the base64 bytes to a string (if needed)
-        base64_encoded_image_string = base64_encoded_image.decode('utf-8')
-        # with open(image, "rb") as imageFile:
-        images.append({'image_data': base64_encoded_image_string});
+  
+        images.append({'image_data': image});
         # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
  
 
