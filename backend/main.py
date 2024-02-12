@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 import json
 from imageGen import imageGen
+import base64
 from captionGen import captionGen
 # from PIL import Image #uncomment if u want to see images pop up
 
@@ -10,13 +11,14 @@ from werkzeug.utils import secure_filename
 import os
 
 UPLOAD_FOLDER = 'uploads'
-
+GENERATED_FOLDER = 'generated';
 
 
 app = Flask(__name__)
 CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-         
+app.config['GENERATED_FOLDER'] = GENERATED_FOLDER
+
 
 @app.route("/")
 def hello_world():
@@ -42,8 +44,10 @@ def test_image():
           pathurl = os.path.join(app.config['UPLOAD_FOLDER'],file.filename);
           print(pathurl)
           captionGenerated = caption.predict(pathurl)
+          print(captionGenerated);
+          funnycaption = caption.makeFunny(captionGenerated);
         ##image.save("/.")
-        res = {'message': 'File uploaded successfully',"caption":captionGenerated}
+        res = {'message': 'File uploaded successfully',"caption":funnycaption}
         res_message = jsonify(res);
         return res_message;
 
@@ -57,9 +61,16 @@ def generate_image():
         print("Recieved prompt: " + prompt)
         generator = imageGen();
         image = generator.generate(prompt);
-        res = {'message': 'File uploaded successfully','prompt':prompt,'image':image.encode("base64")}
-        res_message = jsonify(res);
-        return res_message;
+        image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
+        images = []
+        for i in range(1, 2):  # Assuming there are three images named image1.jpg, image2.jpg, and image3.jpg
+          image_path = os.path.join(app.config['GENERATED_FOLDER'],f"generated_image{i}.jpg");
+          with open(image_path, 'rb') as file:
+              image_data = base64.b64encode(file.read()).decode('utf-8')
+              images.append({'image_data': image_data})
+        print(len(images))
+        return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images});
+        
     except Exception as e:
         print(str(e));
         return jsonify({'error': str(e)}), 500
