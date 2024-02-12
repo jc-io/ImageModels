@@ -57,11 +57,8 @@ def generate_image():
     try:
         prompt = request.form.get('prompt');
         print("Recieved prompt: " + prompt)
-        #to implement: bool(slow_model) from frontend to pick between fast and slow model?
-        #right now set to default fast model
-        slow_model = False
-        generator = imageGen(slow_model);
-        image = generator.generate(prompt);
+        generator = imageGen();
+        image = generator.generate(prompt); #can generate detailed,slower model with generateDetailed()
         image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
         images = []
         for i in range(1, 2):  # Assuming there are three images named image1.jpg, image2.jpg, and image3.jpg

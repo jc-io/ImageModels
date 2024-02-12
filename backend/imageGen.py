@@ -8,24 +8,27 @@ from PIL import Image
 
 
 class imageGen:
-    def __init__(self, detailedImage=False):
-        self.detailedImage = detailedImage
-
-        if(detailedImage): #slower, detailed version
-            self.model_id = "stabilityai/stable-diffusion-xl-base-1.0"
-            self.pipe = DiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, use_safetensors=True, variant="fp16")
-            self.pipe = self.pipe.to("cuda")
-        else:              #faster, less detailed version
-            self.model_id = "runwayml/stable-diffusion-v1-5"
-            self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16,safety_checker = None)
-            self.pipe.enable_model_cpu_offload() #faster option?
+    def __init__(self):
+        pass
             
     def generate(self,prompt="No prompt given"):
+        self.model_id = "runwayml/stable-diffusion-v1-5"
+        self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16,safety_checker = None)
+        self.pipe.enable_model_cpu_offload() #faster option?
         image = self.pipe(prompt=prompt).images[0]  
         image.save(prompt+".png");
         return image;
 
+    def generateDetailed(self,prompt="No prompt given"):
+        self.model_id = "stabilityai/stable-diffusion-xl-base-1.0"
+        self.pipe = DiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, use_safetensors=True, variant="fp16")
+        self.pipe = self.pipe.to("cuda")
+        image = self.pipe(prompt=prompt).images[0]  
+        image.save(prompt+".png");
+        return image;
+
+
 if __name__ == '__main__':
    prompt = "people playing basketball inside"
-   gen = imageGen(False);
+   gen = imageGen();
    gen.generate(prompt);
