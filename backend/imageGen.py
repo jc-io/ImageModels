@@ -34,7 +34,7 @@ class imageGen:
 
 if __name__ == '__main__':
     prompt = "horse space walk"
-    gen = ImageGen()
+    gen = imageGen()
     generated_image_url = gen.generate(prompt)
     if generated_image_url:
         print("Generated image URL:", generated_image_url)
