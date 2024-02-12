@@ -62,7 +62,8 @@ def generate_image():
         generator = imageGen();
         image = generator.generate(prompt);
         images = []
-        images.append({'image_data': base64.b64encode(image.read()).decode('utf-8')});
+        with open(image, "rb") as imageFile:
+            images.append({'image_data': base64.b64encode(imageFile.read()).decode('utf-8')});
         # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
  
 
