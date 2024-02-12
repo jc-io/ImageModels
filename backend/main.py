@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import json
+from PIL import Image
 from imageGen import imageGen
 import base64
 from captionGen import captionGen
@@ -62,8 +63,16 @@ def generate_image():
         generator = imageGen();
         image = generator.generate(prompt);
         images = []
-        with open(image, "rb") as imageFile:
-            images.append({'image_data': base64.b64encode(imageFile.read()).decode('utf-8')});
+        raw_image = Image.open(image).convert('RGB')
+        image_byte_array = raw_image.tobytes()
+
+        # Encode the byte array to base64
+        base64_encoded_image = base64.b64encode(image_byte_array)
+
+        # Convert the base64 bytes to a string (if needed)
+        base64_encoded_image_string = base64_encoded_image.decode('utf-8')
+        # with open(image, "rb") as imageFile:
+        images.append({'image_data': base64_encoded_image_string});
         # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
  
 
