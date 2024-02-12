@@ -3,7 +3,7 @@ import torch
 import base64
 from PIL import Image
 
-class ImageGen:
+class imageGen:
     def __init__(self):
         self.model_id = "runwayml/stable-diffusion-v1-5"
         self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, safety_checker=None)
