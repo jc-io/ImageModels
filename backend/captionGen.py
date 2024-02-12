@@ -39,12 +39,12 @@ class captionGen:
         input_ids = tokenizer.encode(text, return_tensors="pt")
 
         # Generate text based on the scene description
-        output = model.generate(input_ids, max_length=100, num_return_sequences=1, temperature=0.7)
+        output = model.generate(input_ids, max_length=90, num_return_sequences=1, temperature=0.7)
 
         generated_joke = tokenizer.decode(output[0], skip_special_tokens=True)
 
         print(generated_joke);
-        return generated_joke;
+        return generated_joke.replace(text, '');
 
 if __name__ == '__main__':
    location = "/Users/mattiwosbelachew/Repos/github.com/CSE115A/ImageModels/backend/uploads/wildcamping.jpg"
