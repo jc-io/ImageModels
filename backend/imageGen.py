@@ -15,8 +15,7 @@ class imageGen:
             image = image.convert('RGB')
 
             # Convert the image to a byte array
-            with Image.open(image) as img:
-                image_byte_array = img.tobytes()
+            image_byte_array = image.tobytes()
 
             # Encode the byte array to base64
             base64_encoded_image = base64.b64encode(image_byte_array)
@@ -31,6 +30,7 @@ class imageGen:
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
+
 
 if __name__ == '__main__':
     prompt = "horse space walk"
