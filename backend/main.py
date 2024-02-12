@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 import json
 from PIL import Image
-from imageGen import imageGen
+from imageGen import ImageGen
 import base64
 from captionGen import captionGen
 # from PIL import Image #uncomment if u want to see images pop up
@@ -60,7 +60,7 @@ def generate_image():
     try:
         prompt = request.form.get('prompt');
         print("Recieved prompt: " + prompt)
-        generator = imageGen();
+        generator = ImageGen();
         # image = generator.generate(prompt);
         images = []
         for i in range(2):
