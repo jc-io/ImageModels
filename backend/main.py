@@ -61,11 +61,10 @@ def generate_image():
         prompt = request.form.get('prompt');
         print("Recieved prompt: " + prompt)
         generator = imageGen();
-        image = generator.generate(prompt);
+        # image = generator.generate(prompt);
         images = []
-
-  
-        images.append({'image_data': image});
+        for i in range(2):
+          images.append({'image_data': generator.generate(prompt)});
         # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
  
 
