@@ -3,6 +3,7 @@ import torch
 from PIL import Image
 
 #https://huggingface.co/runwayml/stable-diffusion-v1-5
+#fast stable diff model
 
 class imageGen:
     def __init__(self):
@@ -13,10 +14,10 @@ class imageGen:
         self.pipe.enable_model_cpu_offload()
     def generate(self,prompt="Didn't work sorry"):
         image = self.pipe(prompt).images[0]  
-        Image.show(image);
+        image.save(prompt+".png");
         return image;
 
 if __name__ == '__main__':
-   prompt = "horse space walk"
+   prompt = "people working in their house"
    gen = imageGen();
    gen.generate(prompt);
