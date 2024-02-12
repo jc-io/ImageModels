@@ -61,14 +61,17 @@ def generate_image():
         print("Recieved prompt: " + prompt)
         generator = imageGen();
         image = generator.generate(prompt);
-        image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
         images = []
-        for i in range(1, 2):  # Assuming there are three images named image1.jpg, image2.jpg, and image3.jpg
-          image_path = os.path.join(app.config['GENERATED_FOLDER'],f"generated_image{i}.jpg");
-          with open(image_path, 'rb') as file:
-              image_data = base64.b64encode(file.read()).decode('utf-8')
-              images.append({'image_data': image_data})
-        print(len(images))
+        images.append({'image_data': base64.b64encode(image.read()).decode('utf-8')});
+        # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
+ 
+
+        # for i in range(1, 2):  # Assuming there are three images named image1.jpg, image2.jpg, and image3.jpg
+        #   image_path = os.path.join(app.config['GENERATED_FOLDER'],f"generated_image{i}.jpg");
+        #   with open(image_path, 'rb') as file:
+        #       image_data = base64.b64encode(file.read()).decode('utf-8')
+        #       images.append({'image_data': image_data})
+        # print(len(images))
         return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images});
         
     except Exception as e:
