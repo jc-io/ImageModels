@@ -16,9 +16,9 @@ class captionGen:
 
     #change to imagepath
     def predict(self, imageurl):
-        # img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg' 
-        # raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
-        raw_image = Image.open(imageurl).convert('RGB')
+        img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg' 
+        raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
+        # raw_image = Image.open(imageurl).convert('RGB')
 
         # conditional image captioning
         text = "a photography of"
@@ -33,15 +33,18 @@ class captionGen:
         # out = model.generate(**inputs)
         # return processor.decode(out[0], skip_special_tokens=True)
     def makeFunny(self, caption):
-        model = AutoModelForCausalLM.from_pretrained(
-            "mistralai/Mistral-7B-v0.1", device_map="auto", load_in_4bit=True
-        )
-        tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1", padding_side="left")
-        model_inputs = tokenizer(["Say something funny about this scene: "+ caption], return_tensors="pt").to("cuda")
-        generated_ids = model.generate(**model_inputs)
-        result = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0];
-        print(result);
-        return result;
+        tokenizer = AutoTokenizer.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
+        model = AutoModelForCausalLM.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
+        text = "A short witty and funny instagram caption for a image of a, "+ caption +" is:"
+        input_ids = tokenizer.encode(text, return_tensors="pt")
+
+        # Generate text based on the scene description
+        output = model.generate(input_ids, max_length=100, num_return_sequences=1, temperature=0.7)
+
+        generated_joke = tokenizer.decode(output[0], skip_special_tokens=True)
+
+        print(generated_joke);
+        return generated_joke;
 
 if __name__ == '__main__':
    location = "/Users/mattiwosbelachew/Repos/github.com/CSE115A/ImageModels/backend/uploads/wildcamping.jpg"
