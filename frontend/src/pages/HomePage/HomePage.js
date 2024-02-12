@@ -5,14 +5,14 @@ const HomePage = () => {
   return (
     <div>
     
-    <section className="bg-white dark:bg-gray-900 mt-16">
+    <section className="bg-white dark:bg-fifth mt-16">
         <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
             <div className="mr-auto place-self-center lg:col-span-7">
-                <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
+                <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-black">
                     Edit Image w/ AI</h1>
-                <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+                <p className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl">
                 "Edit Image w/ AI" feature harnesses the power of Pix2Pix and other cutting-edge ML models from Hugging Face. These models excel in image-to-image translation tasks, enabling your users to effortlessly enhance and modify their images through a seamless and intuitive interface on your website.</p>
-                <p className='ax-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400'>
+                <p className='ax-w-2xl mb-6 font-lightlg:mb-8 md:text-lg lg:text-xl '>
                     - ChatGPT</p>
                 
                 
@@ -31,15 +31,15 @@ const HomePage = () => {
         </div>
     </section>
     
-    <section className="bg-white dark:bg-gray-900">
+    <section className="bg-white dark:bg-third">
         <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
             <div className="mr-auto place-self-center lg:col-span-7">
                 <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
                     Image Generator using Generative AI</h1>
-                <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+                <p className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl">
                 "Image Generator using Generative AI" feature leverages Stable Diffusion and Generative AI to empower users to create high-quality, diverse, and visually appealing images. The controlled diffusion process ensures stability, while the generative capabilities provide users with a dynamic and creative tool for image generation.
                 </p>
-                <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+                <p className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl">
                 - ChatGPT
                 </p>
                 <a href="/ImageGen" className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
@@ -56,15 +56,15 @@ const HomePage = () => {
         </div>
     </section>
 
-        <section className="bg-white dark:bg-gray-900">
+        <section className="bg-white dark:bg-second">
         <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
             <div className="mr-auto place-self-center lg:col-span-7">
                 <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
                     Caption Generator</h1>
-                <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+                <p className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl">
                 "Caption Generator" feature leverages the power of the BLIP model to provide users with automatically generated, contextually rich captions for their images. This multimodal approach ensures accurate and meaningful descriptions, enhancing the value and engagement of the visual content on your website.                    
                 </p>
-                <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+                <p className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl">
                 - ChatGPT
                 </p>
                 
