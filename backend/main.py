@@ -57,11 +57,10 @@ def generate_image():
     try:
         prompt = request.form.get('prompt');
         print("Recieved prompt: " + prompt)
-        #to implement: bool(slow_model) from frontend to pick between imageGenSlow() and imageGenFast()?
-        #right now set to default imageGenFast()
+        #to implement: bool(slow_model) from frontend to pick between fast and slow model?
+        #right now set to default fast model
         slow_model = False
-        generator = imageGenFast() if not slow_model else generator = imageGenSlow()
-        #generator = imageGen();
+        generator = imageGen(slow_model);
         image = generator.generate(prompt);
         image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
         images = []
