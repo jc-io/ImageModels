@@ -16,9 +16,9 @@ class captionGen:
 
     #change to imagepath
     def predict(self, imageurl):
-        img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg' 
-        raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
-        # raw_image = Image.open(imageurl).convert('RGB')
+        # img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg' 
+        # raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
+        raw_image = Image.open(imageurl).convert('RGB')
 
         # conditional image captioning
         text = "a photography of"
