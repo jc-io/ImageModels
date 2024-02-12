@@ -63,8 +63,7 @@ def generate_image():
         generator = imageGen();
         image = generator.generate(prompt);
         images = []
-        raw_image = Image.open(image).convert('RGB')
-        image_byte_array = raw_image.tobytes()
+        image_byte_array = image.tobytes()
 
         # Encode the byte array to base64
         base64_encoded_image = base64.b64encode(image_byte_array)
