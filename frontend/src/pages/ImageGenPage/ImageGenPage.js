@@ -42,7 +42,7 @@ function ImageGenPage() {
     };
   return (
   <>
-<div className="bg-indigo-900 min-h-screen from-gray-100 to-gray-300">
+<div className="bg-second min-h-screen from-gray-100 to-gray-300">
 
     <div className="scrollable-container">
     <h1 className="text-center	  text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">

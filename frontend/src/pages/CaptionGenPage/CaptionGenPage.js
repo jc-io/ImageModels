@@ -78,7 +78,7 @@ function CaptionGenPage() {
       };
   
     return (
-      <div className="m-0 bg-indigo-900 min-h-screen from-gray-100 to-gray-300">
+      <div className="m-0 bg-second min-h-screen from-gray-100 to-gray-300">
 
 
         <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">

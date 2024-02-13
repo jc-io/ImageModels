@@ -13,28 +13,31 @@ class ImageGen:
     def generate(self, prompt="horse space walk"):
         try:
             image = self.pipe(prompt).images[0]  
-            image = image.convert('RGB')
+           # Format the base64 string as a data URL for HTML
+            return self.covertToimgageJpeg(image);
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+    def covertToimgageJpeg(self, image):
+        image = image.convert('RGB')
                         # Convert the image to a byte array
-            with io.BytesIO() as buffer:
-                image.save(buffer, format="JPEG")
-                image_byte_array = buffer.getvalue()
+        with io.BytesIO() as buffer:
+            image.save(buffer, format="JPEG")
+            image_byte_array = buffer.getvalue()
 
             # Convert the image to a byte array
             # image_byte_array = image.tobytes()
 
             # Encode the byte array to base64
-            base64_encoded_image = base64.b64encode(image_byte_array)
+        base64_encoded_image = base64.b64encode(image_byte_array)
 
             # Convert the base64 bytes to a string
-            base64_encoded_image_string = base64_encoded_image.decode('utf-8')
+        base64_encoded_image_string = base64_encoded_image.decode('utf-8')
 
             # Format the base64 string as a data URL for HTML
-            data_url = f"data:image/jpeg;base64,{base64_encoded_image_string}"
-            return data_url
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        data_url = f"data:image/jpeg;base64,{base64_encoded_image_string}"
+        return data_url
 
 
 if __name__ == '__main__':

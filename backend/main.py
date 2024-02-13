@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request
 import json
 from PIL import Image
 from imageGen import ImageGen
+from imageEdit import ImageEdit
+
 import base64
 from captionGen import captionGen
 # from PIL import Image #uncomment if u want to see images pop up
@@ -80,6 +82,32 @@ def generate_image():
         print(str(e));
         return jsonify({'error': str(e)}), 500
 
+@app.route("/editImage", methods=['post'])
+def edit_image():
+    try:  
+        uploaded_files = request.files.getlist('file') 
+        for file in uploaded_files:
+          print("Saving File Name: "+file.filename);
+          file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename));
+          secure_filename(file.filename);
+          pathurl = os.path.join(app.config['UPLOAD_FOLDER'],file.filename);
+
+        prompt = request.form.get('prompt');
+        print("Recieved prompt: " + prompt)
+        editImageGenerate = ImageEdit();
+        # def generate(self, img, prompt="Didn't work sorry"):
+           
+        # image = generator.generate(prompt);
+        images = []
+        for i in range(1):
+          images.append({'image_data': editImageGenerate.generate(pathurl, prompt)});
+        
+        return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images});
+
+    except Exception as e:
+        print(str(e));
+        return jsonify({'error': str(e)}), 500
+  
 if __name__ == '__main__':
    app.run(port=5000, debug=True)
 
