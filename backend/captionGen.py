@@ -1,5 +1,6 @@
 import requests
 from PIL import Image
+from torch import cuda
 from transformers import BlipProcessor, BlipForConditionalGeneration, AutoModelForCausalLM, AutoTokenizer
 
 
@@ -12,7 +13,8 @@ class captionGen:
     def __init__(self):
         self.processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
         self.model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
-   
+        self.device = 'cuda' if cuda.is_available() else 'cpu'
+
 
     #change to imagepath
     def predict(self, imageurl):
@@ -33,8 +35,9 @@ class captionGen:
         # out = model.generate(**inputs)
         # return processor.decode(out[0], skip_special_tokens=True)
     def makeFunny(self, caption):
-        tokenizer = AutoTokenizer.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
-        model = AutoModelForCausalLM.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
+        print("using: " + self.device)
+        tokenizer = AutoTokenizer.from_pretrained("HuggingFaceH4/zephyr-7b-beta").to(self.device)
+        model = AutoModelForCausalLM.from_pretrained("HuggingFaceH4/zephyr-7b-beta").to(self.device)
         text = "A short witty and funny instagram caption for a image of a, "+ caption +" is:"
         input_ids = tokenizer.encode(text, return_tensors="pt")
 
