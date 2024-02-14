@@ -13,7 +13,7 @@ class captionGen:
 
     def predict(self, imageurl):
         raw_image = Image.open(imageurl).convert('RGB')
-        text = "a photography of"
+        text = "a photo of"
         inputs = self.processor(raw_image, text, return_tensors="pt").to(device)
 
         out = self.model.generate(**inputs)
@@ -23,12 +23,12 @@ class captionGen:
         print("Using device: " + str(device))
         tokenizer = AutoTokenizer.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
         model = AutoModelForCausalLM.from_pretrained("HuggingFaceH4/zephyr-7b-beta", torch_dtype=torch.float16).to(device)
-        text = "A short witty and funny instagram caption for an image of, " + caption + " is:"
+        text = "What is a short witty and funny instagram caption for an image of, " + caption + "  and make sure not to add extra information:"
         input_ids = tokenizer.encode(text, return_tensors="pt").to(device)
 
         output = model.generate(
             input_ids,
-            max_length=90,  # Increase or decrease this value for longer or shorter captions
+            max_length=140,  # Increase or decrease this value for longer or shorter captions
             num_return_sequences=1,  # Generate multiple sequences for diversity
             temperature=0.9,  # Adjust the temperature for more diverse outputs
             top_k=50,  # Adjust the top_k parameter for diversity
