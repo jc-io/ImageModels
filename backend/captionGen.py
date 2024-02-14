@@ -9,7 +9,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 class captionGen:
     def __init__(self):
         self.processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
-        self.model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large").to(device)
+        self.model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
 
     def predict(self, imageurl):
         raw_image = Image.open(imageurl).convert('RGB')
