@@ -10,7 +10,7 @@ class captionGen:
     def __init__(self):
         self.processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
         self.model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
-
+ 
     def predict(self, imageurl):
         raw_image = Image.open(imageurl).convert('RGB')
         text = "a photography of"
@@ -33,7 +33,7 @@ class captionGen:
 
 if __name__ == '__main__':
    location = "/Users/mattiwosbelachew/Repos/github.com/CSE115A/ImageModels/backend/uploads/wildcamping.jpg"
-   gen = CaptionGen()
+   gen = captionGen()
    caption = gen.predict(location)
    print("Predicted caption:", caption)
    funnycaption = gen.makeFunny(caption)
