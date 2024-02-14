@@ -26,7 +26,16 @@ class captionGen:
         text = "A short witty and funny instagram caption for an image of, " + caption + " is:"
         input_ids = tokenizer.encode(text, return_tensors="pt").to(device)
 
-        output = model.generate(input_ids, max_length=90, num_return_sequences=1, temperature=0.7)
+        output = model.generate(
+            input_ids,
+            max_length=90,  # Increase or decrease this value for longer or shorter captions
+            num_return_sequences=1,  # Generate multiple sequences for diversity
+            temperature=0.9,  # Adjust the temperature for more diverse outputs
+            top_k=50,  # Adjust the top_k parameter for diversity
+            top_p=0.95,  # Adjust the top_p parameter for diversity
+            repetition_penalty=2.0,  # Penalize repetition for more diverse outputs
+            do_sample=True  # Sample from the distribution instead of greedy decoding
+        )
 
         generated_joke = tokenizer.decode(output[0], skip_special_tokens=True)
         return generated_joke.replace(text, '')
