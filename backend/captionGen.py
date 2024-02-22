@@ -19,11 +19,12 @@ class captionGen:
         out = self.model.generate(**inputs)
         return self.processor.decode(out[0], skip_special_tokens=True)
 
-    def makeFunny(self, caption):
+    def createCaption(self, caption, tone):
         print("Using device: " + str(device))
         tokenizer = AutoTokenizer.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
         model = AutoModelForCausalLM.from_pretrained("HuggingFaceH4/zephyr-7b-beta", torch_dtype=torch.float16).to(device)
-        text = "What is a short witty and funny instagram caption for an image of, " + caption + "  and make sure not to add extra information:"
+        # text = "What is a short witty and funny instagram caption for an image of, " + caption + "  and make sure not to add extra information:"
+        text = "Can you use this tone: " + tone + " to make a instagram caption for an image of, "+ caption + "  and make sure not to add extra information:"
         input_ids = tokenizer.encode(text, return_tensors="pt").to(device)
 
         output = model.generate(

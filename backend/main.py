@@ -87,13 +87,14 @@ def generateLLM():
     try:
         try: 
           captionGenerated = request.form.get('captionGenerated');
+          tone = request.form.get('tone');
           print("Generated from BLIP and being passed to LLM: " + str(captionGenerated));
         except Exception as e:
           print("Unable to determine caption");
         
         
         caption = captionGen()
-        funnycaption = caption.makeFunny(captionGenerated);
+        funnycaption = caption.createCaption(captionGenerated, tone);
         ##image.save("/.")
         res = {'message': 'File uploaded successfully',"result":funnycaption}
         res_message = jsonify(res);
