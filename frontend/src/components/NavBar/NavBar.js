@@ -1,6 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 function NavBar() {
+    const [y, setY] = useState(window.scrollY);
+
+    const handleNavigation = useCallback(
+        e => {
+          const window = e.currentTarget;
+          if (y > window.scrollY) {
+            console.log("scrolling up");
+          } else if (y < window.scrollY) {
+            console.log("scrolling down");
+          }
+          setY(window.scrollY);
+        //   console.log(window.scrollY)
+
+
+        }, [y]
+      );
+
     useEffect(() => {
         // Check if the current URL is the home ("/") URL
         const isHome = window.location.pathname === '/';
@@ -8,7 +25,15 @@ function NavBar() {
         const isEditImage = window.location.pathname === '/EditImage';
         const isImageGen = window.location.pathname === '/ImageGen';
         const isAbout = window.location.pathname === '/About';
+        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
 
+  
+   
+        setY(window.scrollY);
+        window.addEventListener("scroll", handleNavigation);
+        
+        
+      
     
         // If it is the home page, add the 'fixed-navbar' class
         if (isHome) {
@@ -18,6 +43,16 @@ function NavBar() {
           // If it's not the home page, remove the 'fixed-navbar' class
           document.getElementById('navbar').classList.remove('fixed');
           document.getElementById('navbar-home').classList.remove('md:text-blue-700');
+        }
+        if (isHome && (y<windowHeight)){
+            document.getElementById('navbar').classList.add('bg-transperant');
+            document.getElementById('navbar').classList.remove('bg-primary');
+            console.log("showing transp")
+        }else {
+            document.getElementById('navbar').classList.remove('bg-transperant');
+            document.getElementById('navbar').classList.add('bg-primary');
+            console.log("showing prim")
+
         }
         if (isCaptionGen){//md:text-blue-700
             document.getElementById('navbar-caption').classList.add('md:text-blue-700');
@@ -45,12 +80,16 @@ function NavBar() {
             // document.getElementById('navbar').classList.remove('hidden');
 
         }
+            // Remove the event listener when the component unmounts
+        return () => {
+            window.removeEventListener("scroll", handleNavigation);
+        };
 
-      }, []); // Empty dependency array to run the effect only once on mount
+      }, [handleNavigation]); // Empty dependency array to run the effect only once on mount
   
     return (
-        <div>
-            <nav id="navbar" className="bg-white dark:bg-forth w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 ">
+        <div >
+            <nav id="navbar" className="drak:bg-primary w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 ">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             {/* logo click goes to home */}
             <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">

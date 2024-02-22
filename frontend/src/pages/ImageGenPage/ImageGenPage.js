@@ -43,16 +43,16 @@ function ImageGenPage() {
   return (
   <>
 <div className="bg-second min-h-screen from-gray-100 to-gray-300">
-
     <div className="scrollable-container">
-    <h1 className="text-center	  text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-              <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span>
-            </h1>
+      
+
         {pageState==="main" && (  
             
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
-
-
+              <h1 className="text-center	  text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+                        <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span>
+                      </h1>
+                      <br/><br/>
 
             
                     <label className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">
@@ -69,8 +69,11 @@ function ImageGenPage() {
             </div>
       )};
       {pageState==="loading" && (
-        <div>
-
+            <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
+              <h1 className="text-center	  text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+                        <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span>
+                      </h1>
+                      <br/><br/>
 
         <div className="text-center">
             <div role="status">
