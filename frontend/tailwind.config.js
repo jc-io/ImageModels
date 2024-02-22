@@ -12,6 +12,8 @@ module.exports = {
       'third': '#2E2E2E',
       'forth': '#2E2E2E',
       'fifth': '#2E2E2E',
+      'button': '#090088',
+      'buttonHover': '#03002e',
       transparent: 'transparent',
       current: 'currentColor',
       black: colors.black,
@@ -26,8 +28,6 @@ module.exports = {
       // indigo: colors.indigo,
       // yellow: colors.yellow,
       blue: colors.blue,
-
-
 
     },
     extend: {},
