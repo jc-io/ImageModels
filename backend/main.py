@@ -3,6 +3,8 @@ import json
 from PIL import Image
 from imageGen import ImageGen
 from imageEdit import ImageEdit
+from queue import Queue
+import threading
 
 import base64
 from captionGen import captionGen
@@ -12,6 +14,27 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
 import os
+
+# task_queue = Queue()
+# tasks_done = [];
+# def process_queue():
+#     while True:
+#         task = task_queue.get()
+#         if task is None:
+#             break
+#         try:
+#             task()
+#         except Exception as e:
+#             print(f"Error processing task: {e}")
+#         finally:
+#             task_queue.task_done()
+
+# thread = threading.Thread(target=process_queue)
+# thread.start()
+
+# def add_task_to_queue(task):
+#     task_queue.put(task)
+
 
 UPLOAD_FOLDER = 'uploads'
 GENERATED_FOLDER = 'generated';
@@ -25,10 +48,11 @@ app.config['GENERATED_FOLDER'] = GENERATED_FOLDER
 
 @app.route("/")
 def hello_world():
+    print("Hit")
     return "Hello, World!"
 
-@app.route("/upload", methods=['post'])
-def test_image():
+@app.route("/imageTotext", methods=['post'])
+def imageToText():
     try:
         try: 
           imagecaption = request.form.get('caption');
@@ -47,16 +71,38 @@ def test_image():
           pathurl = os.path.join(app.config['UPLOAD_FOLDER'],file.filename);
           print(pathurl)
           captionGenerated = caption.predict(pathurl)
-          print(captionGenerated);
-          funnycaption = caption.makeFunny(captionGenerated);
-        ##image.save("/.")
-        res = {'message': 'File uploaded successfully',"caption":funnycaption}
+
+
+        res = {'message': 'File uploaded successfully',"caption":captionGenerated}
         res_message = jsonify(res);
         return res_message;
 
     except Exception as e:
         print(str(e));
         return jsonify({'error': str(e)}), 500
+    
+
+@app.route("/generateLLM", methods=['post'])
+def generateLLM():
+    try:
+        try: 
+          captionGenerated = request.form.get('captionGenerated');
+          print("Generated from BLIP and being passed to LLM: " + str(captionGenerated));
+        except Exception as e:
+          print("Unable to determine caption");
+        
+        
+        caption = captionGen()
+        funnycaption = caption.makeFunny(captionGenerated);
+        ##image.save("/.")
+        res = {'message': 'File uploaded successfully',"result":funnycaption}
+        res_message = jsonify(res);
+        return res_message;
+
+    except Exception as e:
+        print(str(e));
+        return jsonify({'error': str(e)}), 500
+    
 @app.route("/generate", methods=['post'])
 def generate_image():
     try:
@@ -109,7 +155,7 @@ def edit_image():
         return jsonify({'error': str(e)}), 500
   
 if __name__ == '__main__':
-   app.run(port=5000, debug=True)
+   app.run(port=5000, debug=True, threaded=True)
 
 
 
