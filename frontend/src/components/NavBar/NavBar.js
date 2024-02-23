@@ -39,10 +39,12 @@ function NavBar() {
         if (isHome) {
           document.getElementById('navbar').classList.add('fixed');
           document.getElementById('navbar-home').classList.add('md:text-blue-700');
+          document.getElementById('navbar').classList.remove('border-b', 'border-gray-200', 'dark:border-gray-600');
         } else {
           // If it's not the home page, remove the 'fixed-navbar' class
           document.getElementById('navbar').classList.remove('fixed');
           document.getElementById('navbar-home').classList.remove('md:text-blue-700');
+          document.getElementById('navbar').classList.add('border-b', 'border-gray-200', 'dark:border-gray-600');
         }
         if (isHome && (y<windowHeight)){
             document.getElementById('navbar').classList.add('bg-transperant');
@@ -89,7 +91,7 @@ function NavBar() {
   
     return (
         <div >
-            <nav id="navbar" className="drak:bg-primary w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 ">
+            <nav id="navbar" className="drak:bg-primary w-full z-20 top-0 start-0">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             {/* logo click goes to home */}
             <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -100,9 +102,9 @@ function NavBar() {
                 <span className="self-center text-2xl font-semibold whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span>
             </a>
             <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                <button type="button" className="px-4 py-2 rounded-l-xl text-white m-0 bg-gray-500 hover:bg-gray-600 transition">
+                <button type="button" className="px-4 py-2 rounded-l-lg text-white m-0 bg-transperant hover:bg-transperant border-solid border-2 border-transperant transition">
                     Login</button>
-                <button type="button" className="px-4 py-2 rounded-r-xl bg-gray-300 hover:bg-gray-300 transition">
+                <button type="button" className="px-4 py-2 rounded-r-lg bg-gray-300 hover:bg-gray-300 border-solid border-2 border-transperant transition">
                     SignUp</button>
                 {/* <button data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
                     <span className="sr-only">Open main menu</span>
