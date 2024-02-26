@@ -15,7 +15,7 @@ function ImageGenPage() {
           // Append each file to the FormData
 
         formData.append('prompt',prompt);
-    
+
         setpageState('loading');
 
         // Add your API call or upload logic here
@@ -44,17 +44,17 @@ function ImageGenPage() {
   <>
 <div className="bg-second min-h-screen from-gray-100 to-gray-300">
     <div className="scrollable-container">
-      
 
-        {pageState==="main" && (  
-            
+
+        {pageState==="main" && (
+
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
               <h1 className="text-center	  text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
                         <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span>
                       </h1>
                       <br/><br/>
 
-            
+
                     <label className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">
                     Enter Image Description:</label>
                     <br/>
@@ -64,8 +64,8 @@ function ImageGenPage() {
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleGen}>
                 Generate Image
                 </button>
-          
-                
+
+
             </div>
       )};
       {pageState==="loading" && (
@@ -87,16 +87,16 @@ function ImageGenPage() {
             </div>
         </div>
         </div>
-        
+
       )}
       {pageState==="result" && (
         <div>
 
 
       <div className="image-display text-center">
-          
+
           <h3 className="text-white font-bold">Generated Image[s]:</h3>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.map((imageUrl, index) => (
                 <div>
@@ -104,7 +104,7 @@ function ImageGenPage() {
                 </div>
               ))
               }
-          </div>  
+          </div>
           <h3 className="text-white font-bold">Prompt: {prompt}</h3>
 
 
@@ -129,6 +129,3 @@ function ImageGenPage() {
 };
 
 export default ImageGenPage;
-
-
-

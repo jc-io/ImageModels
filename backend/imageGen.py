@@ -14,7 +14,7 @@ class ImageGen:
         try:
             self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, safety_checker=None)
             self.pipe.enable_model_cpu_offload()
-            image = self.pipe(prompt).images[0]  
+            image = self.pipe(prompt).images[0]
            # Format the base64 string as a data URL for HTML
             return self.covertToimgageJpeg(image);
 
@@ -26,7 +26,7 @@ class ImageGen:
         try:
             self.pipe = DiffusionPipeline.from_pretrained(self.detailed_model_id, torch_dtype=torch.float16, use_safetensors=True, variant="fp16")
             self.pipe = self.pipe.to("cuda")
-            image = self.pipe(prompt).images[0] 
+            image = self.pipe(prompt).images[0]
             return self.covertToimgageJpeg(image);
 
         except Exception as e:

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft-04/schema#",
+  "type": "string",
+  "addtionalProperties" : false,
+  "properties": {
+  "image": {
+    "binaryEncoding": "base64",
+    "type": "image/png"
+    }
+  },
+  "required" : [
+    "image"
+  ]
+}

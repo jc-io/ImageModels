@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draftv4/hyper-schema",
+  "type": "string",
+  "addtionalProperties" : false,
+  "properties": {
+    "image": {
+      "binaryEncoding": "base64",
+      "type": "image/png"
+      },
+    "prompt": {
+      "type": "string"
+      }
+    },
+  "required" : [
+    "image",
+    "prompt"
+  ]
+}

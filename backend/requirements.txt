@@ -3,12 +3,12 @@ flask-cors
 transformers @ git+https://github.com/huggingface/transformers
 bitsandbytes
 accelerate
-timm==0.4.12 
+timm==0.4.12
 pycocoevalcap
 fairscale==0.4.4
 accelerate
 diffusers @ git+ssh://git@github.com/huggingface/diffusers
 --extra-index-url https://download.pytorch.org/whl/cu118
-torch 
-torchvision 
+torch
+torchvision
 torchaudio

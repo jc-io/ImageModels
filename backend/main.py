@@ -13,6 +13,10 @@ from captionGen import captionGen
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
+from diffusers import StableDiffusionImg2ImgPipeline #latest version tranformers (clips)
+from diffusers import AutoPipelineForImage2Image
+from diffusers import StableDiffusionLatentUpscalePipeline
+
 import os
 
 # task_queue = Queue()
@@ -54,13 +58,13 @@ def hello_world():
 @app.route("/imageTotext", methods=['post'])
 def imageToText():
     try:
-        try: 
+        try:
           imagecaption = request.form.get('caption');
           print("Caption to use: " + str(imagecaption));
         except Exception as e:
           print("Unable to determine caption");
-        
-        uploaded_files = request.files.getlist('file') 
+
+        uploaded_files = request.files.getlist('file')
         caption = captionGen()
         for file in uploaded_files:
           print("Saving File Name: "+file.filename);
@@ -80,19 +84,19 @@ def imageToText():
     except Exception as e:
         print(str(e));
         return jsonify({'error': str(e)}), 500
-    
+
 
 @app.route("/generateLLM", methods=['post'])
 def generateLLM():
     try:
-        try: 
+        try:
           captionGenerated = request.form.get('captionGenerated');
           tone = request.form.get('tone');
           print("Generated from BLIP and being passed to LLM: " + str(captionGenerated));
         except Exception as e:
           print("Unable to determine caption");
-        
-        
+
+
         caption = captionGen()
         funnycaption = caption.createCaption(captionGenerated, tone);
         ##image.save("/.")
@@ -103,7 +107,7 @@ def generateLLM():
     except Exception as e:
         print(str(e));
         return jsonify({'error': str(e)}), 500
-    
+
 @app.route("/generate", methods=['post'])
 def generate_image():
     try:
@@ -112,10 +116,10 @@ def generate_image():
         generator = ImageGen();
         # image = generator.generate(prompt);
         images = []
-        for i in range(6):
+        for i in range(1):
           images.append({'image_data': generator.generate(prompt)});
         # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
- 
+
 
         # for i in range(1, 2):  # Assuming there are three images named image1.jpg, image2.jpg, and image3.jpg
         #   image_path = os.path.join(app.config['GENERATED_FOLDER'],f"generated_image{i}.jpg");
@@ -124,15 +128,15 @@ def generate_image():
         #       images.append({'image_data': image_data})
         # print(len(images))
         return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images});
-        
+
     except Exception as e:
         print(str(e));
         return jsonify({'error': str(e)}), 500
 
 @app.route("/editImage", methods=['post'])
 def edit_image():
-    try:  
-        uploaded_files = request.files.getlist('file') 
+    try:
+        uploaded_files = request.files.getlist('file')
         for file in uploaded_files:
           print("Saving File Name: "+file.filename);
           file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename));
@@ -141,27 +145,27 @@ def edit_image():
 
         prompt = request.form.get('prompt');
         print("Recieved prompt: " + prompt)
-        editImageGenerate = ImageEdit();
+        """
+        basic: StableDiffusionImg2ImgPipeline "runwayml/stable-diffusion-v1-5"
+        better: AutoPipelineForImage2Image "stabilityai/stable-diffusion-xl-refiner-1.0"
+        """
+        #editImageGenerate = ImageEdit(StableDiffusionLatentUpscalePipeline,"stabilityai/sd-x2-latent-upscaler"); does not work like this
+        #editImageGenerate = ImageEdit(AutoPipelineForImage2Image,"runwayml/stable-diffusion-v1-5");
+        editImageGenerate = ImageEdit(AutoPipelineForImage2Image,"stabilityai/stable-diffusion-xl-refiner-1.0");
+        # editImageGenerate = ImageEdit();
         # def generate(self, img, prompt="Didn't work sorry"):
-           
+
         # image = generator.generate(prompt);
         images = []
         for i in range(1):
+          #images.append({'image_data': editImageGenerate.generate(pathurl, prompt, strengthImg=0.6)});
           images.append({'image_data': editImageGenerate.generate(pathurl, prompt)});
-        
+
         return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images});
 
     except Exception as e:
         print(str(e));
         return jsonify({'error': str(e)}), 500
-  
+
 if __name__ == '__main__':
    app.run(port=5000, debug=True, threaded=True)
-
-
-
-
-
-
-
-    

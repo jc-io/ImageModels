@@ -3,12 +3,12 @@ import { useState } from 'react';
 function Upload() {
     const [selectedFiles, setSelectedFile] = useState([]);
     const [caption, setCaption] = useState('');
-  
+
 
     const handleDragOver = (event) => {
       event.preventDefault();
     };
-  
+
     const handleDrop = (event) => {
       event.preventDefault();
       const files = event.dataTransfer.files;
@@ -16,7 +16,7 @@ function Upload() {
     };
     const handleFileChange = (event) => {
         const files = event.target.files;
-     
+
         setSelectedFile(Array.from(files));
     };
     const handleRemoveFile =(index)=> {
@@ -31,8 +31,8 @@ function Upload() {
         return updatedFiles;
       });
       //console.log(selectedFiles);
-      
-  
+
+
     };
     const handleUpload = () => {
         // You can implement your file upload logic here
@@ -44,8 +44,8 @@ function Upload() {
             formData.append(`file`, file);
           });
           formData.append('caption',caption);
-    
-    
+
+
           // Add your API call or upload logic here
           // For example using fetch or Axios
           fetch('http://127.0.0.1:5000/upload', {
@@ -64,7 +64,7 @@ function Upload() {
 
         }
       };
-  
+
     return (
         <div className="scrollable-container">
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
@@ -74,7 +74,7 @@ function Upload() {
         <br/>
         <br/>
         {/* <input type="file" onChange={handleFileChange} /> */}
-          
+
 
         <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center" onDrop={handleDrop} onDragOver={handleDragOver}>
       <label
@@ -110,7 +110,7 @@ function Upload() {
           onChange={handleFileChange}
         />
       </label>
-    
+
       {/* Display the list of selected files */}
       {selectedFiles.length > 0 && (selectedFiles.length > 0 && (
         <div>
@@ -135,10 +135,10 @@ function Upload() {
         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
         GenCaption:</label>
         <input for="Caption" type="text" id="default-input" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={(e) => setCaption(e.target.value)}/>
-    
+
 
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
-        Upload 
+        Upload
         </button>
 </div>
 

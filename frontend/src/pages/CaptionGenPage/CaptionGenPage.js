@@ -9,7 +9,7 @@ function CaptionGenPage() {
     const [result, setResult] = useState('')
     const [pageState, setpageState] = useState('main')
     const [selectedTone, setSelectedTone] = useState('');
-  
+
     // Handler function to update the selected tone when the user makes a selection
     const handleToneChange = (event) => {
       setSelectedTone(event.target.value);
@@ -17,7 +17,7 @@ function CaptionGenPage() {
     const handleDragOver = (event) => {
       event.preventDefault();
     };
-  
+
     const handleDrop = (event) => {
       event.preventDefault();
       const files = event.dataTransfer.files;
@@ -25,7 +25,7 @@ function CaptionGenPage() {
     };
     const handleFileChange = (event) => {
         const files = event.target.files;
-     
+
         setSelectedFile(Array.from(files));
     };
     const handleRemoveFile =(index)=> {
@@ -41,8 +41,8 @@ function CaptionGenPage() {
       });
       //console.log(selectedFiles);
       setCaption('');
-      
-  
+
+
     };
     const handleUpload = () => {
         // You can implement your file upload logic here
@@ -53,8 +53,8 @@ function CaptionGenPage() {
           selectedFiles.forEach((file, index) => {
             formData.append(`file`, file);
           });
-          
-    
+
+
           setpageState('loading');
           // Add your API call or upload logic here
           // For example using fetch or Axios
@@ -103,7 +103,7 @@ function CaptionGenPage() {
 
         }
       };
-  
+
     return (
       <div className="m-0 bg-second min-h-screen from-gray-100 to-gray-300">
 
@@ -115,7 +115,7 @@ function CaptionGenPage() {
         <br/>
         <br/>
         {/* <input type="file" onChange={handleFileChange} /> */}
-        {pageState==="main" && (  
+        {pageState==="main" && (
           <div className="bg-indigo-900 min-h-screen from-gray-100 to-gray-300">
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center" onDrop={handleDrop} onDragOver={handleDragOver}>
               <label
@@ -151,7 +151,7 @@ function CaptionGenPage() {
                   onChange={handleFileChange}
                 />
               </label>
-        
+
               {/* Display the list of selected files */}
               {selectedFiles.length > 0 && (selectedFiles.length > 0 && (
                 <div>
@@ -169,7 +169,7 @@ function CaptionGenPage() {
                   </ul>
                 </div>
               )) }
-              
+
             {/* <p className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">Tone:</p> */}
             <form className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">
                 <label htmlFor="large" className="block mb-2 text-base font-medium text-gray-900 dark:text-white">Select a Tone</label>
@@ -191,14 +191,14 @@ function CaptionGenPage() {
             {/* Radio active */}
 
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
-            Upload 
+            Upload
             </button>
           </div>
       </div>
       )}
       {pageState==="loading" && (
         <div>
-        
+
 
         <div className="text-center">
 
@@ -219,7 +219,7 @@ function CaptionGenPage() {
             </div>
         </div>
         </div>
-        
+
       )}
 
     {pageState==="result" && (
@@ -229,7 +229,7 @@ function CaptionGenPage() {
     <div className="caption-display text-center">
         <h3 className="text-white font-bold">Generated Caption:</h3>
           <div className='text-white font-extrabold font-size: 20px justify-center'>{result}</div>
-     
+
 
           <br></br>
           <button class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
@@ -252,5 +252,3 @@ function CaptionGenPage() {
   }
 
   export default CaptionGenPage;
-
-
