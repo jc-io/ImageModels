@@ -5,7 +5,7 @@ import axios from 'axios';
 function CaptionGenPage() {
     const [selectedFiles, setSelectedFile] = useState([]);
     //State var to store caption
-    const [caption, setCaption] = useState('add the models in backend and tests you stuff and replace response with your altered image or sumthing')
+    const [caption, setCaption] = useState('')
     const [textareaRows, setTextareaRows] = useState(1);
     
     const [result, setResult] = useState('')
@@ -50,7 +50,14 @@ function CaptionGenPage() {
         selectedFiles.forEach((file, index) => {
           formData.append(`file`, file);
         });
+        console.log("uploading");
         setpageState('blip_phase');
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
+          .then(response => response.data)
+          .then(data => {
+            setCaption(data.caption);
+          })
+          .catch(error => console.error('Error:', error));
       }
     };
   
