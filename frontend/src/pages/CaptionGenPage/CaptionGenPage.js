@@ -44,76 +44,127 @@ function CaptionGenPage() {
       
   
     };
-    const handleUpload = () => {
-        // You can implement your file upload logic here
-        if (selectedFiles.length > 0) {
-          // Example: send the file to a server
-          const formData = new FormData();
-          // Append each file to the FormData
-          selectedFiles.forEach((file, index) => {
-            formData.append(`file`, file);
-          });
+    // const handleUpload = () => {
+    //     // You can implement your file upload logic here
+    //     if (selectedFiles.length > 0) {
+    //       // Example: send the file to a server
+    //       const formData = new FormData();
+    //       // Append each file to the FormData
+    //       selectedFiles.forEach((file, index) => {
+    //         formData.append(`file`, file);
+    //       });
           
     
-          setpageState('loading');
-          // Add your API call or upload logic here
-          // For example using fetch or Axios
+    //       setpageState('blip_phase');
+    //       // Add your API call or upload logic here
+    //       // For example using fetch or Axios
 
-          axios.post('http://127.0.0.1:5000/imageTotext', formData)
-          .then(response => {
-            return response.data;
-          })
-          .then(data => {
-            // setpageState('result');
-            // Check if data.images is an array before calling map
-            setCaption(data.caption); // Set the caption in the state
-            const formDataTwo = new FormData();
-            formDataTwo.append(`captionGenerated`, caption);
-            formDataTwo.append(`tone`, selectedTone);
-            axios.post('http://127.0.0.1:5000/generateLLM', formDataTwo)
-                .then(response => {
-                  return response.data;
-                })
-                .then(data => {
-                  // setpageState('result');
-                  // Check if data.images is an array before calling map
-                  setpageState('result');
-                  setResult(data.result); // Set the caption in the state
-                  // console.log(data);
-                  return data ? Promise.resolve(data) : Promise.resolve({});
-              }).catch(error => {
-                  console.error('Error:', error);
-                  return Promise.reject(error);
-            });
-            // console.log(data);
-            return data ? Promise.resolve(data) : Promise.resolve({});
-        }).catch(error => {
-            console.error('Error:', error);
-            return Promise.reject(error);
+    //       axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
+    //       .then(response => {
+    //         return response.data;
+    //       })
+    //       .then(data => {
+    //         // setpageState('result');
+    //         // Check if data.images is an array before calling map
+    //         setCaption(data.caption); // Set the caption in the state
+    //         const formDataTwo = new FormData();
+    //         formDataTwo.append(`captionGenerated`, data.caption);
+    //         formDataTwo.append(`tone`, selectedTone);
+    //         axios.post(`${process.env.REACT_APP_BACKEND_URL}/generateLLM`, formDataTwo)
+    //             .then(response => {
+    //               return response.data;
+    //             })
+    //             .then(data => {
+    //               // setpageState('result');
+    //               // Check if data.images is an array before calling map
+    //               setpageState('result');
+    //               setResult(data.result); // Set the caption in the state
+    //               // console.log(data);
+    //               return data ? Promise.resolve(data) : Promise.resolve({});
+    //           }).catch(error => {
+    //               console.error('Error:', error);
+    //               return Promise.reject(error);
+    //         });
+    //         // console.log(data);
+    //         return data ? Promise.resolve(data) : Promise.resolve({});
+    //     }).catch(error => {
+    //         console.error('Error:', error);
+    //         return Promise.reject(error);
+    //       });
+    //     }
+    //   };
+
+    const handleUpload = () => {
+      // Check if there are any selected files before uploading
+      if (selectedFiles.length > 0) {
+        // Example: send the file to a server using FormData
+        const formData = new FormData();
+        // Append each file to the FormData
+        selectedFiles.forEach((file, index) => {
+          formData.append(`file`, file);
+        });
+  
+        // // Change the page state to indicate the upload phase
+        setpageState('blip_phase'); //Left here for testing, wuill move to bottom later
+        
+        // Post the files to the backend for image to text conversion
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
+        .then(response => {
+          return response.data;
+        })
+        .then(data => {
+
+
+          // setpageState('blip_phase');
+          // Set the caption with the data received from the backend
+          setCaption(data.caption);
+          
+
+          // Prepare the second FormData for the next post request
+          const formDataTwo = new FormData();
+          formDataTwo.append(`captionGenerated`, data.caption);
+          formDataTwo.append(`tone`, selectedTone);
+          
+          // Post the caption and tone to the backend for further processing
+          axios.post(`${process.env.REACT_APP_BACKEND_URL}/generateLLM`, formDataTwo)
+              .then(response => {
+                return response.data;
+              })
+              .then(data => {
+                // Change the page state to result after receiving the response
+                setpageState('result');
+                // Set the result in the state with the data received
+                setResult(data.result);
+                
+                return data ? Promise.resolve(data) : Promise.resolve({});
+            }).catch(error => {
+                // Log and handle any errors during the second post request
+                console.error('Error:', error);
+                return Promise.reject(error);
           });
-
-
-        // .then((data)=>{
-        //     console.log(data);
-        //     return new Promise((resolve, reject)=>{
-        //         resolve(data ? JSON.parse(data) : {})
-        //     })
-        // })
-
-
-        }
-      };
+          return data ? Promise.resolve(data) : Promise.resolve({});
+      }).catch(error => {
+          // Log and handle any errors during the first post request
+          console.error('Error:', error);
+          return Promise.reject(error);
+        });
+      }
+    };
+  
   
     return (
-      <div className="m-0 bg-second min-h-screen from-gray-100 to-gray-300">
+
+      <div className="m-0 bg-second min-h-screen from-gray-100 to-gray-300"
+      style={{ backgroundImage: "url('')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
 
 
-        <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
-            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl"><span className="text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">CaptionGen</span></h1>
+        <div className="container py-3 px-10 mx-0 min-w-full flex flex-col items-center">
+            <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">CaptionGen</span></h1>
         </div>
 
-        <br/>
-        <br/>
+        {/* <br/>
+        <br/> */}
         {/* <input type="file" onChange={handleFileChange} /> */}
         {pageState==="main" && (  
           <div className="bg-indigo-900 min-h-screen from-gray-100 to-gray-300">
@@ -196,19 +247,57 @@ function CaptionGenPage() {
           </div>
       </div>
       )}
-      {pageState==="loading" && (
+      {pageState==="blip_phase" && (
         <div>
-        
-
+      
         <div className="text-center">
 
-            <div className='text-white font-extrabold font-size: 20px justify-center'>
-            <h3 className="text-white font-bold">Description of Image:</h3>
-                {caption}
+          {/*Preview Image*/}
+          {selectedFiles.length > 0 && (
+          <div className="text-center mt-0 pt-0">
+            <h2 className="text-3xl font-semibold leading-normal text-gray-900 dark:text-white">Uploaded Image:</h2>
+            <div className="flex justify-center items-center mt-5">
+              {selectedFiles.map((file, index) => (
+                <div key={index}>
+                  <img src={URL.createObjectURL(file)} alt="Uploaded" className="max-w-md" />
+                </div>
+              ))}
             </div>
-            <br/><br/>
+          </div>
+        )}
 
-            <div role="status">
+
+          {/*Display Caption*/}
+          <div className="caption-display" style={{ marginTop: '80px' }}>
+            <h2 className="text-white font-bold mb-2">Generated Caption:</h2>
+            <textarea
+              readOnly
+              className="w-1/2 h-10 py-2 px-2 text-center text-gray-700border rounded-lg focus:outline-none"
+              rows="4"
+              value={caption}
+            ></textarea>
+          </div>
+            <br/><br/>
+            
+            {/*Buttons*/}
+            <div className="flex justify-center gap-4">
+              <button 
+              onClick={() => setpageState('main')}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Back
+              </button>
+
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Make it
+              </button>
+
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Share
+              </button>
+            </div>
+
+
+            {/* <div role="status">
                   <svg aria-hidden="true" class="inline w-12 h-12 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
                   <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
@@ -216,7 +305,7 @@ function CaptionGenPage() {
                 <h3 className="text-white font-bold">Loading...</h3>
                 <p className="text-white font-bold">This may take a few seconds, please don't close this page.</p>
 
-            </div>
+            </div> */}
         </div>
         </div>
         
