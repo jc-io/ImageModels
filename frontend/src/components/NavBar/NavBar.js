@@ -27,7 +27,7 @@ function NavBar() {
       );
       const handleSignOut = () => {
         // Send sign out request to backend
-        axios.post('http://127.0.0.1:5000/signout', {}, {
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/signout`, {}, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -48,7 +48,7 @@ function NavBar() {
     useEffect(() => {
         if (token) {
             // Fetch user information using the token
-            axios.get('http://127.0.0.1:5000/get_user_info', {
+            axios.get(`${process.env.REACT_APP_BACKEND_URL}/get_user_info`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

@@ -8,7 +8,7 @@ const ExplorePage = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/getImages');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`);
         setImages(response.data.images); // Assuming the API returns an array of images
       } catch (error) {
         console.error('Error fetching images:', error);

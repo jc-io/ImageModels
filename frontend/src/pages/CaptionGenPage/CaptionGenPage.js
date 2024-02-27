@@ -59,7 +59,7 @@ function CaptionGenPage() {
           // Add your API call or upload logic here
           // For example using fetch or Axios
 
-          axios.post('http://127.0.0.1:5000/imageTotext', formData)
+          axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
           .then(response => {
             return response.data;
           })
@@ -70,7 +70,7 @@ function CaptionGenPage() {
             const formDataTwo = new FormData();
             formDataTwo.append(`captionGenerated`, caption);
             formDataTwo.append(`tone`, selectedTone);
-            axios.post('http://127.0.0.1:5000/generateLLM', formDataTwo)
+            axios.post(`${process.env.REACT_APP_BACKEND_URL}/generateLLM`, formDataTwo)
                 .then(response => {
                   return response.data;
                 })
