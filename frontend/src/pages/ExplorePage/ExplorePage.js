@@ -9,21 +9,24 @@ const ExplorePage = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`);
-        setImages(response.data.images); // Assuming the API returns an array of images
-
-        // Trigger the map when images are fetched and no images were present previously
-        if (!mapTriggered && response.data.images.length === 0) {
-          triggerMap(); // You need to define this function to trigger the map
-          setMapTriggered(true); // Set mapTriggered to true to avoid multiple triggers
+        const response = await axios.get(`https://seriously-witty-bengal.ngrok-free.app/getImages`);
+        if (response.data.images) {
+          setImages(response.data.images); // Assuming the API returns an array of images
+  
+          // Trigger the map when images are fetched and no images were present previously
+          if (!mapTriggered && response.data.images.length === 0) {
+            triggerMap(); // You need to define this function to trigger the map
+            setMapTriggered(true); // Set mapTriggered to true to avoid multiple triggers
+          }
         }
       } catch (error) {
         console.error('Error fetching images:', error);
       }
     };
-
+  
     fetchImages();
   }, []); // Empty dependency array to execute only once on component mount
+  
 
   // Function to handle image click
   const handleImageClick = (image) => {
