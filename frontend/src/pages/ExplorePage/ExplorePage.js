@@ -33,6 +33,7 @@ const ExplorePage = () => {
   
 
   // Modal component for displaying the selected image
+  // Idea: Have the white outer layer/box be fixed and big and the size fills up however much it wants/upper bound
   const ImageModal = ({ image, onClose }) => (
   image ? (
     <div
@@ -72,8 +73,8 @@ const ExplorePage = () => {
         <p>{image.description}</p>
       </div>
     </div>
-  ) : null
-);
+    ) : null
+  );
 
   return (
     <div className="bg-primary dark:bg-primary h-screen h-full py-6 sm:py-8 lg:py-12">
