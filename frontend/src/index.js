@@ -5,6 +5,7 @@ import './index.css';
 import App from './App';
 import AboutPage from './pages/AboutPage/AboutPage';
 import UploadPage from './pages/UploadPage/UploadPage';
+import SettingPage from './pages/SettingPage/SettingPage';
 import HomePage from './pages/HomePage/HomePage';
 import EditImagePage from './pages/EditImagePage/EditImagePage';
 import ImageGenPage from './pages/ImageGenPage/ImageGenPage';
@@ -38,6 +39,7 @@ root.render(
         <Route path="/SignUp" element={<SignUpPage/>} />
         <Route path="/Login" element={<LoginPage/>} />
         <Route path="/TermsandConditions" element={<TermsPage/>} />
+        <Route path="/Setting" element={<SettingPage/>} />
         <Route path="*" exact={true} element={<NotFoundPage/>} />
       </Routes>
     </Router>
