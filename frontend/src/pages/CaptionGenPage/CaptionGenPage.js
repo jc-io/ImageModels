@@ -68,7 +68,7 @@ function CaptionGenPage() {
             // Check if data.images is an array before calling map
             setCaption(data.caption); // Set the caption in the state
             const formDataTwo = new FormData();
-            formDataTwo.append(`captionGenerated`, caption);
+            formDataTwo.append(`captionGenerated`, data.caption);
             formDataTwo.append(`tone`, selectedTone);
             axios.post(`${process.env.REACT_APP_BACKEND_URL}/generateLLM`, formDataTwo)
                 .then(response => {
