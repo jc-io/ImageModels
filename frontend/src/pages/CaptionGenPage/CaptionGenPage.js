@@ -155,8 +155,7 @@ function CaptionGenPage() {
     return (
 
       <div className="m-0 bg-second min-h-screen from-gray-100 to-gray-300"
-      style={{ backgroundImage: "url('')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-
+      style={{ backgroundImage: "url(https://photopedia.in/wp-content/uploads/2017/12/wide-angle.jpg)", backgroundSize: 'cover', backgroundPosition: 'center' }}>
 
         <div className="container py-3 px-10 mx-0 min-w-full flex flex-col items-center">
             <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
