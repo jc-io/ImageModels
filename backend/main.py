@@ -1,3 +1,4 @@
+import datetime
 from flask import Flask, jsonify, request, session
 from pymongo import MongoClient
 import json
@@ -6,6 +7,8 @@ from imageGen import ImageGen
 from imageEdit import ImageEdit
 from queue import Queue
 import threading
+import uuid
+import jwt
 from bson import json_util
 import base64
 from captionGen import captionGen
@@ -54,7 +57,7 @@ app = Flask(__name__)
 CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['GENERATED_FOLDER'] = GENERATED_FOLDER
-app.secret_key = "your_secret_key"
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
 @app.route("/")
@@ -62,6 +65,29 @@ def hello_world():
     print("Hit")
     return "Hello, World!"
 
+@app.route('/get_user_info', methods=['GET','POST'])
+def get_user_info():
+  token = request.headers.get('Authorization')
+  print("Token: " + str(token))
+  if not token:
+    return jsonify({'error': 'Unauthorized No Token'}), 401
+
+  try:
+    token = token.split()[1]  # Remove 'Bearer' from the token
+    payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+    username = payload['username']
+    
+    user = users_collection.find_one({'username': username})
+    if user:
+      return jsonify({'username': user['username'], 'email': user.get('email', '')}), 200
+    else:
+      return jsonify({'error': 'User not found'}), 404
+
+  except jwt.ExpiredSignatureError:
+    return jsonify({'error': 'Token expired'}), 401
+  except jwt.InvalidTokenError:
+    return jsonify({'error': 'Invalid token'}), 401
+    
 @app.route("/getImages",  methods=['GET'])
 def getImages():
     limit = 100  # Set your desired limit here
@@ -79,13 +105,14 @@ def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        email = request.form['email']
         hashed_password = generate_password_hash(password)
         if users_collection.find_one({'username': username}):
             res = {'response': 'Username already exists!'}
             res_message = jsonify(res);
             return res_message;
         else:
-            users_collection.insert_one({'username': username, 'password': hashed_password})
+            users_collection.insert_one({'username': username, 'password': hashed_password, 'email': email})
             res = {'response': 'Signed Up Successful'}
             res_message = jsonify(res);
             return res_message;
@@ -93,27 +120,49 @@ def signup():
     res_message = jsonify(res);
     return res_message;
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/signout', methods=['POST'])
+def signout():
+    if request.method == 'POST':
+        # Remove user from session
+        session.pop('user', None)
+        res = {'response': 'Signed Out Successful'}
+        return jsonify(res)
+    else:
+        res = {'response': 'Wrong method'}
+        return jsonify(res)
+    
+@app.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.json.get('username')
+        password = request.json.get('password')
         user = users_collection.find_one({'username': username})
+
         if user and check_password_hash(user['password'], password):
-            session['username'] = username
-            res = {'response': 'Login Sucessful'}
-            res_message = jsonify(res);
-            print(res)
-            return res_message;
+            payload = {
+                'username': username,
+                # Other data if needed (user_id, roles, etc.)
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30) # Expiration
+            }
+            token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+
+            res = {'response': 'Login Successful', 'token': token}
+            return jsonify(res), 200
         else:
             res = {'response': 'Invalid username or password'}
-            print(res)
-            res_message = jsonify(res);
-            return res_message;
-    res = {'response': 'Wrong method'}
-    res_message = jsonify(res);
-    return res_message;
+            return jsonify(res), 401
 
+# Example restricted route that requires authentication
+# @app.route('/restricted')
+# def restricted():
+#     if 'token' in session:
+#         # Here you can check for additional permissions if needed
+#         res = {'response': 'Welcome to the restricted area, ' + session['username']}
+#         return jsonify(res), 200
+#     else:
+#         res = {'response': 'Unauthorized'}
+#         return jsonify(res), 401
+    
 @app.route("/imageTotext", methods=['post'])
 def imageToText():
     try:
