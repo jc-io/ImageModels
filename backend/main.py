@@ -43,6 +43,7 @@ import os
 client = MongoClient('mongodb+srv://imagegen:KF7pSnJVxSZIfyIU@imagegen.jz2d0rr.mongodb.net/?retryWrites=true&w=majority&appName=ImageGen')
 db = client['ImageGen']
 users_collection = db['users']
+images_collection = db['images']
 
 
 UPLOAD_FOLDER = 'uploads'
@@ -60,6 +61,16 @@ app.secret_key = "your_secret_key"
 def hello_world():
     print("Hit")
     return "Hello, World!"
+
+@app.route("/getImages",  methods=['GET'])
+def getImages():
+    limit = 100  # Set your desired limit here
+    images_data = list(images_collection.find({}).limit(limit))  # Fetch documents with the specified limit
+    images = []  # Initialize an empty list to store image data
+    for image in images_data:
+        # Assuming each document contains a field called 'url' that holds the image URL
+        images.append(image)
+    return jsonify({'message': 'Got Public Images','images':images}); #return the list of images
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
