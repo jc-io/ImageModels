@@ -5,7 +5,9 @@ import axios from 'axios';
 function CaptionGenPage() {
     const [selectedFiles, setSelectedFile] = useState([]);
     //State var to store caption
-    const [caption, setCaption] = useState('COMPUTING')
+    const [caption, setCaption] = useState('add the models in backend and tests you stuff and replace response with your altered image or sumthing')
+    const [textareaRows, setTextareaRows] = useState(1);
+    
     const [result, setResult] = useState('')
     const [pageState, setpageState] = useState('main')
     const [selectedTone, setSelectedTone] = useState('');
@@ -71,8 +73,7 @@ function CaptionGenPage() {
   
     return (
 
-      <div className="m-0 bg-second min-h-screen from-gray-100 to-gray-300"
-      style={{ backgroundImage: "url(https://wallpapers.com/images/featured/white-texture-background-kolol10tvs4xlfhp.jpg)", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="m-0 bg-second dark:bg-second min-h-screen">
 
         <div className="container py-3 px-10 mx-0 min-w-full flex flex-col items-center">
             <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
@@ -171,10 +172,10 @@ function CaptionGenPage() {
           {/*Preview Image*/}
           {selectedFiles.length > 0 && (
           <div className="text-center mt-0 pt-0">
-            <h2 className="text-3xl font-semibold leading-normal text-gray-900 dark:text-white">Uploaded Image:</h2>
+            <h2 className="text-3xl font-semibold leading-normal text-white">Uploaded Image:</h2>
             <div className="flex justify-center items-center mt-5">
               {selectedFiles.map((file, index) => (
-                <div key={index}>
+                <div key={index} style={{ border: '5px solid black', borderRadius: '8px', backgroundColor: 'transparent'}}>
                   <img src={URL.createObjectURL(file)} alt="Uploaded" className="max-w-md" />
                 </div>
               ))}
@@ -184,15 +185,23 @@ function CaptionGenPage() {
 
 
           {/*Display Caption*/}
-          <div className="caption-display" style={{ marginTop: '80px' }}>
-            <h2 className="text-white font-bold mb-2">Generated Caption:</h2>
+          <div className="caption-display">
+            <h2 className="text-white font-bold mb-2 py-7">Generated Caption:</h2>
             <textarea
-              readOnly
-              className="w-1/2 h-10 py-2 px-2 text-center text-gray-700border rounded-lg focus:outline-none"
-              rows="4"
-              value={caption}
+                readOnly 
+                className="w-1/2 py-2 px-2 text-center text-white border rounded-lg focus:outline-none"
+                rows={textareaRows} // Use the calculated number of rows
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    padding: '20px',
+                    borderRadius: '8px',
+                    marginTop: '5px',
+                    resize: 'none' // Disable textarea resizing
+                }}
             ></textarea>
-          </div>
+        </div>
             <br/><br/>
             
             {/*Buttons*/}
