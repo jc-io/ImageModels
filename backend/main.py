@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
+from pymongo import MongoClient
 import json
 from PIL import Image
 from imageGen import ImageGen
@@ -12,6 +13,8 @@ from captionGen import captionGen
 
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 import os
 
@@ -36,6 +39,12 @@ import os
 #     task_queue.put(task)
 
 
+# Connect to MongoDB
+client = MongoClient('mongodb+srv://imagegen:KF7pSnJVxSZIfyIU@imagegen.jz2d0rr.mongodb.net/?retryWrites=true&w=majority&appName=ImageGen')
+db = client['ImageGen']
+users_collection = db['users']
+
+
 UPLOAD_FOLDER = 'uploads'
 GENERATED_FOLDER = 'generated';
 
@@ -44,12 +53,54 @@ app = Flask(__name__)
 CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['GENERATED_FOLDER'] = GENERATED_FOLDER
+app.secret_key = "your_secret_key"
 
 
 @app.route("/")
 def hello_world():
     print("Hit")
     return "Hello, World!"
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    print("signup")
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        hashed_password = generate_password_hash(password)
+        if users_collection.find_one({'username': username}):
+            res = {'response': 'Username already exists!'}
+            res_message = jsonify(res);
+            return res_message;
+        else:
+            users_collection.insert_one({'username': username, 'password': hashed_password})
+            res = {'response': 'Signed Up Successful'}
+            res_message = jsonify(res);
+            return res_message;
+    res = {'response': 'Wrong method'}
+    res_message = jsonify(res);
+    return res_message;
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = users_collection.find_one({'username': username})
+        if user and check_password_hash(user['password'], password):
+            session['username'] = username
+            res = {'response': 'Login Sucessful'}
+            res_message = jsonify(res);
+            print(res)
+            return res_message;
+        else:
+            res = {'response': 'Invalid username or password'}
+            print(res)
+            res_message = jsonify(res);
+            return res_message;
+    res = {'response': 'Wrong method'}
+    res_message = jsonify(res);
+    return res_message;
 
 @app.route("/imageTotext", methods=['post'])
 def imageToText():

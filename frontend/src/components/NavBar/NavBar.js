@@ -22,6 +22,8 @@ function NavBar() {
         // Check if the current URL is the home ("/") URL
         const isHome = window.location.pathname === '/';
         const isCaptionGen = window.location.pathname === '/CaptionGen';
+        const isSignUp = window.location.pathname === '/signup';
+        const isLogin = window.location.pathname === '/login';
         const isEditImage = window.location.pathname === '/EditImage';
         const isImageGen = window.location.pathname === '/ImageGen';
         const isAbout = window.location.pathname === '/About';
@@ -36,7 +38,7 @@ function NavBar() {
       
     
         // If it is the home page, add the 'fixed-navbar' class
-        if (isHome) {
+        if (isHome || isSignUp || isLogin) {
           document.getElementById('navbar').classList.add('fixed');
           document.getElementById('navbar-home').classList.add('md:text-blue-700');
           document.getElementById('navbar').classList.remove('border-b', 'border-gray-200', 'dark:border-gray-600');
@@ -46,7 +48,7 @@ function NavBar() {
           document.getElementById('navbar-home').classList.remove('md:text-blue-700');
           document.getElementById('navbar').classList.add('border-b', 'border-gray-200', 'dark:border-gray-600');
         }
-        if (isHome && (y<windowHeight)){
+        if ((isHome || isSignUp || isLogin) && (y<windowHeight)){
             document.getElementById('navbar').classList.add('bg-transperant');
             document.getElementById('navbar').classList.remove('bg-primary');
             console.log("showing transp")
@@ -102,10 +104,12 @@ function NavBar() {
                 <span className="self-center text-2xl font-semibold whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span>
             </a>
             <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+                <a href="/login">
                 <button type="button" className="px-4 py-2 rounded-l-lg text-white m-0 bg-transperant hover:bg-transperant border-solid border-2 border-transperant transition">
-                    Login</button>
+                    Login</button></a>
+                    <a href="/signup">
                 <button type="button" className="px-4 py-2 rounded-r-lg bg-gray-300 hover:bg-gray-300 border-solid border-2 border-transperant transition">
-                    SignUp</button>
+                    SignUp</button></a>
                 {/* <button data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
                     <span className="sr-only">Open main menu</span>
                     <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
