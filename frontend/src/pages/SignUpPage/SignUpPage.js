@@ -58,7 +58,7 @@ const SignUpPage = () => {
   return (
     <div className="relative">
         <video className="absolute inset-0 w-full h-full object-cover" autoPlay loop muted playsInline>
-        <source src="https://imagegenachieve.s3.amazonaws.com/output.mp4" type="video/mp4" />
+        <source src="https://imagegenachieve.s3.amazonaws.com/snow-dogs.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
         <section className="relative bg-transparent">
@@ -73,7 +73,7 @@ const SignUpPage = () => {
             </svg>
             <span className="self-center text-2xl font-semibold whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span>    
             </a>
-            <div className="opacity-85 w-full bg-black dark:bg-black rounded-lg dark:border-gray-700 shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
+            <div className="opacity-70 w-full bg-black dark:bg-black rounded-lg dark:border-gray-700 shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
                 <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                     <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                         Create and account

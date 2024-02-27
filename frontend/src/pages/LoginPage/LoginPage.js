@@ -58,7 +58,7 @@ const LoginPage = () => {
   return (
     <div className="relative">
         <video className="absolute inset-0 w-full h-full object-cover" autoPlay loop muted playsInline>
-        <source src="https://imagegenachieve.s3.amazonaws.com/output.mp4" type="video/mp4" />
+        <source src="https://imagegenachieve.s3.amazonaws.com/tokyo-walk.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
         <section className="relative bg-transparent">
