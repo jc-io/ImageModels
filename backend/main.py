@@ -46,7 +46,10 @@ import os
 client = MongoClient('mongodb+srv://imagegen:KF7pSnJVxSZIfyIU@imagegen.jz2d0rr.mongodb.net/?retryWrites=true&w=majority&appName=ImageGen')
 db = client['ImageGen']
 users_collection = db['users']
+users_archive_collection = db['users_archive']
+
 images_collection = db['images']
+
 
 
 UPLOAD_FOLDER = 'uploads'
@@ -88,7 +91,7 @@ def get_user_info():
   except jwt.InvalidTokenError:
     return jsonify({'error': 'Invalid token'}), 401
     
-@app.route("/getImages",  methods=['GET'])
+@app.route("/getImages",  methods=['GET','POST'])
 def getImages():
     limit = 100  # Set your desired limit here
     images_data = list(images_collection.find({}).limit(limit))  # Fetch documents with the specified limit
@@ -97,7 +100,7 @@ def getImages():
     for image in images_data:
         image['_id'] = str(image['_id'])
     
-    return jsonify({'message': 'Got Public Images', 'images': images_data})
+    return jsonify({'message': 'Got Public Images', 'images': images_data}),200
 
 @app.route('/signup', methods=['POST'])
 def signup():
