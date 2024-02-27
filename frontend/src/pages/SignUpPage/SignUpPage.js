@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
 
 import axios from 'axios';
 
@@ -19,10 +18,9 @@ const SignUpPage = () => {
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
-  let navigate = useNavigate(); 
-  const routeChange = () =>{ 
-    let path = `/Explore`; 
-    navigate(path);
+
+  function routeChange() {
+    window.location.href = '/Explore';
   }
 
   const handleSubmit = (e) => {
