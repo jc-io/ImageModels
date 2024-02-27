@@ -18,6 +18,7 @@ import NavBar from './components/NavBar/NavBar';
 // import HomePage from './pages/HomePage/HomePage';
 import NotFoundPage from './pages//NotFoundPage/NotFoundPage';
 import reportWebVitals from './reportWebVitals';
+import ExplorePage from './pages/ExplorePage/ExplorePage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -29,6 +30,7 @@ root.render(
         {/* <Route path="/home" exact element={<HomePage/>} /> */}
         <Route path="/About" element={<AboutPage/>} />
         {/* CaptionGen */}
+        <Route path="/Explore" element={<ExplorePage/>} />
         <Route path="/CaptionGen" element={<CaptionGenPage/>} />
         <Route path="/EditImage" element={<EditImagePage/>} />
         <Route path="/ImageGen" element={<ImageGenPage/>} />

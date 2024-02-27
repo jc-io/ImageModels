@@ -124,6 +124,9 @@ function NavBar() {
                     <a href="/" id="navbar-home" className="block py-2 px-3 text-white rounded md:bg-transparent md:p-0" aria-current="page">Home</a>
                 </li>
                 <li>
+                    <a href="/Explore" id="navbar-explore" className="block py-2 px-3 text-white rounded md:bg-transparent md:p-0">Explore</a>
+                </li>
+                <li>
                     <a href="/CaptionGen" id="navbar-caption" className="block py-2 px-3 text-white rounded md:bg-transparent md:p-0">CaptionGen</a>
                 </li>
                 <li>
