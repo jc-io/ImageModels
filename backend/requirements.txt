@@ -13,3 +13,4 @@ torch
 torchvision 
 torchaudio
 pymongo
+pyjwt
