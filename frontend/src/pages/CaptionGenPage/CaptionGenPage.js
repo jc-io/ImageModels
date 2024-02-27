@@ -70,7 +70,7 @@ function CaptionGenPage() {
         console.error('Caption or tone is not available');
       }
     };
-  
+
     return (
 
       <div className="m-0 bg-second dark:bg-second min-h-screen">

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
 
 
 const LoginPage = () => {
@@ -19,10 +18,9 @@ const LoginPage = () => {
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
-  let navigate = useNavigate(); 
-  const routeChange = () =>{ 
-    let path = `/`; 
-    navigate(path);
+
+  function routeChange() {
+    window.location.href = '/explore';
   }
 
   const handleSubmit = (e) => {
@@ -32,33 +30,40 @@ const LoginPage = () => {
     console.log('Username:', username);
     console.log('Email:', email);
     console.log('Password:', password);
-    const formData = new FormData();
-    formData.append(`username`, username);
-    formData.append(`password`, password);
-    formData.append(`email`, email);
-    axios.post('http://127.0.0.1:5000/login', formData)
+
+    const requestData = {
+        username: username,
+        password: password,
+        email: email
+    };
+
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, requestData)
         .then(response => {
-        return response.data;
+            return response.data;
         })
         .then(data => {
-        // setpageState('result');
-        // Check if data.images is an array before calling map
-        // setpageState('result');
-        // setResult(data); // Set the caption in the state
-        // console.log(data);
-        //check if login is sucessfully and get token
-        routeChange();
-        return data ? Promise.resolve(data) : Promise.resolve({});
-    }).catch(error => {
-        console.error('Error:', error);
-        return Promise.reject(error);
-    });
-  };
+            console.log(data);
+            // Check if login is successful and get token
+            if (data.token) {
+                // Storing token in localStorage
+                console.log('Token:', data.token);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', username);
+                routeChange();
+            }
+            return data ? Promise.resolve(data) : Promise.resolve({});
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            return Promise.reject(error);
+        });
+};
+
 
   return (
     <div className="relative">
         <video className="absolute inset-0 w-full h-full object-cover" autoPlay loop muted playsInline>
-        <source src="https://imagegenachieve.s3.amazonaws.com/output.mp4" type="video/mp4" />
+        <source src="https://imagegenachieve.s3.amazonaws.com/tokyo-walk.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
         <section className="relative bg-transparent">
@@ -100,7 +105,7 @@ const LoginPage = () => {
                         </div>
                         <button type="submit" className="w-full text-white bg-primary hover:bg-primary focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</button>
                         <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                            Don’t have an account yet? <a href="/expore" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
+                            Don’t have an account yet? <a href="/signup" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
                         </p>
                     </form>
                 </div>

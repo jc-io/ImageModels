@@ -1,8 +1,16 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import axios from 'axios';
+
 
 function NavBar() {
     const [y, setY] = useState(window.scrollY);
+    const token = localStorage.getItem('token');
+    const [user, setUser] = useState(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+    const toggleDropdown = () => {
+      setIsDropdownOpen(!isDropdownOpen);
+    };
     const handleNavigation = useCallback(
         e => {
           const window = e.currentTarget;
@@ -17,8 +25,42 @@ function NavBar() {
 
         }, [y]
       );
+      const handleSignOut = () => {
+        // Send sign out request to backend
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/signout`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            // Handle successful sign out
+            console.log('Sign out successful');
+            // Clear user and token from local storage
+            localStorage.removeItem('token');
+            setUser(null);
+        })
+        .catch(error => {
+            // Handle sign out error
+            console.error('Error signing out:', error);
+        });
+    };
 
     useEffect(() => {
+        if (token) {
+            // Fetch user information using the token
+            axios.get(`${process.env.REACT_APP_BACKEND_URL}/get_user_info`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                setUser(response.data);
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching user information:', error);
+            });
+        }
         // Check if the current URL is the home ("/") URL
         const isHome = window.location.pathname === '/';
         const isCaptionGen = window.location.pathname === '/CaptionGen';
@@ -89,7 +131,7 @@ function NavBar() {
             window.removeEventListener("scroll", handleNavigation);
         };
 
-      }, [handleNavigation]); // Empty dependency array to run the effect only once on mount
+      }, [handleNavigation, token]); // Empty dependency array to run the effect only once on mount
   
     return (
         <div >
@@ -104,19 +146,67 @@ function NavBar() {
                 <span className="self-center text-2xl font-semibold whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">ImageGen</span>
             </a>
             <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                <a href="/login">
-                <button type="button" className="px-4 py-2 rounded-l-lg text-white m-0 bg-transperant hover:bg-transperant border-solid border-2 border-transperant transition">
-                    Login</button></a>
-                    <a href="/signup">
-                <button type="button" className="px-4 py-2 rounded-r-lg bg-gray-300 hover:bg-gray-300 border-solid border-2 border-transperant transition">
-                    SignUp</button></a>
-                {/* <button data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
-                    <span className="sr-only">Open main menu</span>
-                    <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15"/>
-                    </svg>
-                </button> */}
+                {!token && (
+                            <>
+                                <a href="/login">
+                                    <button type="button" className="px-4 py-2 rounded-l-lg text-white m-0 bg-transperant hover:bg-transperant border-solid border-2 border-transperant transition">
+                                        Login
+                                    </button>
+                                </a>
+                                <a href="/signup">
+                                    <button type="button" className="px-4 py-2 rounded-r-lg bg-gray-300 hover:bg-gray-300 border-solid border-2 border-transperant transition">
+                                        SignUp
+                                    </button>
+                                </a>
+                            </>
+                )}
+{user && token && (
+                <div>
+                    {/* Button to toggle dropdown */}
+                    <button
+                        id="dropdownAvatarNameButton"
+                        className="flex items-center text-sm pe-1 font-medium text-gray-900 rounded-full hover:text-blue-600 dark:hover:text-blue-500 md:me-0 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white"
+                        type="button"
+                        onClick={toggleDropdown}
+                    >
+                        <span className="sr-only">Open user menu</span>
+                        <img className="w-8 h-8 me-2 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-3.jpg" alt="user photo" />
+                        {user.username}
+                        <svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                        </svg>
+                    </button>
+
+                    {/* Dropdown menu */}
+                    {isDropdownOpen && (
+                        <div className="z-10 absolute right-0 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                            <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                                <div className="font-medium">{user.username}</div>
+                                <div className="truncate">{user.email}</div>
+                            </div>
+                            <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                                <li>
+                                    <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Archive</a>
+                                </li>
+                                <li>
+                                    <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+                                </li>
+                            </ul>
+                            <div className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                                <a href="#" onClick={handleSignOut} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign Out</a>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
+
+
+
+
+                
             </div>
+            
 
             <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
                 <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 ">

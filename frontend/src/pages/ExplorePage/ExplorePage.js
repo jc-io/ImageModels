@@ -8,7 +8,7 @@ const ExplorePage = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/getImages');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`);
         setImages(response.data.images); // Assuming the API returns an array of images
       } catch (error) {
         console.error('Error fetching images:', error);
@@ -16,54 +16,63 @@ const ExplorePage = () => {
     };
     fetchImages();
   }, []);
+
+  // Function to handle image click
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+  };
+
   // Function to render each image card
   const renderImageCard = (image, setSelectedImage) => (
-    <a key={image.id} href="#" className="group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80" onClick={(e) => { e.preventDefault(); setSelectedImage(image); }}>
-      <img src={image.src} loading="lazy" alt={image.title} className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
+    <a key={image.src} href="#" className="group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80" onClick={(e) => { e.preventDefault(); setSelectedImage(image); }}>
+      <img src={image.src} loading="lazy" alt={image.description} className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
-      <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">{image.title}</span>
+      <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">{image.username}</span>
     </a>
   );
   
 
   // Modal component for displaying the selected image
+  // Idea: Have the white outer layer/box be fixed and big and the size fills up however much it wants/upper bound
   const ImageModal = ({ image, onClose }) => (
-    image ? (
+  image ? (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1000,
+      }}
+      onClick={onClose}
+    >
       <div
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
+          padding: '20px',
+          backgroundColor: '#fff',
+          borderRadius: '8px',
+          display: 'inline-block',
+          minHeight: '300px',
+          margin: 'auto',
+          position: 'relative',
+          maxWidth: '80%',
+          textAlign: 'center',
+          color: 'black'
         }}
-        onClick={onClose}
+        onClick={e => e.stopPropagation()} // Prevent click from closing modal
       >
-        <div
-          style={{
-            padding: '20px',
-            backgroundColor: '#fff',
-            borderRadius: '8px',
-            display: 'inline-block',
-            minHeight: '300px',
-            margin: 'auto',
-            position: 'relative',
-            maxWidth: '80%',
-            textAlign: 'center',
-            color: 'black'
-          }}
-          onClick={e => e.stopPropagation()} // Prevent click from closing modal
-        >
-          <img src={image.src} alt={image.title} style={{ maxWidth: '100%', maxHeight: '80vh' }} />
-          <h2>{image.title}</h2>
-          <p>{image.description}</p>
-        </div>
+        <img src={image.src} alt={image.username} style={{ maxWidth: '100%', maxHeight: '80vh' }} />
+        <h2>{image.username}</h2>
+        <p>{image.model}</p>
+        <p>{image.prompt}</p>
+        <p>{image.description}</p>
       </div>
+    </div>
     ) : null
   );
 

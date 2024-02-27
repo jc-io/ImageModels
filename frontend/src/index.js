@@ -8,6 +8,7 @@ import UploadPage from './pages/UploadPage/UploadPage';
 import HomePage from './pages/HomePage/HomePage';
 import EditImagePage from './pages/EditImagePage/EditImagePage';
 import ImageGenPage from './pages/ImageGenPage/ImageGenPage';
+import TermsPage from './pages/TermsPage/TermsPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import CaptionGenPage from './pages/CaptionGenPage/CaptionGenPage';
 import SignUpPage from './pages/SignUpPage/SignUpPage';
@@ -36,6 +37,7 @@ root.render(
         <Route path="/ImageGen" element={<ImageGenPage/>} />
         <Route path="/SignUp" element={<SignUpPage/>} />
         <Route path="/Login" element={<LoginPage/>} />
+        <Route path="/TermsandConditions" element={<TermsPage/>} />
         <Route path="*" exact={true} element={<NotFoundPage/>} />
       </Routes>
     </Router>
