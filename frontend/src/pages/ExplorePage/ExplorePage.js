@@ -91,9 +91,11 @@ const ExplorePage = () => {
           </a>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
-          {images.map(image => renderImageCard(image, setSelectedImage))}
-        </div>
+        {images.length > 0 && (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
+            {images.map(image => renderImageCard(image, setSelectedImage))}
+          </div>
+        )}
       </div>
       <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />
     </div>
