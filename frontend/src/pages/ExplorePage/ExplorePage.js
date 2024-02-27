@@ -9,7 +9,7 @@ const ExplorePage = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await axios.get(`https://seriously-witty-bengal.ngrok-free.app/getImages`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`);
         if (response.data.images) {
           setImages(response.data.images); // Assuming the API returns an array of images
   
