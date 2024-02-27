@@ -27,14 +27,14 @@ function NavBar() {
         const isAbout = window.location.pathname === '/About';
         const windowHeight = window.innerHeight || document.documentElement.clientHeight;
 
-  
-   
+
+
         setY(window.scrollY);
         window.addEventListener("scroll", handleNavigation);
-        
-        
-      
-    
+
+
+
+
         // If it is the home page, add the 'fixed-navbar' class
         if (isHome) {
           document.getElementById('navbar').classList.add('fixed');
@@ -61,16 +61,16 @@ function NavBar() {
         }else{
             document.getElementById('navbar-caption').classList.remove('md:text-blue-700');
         }
-            
+
         if (isEditImage){//md:text-blue-700
             document.getElementById('navbar-editImage').classList.add('md:text-blue-700');
         }else{
-            document.getElementById('navbar-editImage').classList.remove('md:text-blue-700');  
+            document.getElementById('navbar-editImage').classList.remove('md:text-blue-700');
         }
         if (isImageGen){//md:text-blue-700
             document.getElementById('navbar-imageGen').classList.add('md:text-blue-700');
         }else{
-            document.getElementById('navbar-imageGen').classList.remove('md:text-blue-700');  
+            document.getElementById('navbar-imageGen').classList.remove('md:text-blue-700');
         }
         if (isAbout){//md:text-blue-700
             document.getElementById('navbar-About').classList.add('md:text-blue-700');
@@ -78,7 +78,7 @@ function NavBar() {
 
 
         }else{
-            document.getElementById('navbar-About').classList.remove('md:text-blue-700');  
+            document.getElementById('navbar-About').classList.remove('md:text-blue-700');
             // document.getElementById('navbar').classList.remove('hidden');
 
         }
@@ -88,7 +88,7 @@ function NavBar() {
         };
 
       }, [handleNavigation]); // Empty dependency array to run the effect only once on mount
-  
+
     return (
         <div >
             <nav id="navbar" className="drak:bg-primary w-full z-20 top-0 start-0">
