@@ -12,3 +12,4 @@ diffusers @ git+ssh://git@github.com/huggingface/diffusers
 torch 
 torchvision 
 torchaudio
+pymongo
