@@ -13,10 +13,6 @@ from captionGen import captionGen
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
-from diffusers import StableDiffusionImg2ImgPipeline #latest version tranformers (clips)
-from diffusers import AutoPipelineForImage2Image
-from diffusers import StableDiffusionLatentUpscalePipeline
-
 import os
 
 # task_queue = Queue()
@@ -144,22 +140,30 @@ def edit_image():
           pathurl = os.path.join(app.config['UPLOAD_FOLDER'],file.filename);
 
         prompt = request.form.get('prompt');
+        """
+        # extra parameters
+        strengthImg = request.form.get('strength');
+        guidance_scaleImg = request.form.get('guidance_scale');
+        stepsImg = request.form.get('steps');
+        negativeImg = request.form.get('negative');"""
         print("Recieved prompt: " + prompt)
+        strengthImg = 0.8
+        guidance_scaleImg = 7.5
+        stepsImg =100
+        negativeImg =""
         """
         basic: StableDiffusionImg2ImgPipeline "runwayml/stable-diffusion-v1-5"
         better: AutoPipelineForImage2Image "stabilityai/stable-diffusion-xl-refiner-1.0"
         """
-        #editImageGenerate = ImageEdit(StableDiffusionLatentUpscalePipeline,"stabilityai/sd-x2-latent-upscaler"); does not work like this
-        #editImageGenerate = ImageEdit(AutoPipelineForImage2Image,"runwayml/stable-diffusion-v1-5");
-        editImageGenerate = ImageEdit(AutoPipelineForImage2Image,"stabilityai/stable-diffusion-xl-refiner-1.0");
-        # editImageGenerate = ImageEdit();
+        editImageGenerate = ImageEdit();
         # def generate(self, img, prompt="Didn't work sorry"):
 
         # image = generator.generate(prompt);
+
         images = []
         for i in range(1):
-          #images.append({'image_data': editImageGenerate.generate(pathurl, prompt, strengthImg=0.6)});
-          images.append({'image_data': editImageGenerate.generate(pathurl, prompt)});
+          images.append({'image_data': editImageGenerate.generate(pathurl, prompt, strengthImg, guidance_scaleImg, stepsImg, negativeImg="", num_images=1)});
+          #images.append({'image_data': editImageGenerate.generateDetailed(pathurl, prompt, strengthImg, guidance_scaleImg, stepsImg, negativeImg="", num_images=1)});
 
         return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images});
 
