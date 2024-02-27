@@ -201,6 +201,7 @@ def generateLLM():
           captionGenerated = request.form.get('captionGenerated');
           tone = request.form.get('tone');
           print("Generated from BLIP and being passed to LLM: " + str(captionGenerated));
+          print("With Tone:" + str(tone));
         except Exception as e:
           print("Unable to determine caption");
         
