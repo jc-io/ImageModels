@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 // Placeholder data to simulate fetched images
 const placeholderImages = [
@@ -9,6 +10,19 @@ const placeholderImages = [
 ];
 
 const ExplorePage = () => {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/getImages');
+        setImages(response.data.images); // Assuming the API returns an array of images
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      }
+    };
+    fetchImages();
+  }, []);
   // Function to render each image card
   const renderImageCard = (image) => (
     <div key={image.id} style={{ border: '1px solid #ddd', borderRadius: '4px', padding: '5px', overflow: 'hidden' }}>
@@ -22,7 +36,7 @@ const ExplorePage = () => {
 
   return (
     <div className="explore-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem', padding: '1rem' }}>
-      {placeholderImages.map(renderImageCard)}
+      {images.map(renderImageCard)}
     </div>
   );
 };
