@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import axios from 'axios';
 
 function EditImagePage() {
+    const [prompt, setPrompt] = useState('');
     const [selectedFiles, setSelectedFile] = useState([]);
-    const [caption, setCaption] = useState('');
     const [pageState, setpageState] = useState('main')
+    const [images, setImages] = useState([]);
 
 
     const handleDragOver = (event) => {
@@ -44,32 +46,35 @@ function EditImagePage() {
           selectedFiles.forEach((file, index) => {
             formData.append(`file`, file);
           });
-          formData.append('caption',caption);
+          formData.append('prompt',prompt);
     
           setpageState('loading');
 
           // Add your API call or upload logic here
           // For example using fetch or Axios
-          fetch('http://127.0.0.1:5000/upload', {
-            method: 'POST',
-            body: formData
-          }).then((res)=>{
-            return res.text();
-        })
-        .then((data)=>{
-            console.log(data);
+          axios.post('http://127.0.0.1:5000/editImage', formData)
+          .then(response => {
+            return response.data;
+          })
+          .then(data => {
             setpageState('result');
-            return new Promise((resolve, reject)=>{
-                resolve(data ? JSON.parse(data) : {})
-            })
-        })
+            // Check if data.images is an array before calling map
+            const imageUrls = Array.isArray(data.images) ? data.images.map(image => image.image_data) : [];
+            setImages(imageUrls);
+            setPrompt(data.prompt)
+            // console.log(data);
+            return data ? Promise.resolve(data) : Promise.resolve({});
+        }).catch(error => {
+            console.error('Error:', error);
+            return Promise.reject(error);
+          });
 
 
         }
       };
   
     return (
-      <div className="bg-indigo-900 min-h-screen from-gray-100 to-gray-300">
+      <div className="bg-second min-h-screen from-gray-100 to-gray-300">
 
         <div className="scrollable-container">
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
@@ -138,10 +143,10 @@ function EditImagePage() {
           <br/>
 
             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            GenCaption:</label>
-            <input htmlFor="Caption" type="text" id="default-input" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={(e) => setCaption(e.target.value)}/>
+            Edit Prompt:</label>
+            <input htmlFor="Caption" type="text" id="default-input" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={(e) => setPrompt(e.target.value)}/>
         
-
+                  <br/>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
             Upload 
             </button>
@@ -166,26 +171,37 @@ function EditImagePage() {
         
       )}
 
-          {pageState==="result" && (
-            <div>
+      {pageState==="result" && (
+          <div>
 
 
-          <div className="caption-display text-center">
-              
-              <h3 className="text-white font-bold">Prompt Inputed:</h3>
-                <div className='text-white font-extrabold font-size: 20px justify-center'>{caption}</div>
-                <br></br>
-                <button class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
+        <div className="image-display text-center">
+            
+            <h3 className="text-white font-bold">Generated Image[s]:</h3>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {images.map((imageUrl, index) => (
+                  <div>
+                    <img className="h-auto max-w-full rounded-lg" key={index} alt={`Image ${index + 1}`} src={imageUrl} />
+                  </div>
+                ))
+                }
+            </div>  
+            <h3 className="text-white font-bold">Prompt: {prompt}</h3>
 
 
-                    <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
-                    </svg>
-                    <span> Back</span>
-                </button>
-          </div>
-          </div>
-          )}
+              <br></br>
+              <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
+
+
+                  <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+                  </svg>
+                  <span> Back</span>
+              </button>
+        </div>
+        </div>
+        )}
       </div>
       
       </div>

@@ -1,12 +1,19 @@
 import { useState } from 'react';
+import axios from 'axios';
+
 
 function CaptionGenPage() {
     const [selectedFiles, setSelectedFile] = useState([]);
     //State var to store caption
-    const [caption, setCaption] = useState('')
+    const [caption, setCaption] = useState('COMPUTING')
+    const [result, setResult] = useState('')
     const [pageState, setpageState] = useState('main')
+    const [selectedTone, setSelectedTone] = useState('');
   
-
+    // Handler function to update the selected tone when the user makes a selection
+    const handleToneChange = (event) => {
+      setSelectedTone(event.target.value);
+    };
     const handleDragOver = (event) => {
       event.preventDefault();
     };
@@ -46,26 +53,46 @@ function CaptionGenPage() {
           selectedFiles.forEach((file, index) => {
             formData.append(`file`, file);
           });
+          
     
           setpageState('loading');
           // Add your API call or upload logic here
           // For example using fetch or Axios
-          fetch('http://127.0.0.1:5000/upload', {
-            method: 'POST',
-            body: formData
-          }).then((res)=>{
-            // return res.text();
-            return res.json();
-        }).then((data) => {
-          console.log(data);
-          if (data.caption) {
-              setpageState('result');
-              setCaption(data.caption); // Set the caption in the state
-              
-          }
-      }).catch((error) => {
-          console.error('Error:', error);
-      });
+
+          axios.post('http://127.0.0.1:5000/imageTotext', formData)
+          .then(response => {
+            return response.data;
+          })
+          .then(data => {
+            // setpageState('result');
+            // Check if data.images is an array before calling map
+            setCaption(data.caption); // Set the caption in the state
+            const formDataTwo = new FormData();
+            formDataTwo.append(`captionGenerated`, caption);
+            formDataTwo.append(`tone`, selectedTone);
+            axios.post('http://127.0.0.1:5000/generateLLM', formDataTwo)
+                .then(response => {
+                  return response.data;
+                })
+                .then(data => {
+                  // setpageState('result');
+                  // Check if data.images is an array before calling map
+                  setpageState('result');
+                  setResult(data.result); // Set the caption in the state
+                  // console.log(data);
+                  return data ? Promise.resolve(data) : Promise.resolve({});
+              }).catch(error => {
+                  console.error('Error:', error);
+                  return Promise.reject(error);
+            });
+            // console.log(data);
+            return data ? Promise.resolve(data) : Promise.resolve({});
+        }).catch(error => {
+            console.error('Error:', error);
+            return Promise.reject(error);
+          });
+
+
         // .then((data)=>{
         //     console.log(data);
         //     return new Promise((resolve, reject)=>{
@@ -78,7 +105,7 @@ function CaptionGenPage() {
       };
   
     return (
-      <div className="m-0 bg-indigo-900 min-h-screen from-gray-100 to-gray-300">
+      <div className="m-0 bg-second min-h-screen from-gray-100 to-gray-300">
 
 
         <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
@@ -142,10 +169,26 @@ function CaptionGenPage() {
                   </ul>
                 </div>
               )) }
+              
+            {/* <p className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">Tone:</p> */}
+            <form className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">
+                <label htmlFor="large" className="block mb-2 text-base font-medium text-gray-900 dark:text-white">Select a Tone</label>
+                <select
+                  id="large"
+                  className="block w-full px-4 py-3 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  value={selectedTone}  // Bind the value of the select element to state
+                  onChange={handleToneChange} // Call the handler function when the value changes
+                >
+                  <option value="">Choose a Tone</option>
+                  <option value="Funny">Funny</option>
+                  <option value="Witty">Witty</option>
+                  <option value="Mysterious">Mysterious</option>
+                  <option value="Satire">Satire</option>
+                </select>
+              </form>
 
-    {/*Caption Display*/}
-            <br/>
-
+            {/* <br/> */}
+            {/* Radio active */}
 
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
             Upload 
@@ -155,9 +198,16 @@ function CaptionGenPage() {
       )}
       {pageState==="loading" && (
         <div>
-
+        
 
         <div className="text-center">
+
+            <div className='text-white font-extrabold font-size: 20px justify-center'>
+            <h3 className="text-white font-bold">Description of Image:</h3>
+                {caption}
+            </div>
+            <br/><br/>
+
             <div role="status">
                   <svg aria-hidden="true" class="inline w-12 h-12 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -177,9 +227,10 @@ function CaptionGenPage() {
 
 
     <div className="caption-display text-center">
-        
         <h3 className="text-white font-bold">Generated Caption:</h3>
-          <div className='text-white font-extrabold font-size: 20px justify-center'>{caption}</div>
+          <div className='text-white font-extrabold font-size: 20px justify-center'>{result}</div>
+     
+
           <br></br>
           <button class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
 
@@ -192,6 +243,9 @@ function CaptionGenPage() {
     </div>
     </div>
     )}
+     {/* <a className="share_linkedin social" title="linkedin" target="popup" onclick="window.open('http://www.linkedin.com/shareArticle?mini=true&url={{content.absolute_url}}','LinkedIn Share','width=600,height=600')"><span class="icon-circle fa-brands fa-linkedin-in">
+      asdasdas</span></a>
+ <a class="share_facebook social" title="facebook" target="popup" onclick="window.open('http://www.facebook.com/sharer/sharer.php?u={{content.absolute_url}}','Facebook Share','width=600,height=600')"><span class="icon-circle fab fa-facebook"></span></a> */}
 
       </div>
     );
