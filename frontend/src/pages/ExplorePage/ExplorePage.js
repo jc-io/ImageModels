@@ -4,18 +4,26 @@ import axios from 'axios';
 const ExplorePage = () => {
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null); // Add selectedImage state
+  const [mapTriggered, setMapTriggered] = useState(false); // State to track if map is triggered
 
   useEffect(() => {
     const fetchImages = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`);
         setImages(response.data.images); // Assuming the API returns an array of images
+
+        // Trigger the map when images are fetched and no images were present previously
+        if (!mapTriggered && response.data.images.length === 0) {
+          triggerMap(); // You need to define this function to trigger the map
+          setMapTriggered(true); // Set mapTriggered to true to avoid multiple triggers
+        }
       } catch (error) {
         console.error('Error fetching images:', error);
       }
     };
+
     fetchImages();
-  }, []);
+  }, []); // Empty dependency array to execute only once on component mount
 
   // Function to handle image click
   const handleImageClick = (image) => {
@@ -23,56 +31,60 @@ const ExplorePage = () => {
   };
 
   // Function to render each image card
-  const renderImageCard = (image, setSelectedImage) => (
-    <a key={image.src} href="#" className="group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80" onClick={(e) => { e.preventDefault(); setSelectedImage(image); }}>
+  const renderImageCard = (image) => (
+    <a key={image.src} href="#" className="group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80" onClick={(e) => { e.preventDefault(); handleImageClick(image); }}>
       <img src={image.src} loading="lazy" alt={image.description} className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
       <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">{image.username}</span>
     </a>
   );
-  
+
+  // Function to trigger the map
+  const triggerMap = () => {
+    // Implement your logic to trigger the map here
+    console.log('Map triggered');
+  };
 
   // Modal component for displaying the selected image
-  // Idea: Have the white outer layer/box be fixed and big and the size fills up however much it wants/upper bound
   const ImageModal = ({ image, onClose }) => (
-  image ? (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-      }}
-      onClick={onClose}
-    >
+    image ? (
       <div
         style={{
-          padding: '20px',
-          backgroundColor: '#fff',
-          borderRadius: '8px',
-          display: 'inline-block',
-          minHeight: '300px',
-          margin: 'auto',
-          position: 'relative',
-          maxWidth: '80%',
-          textAlign: 'center',
-          color: 'black'
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
         }}
-        onClick={e => e.stopPropagation()} // Prevent click from closing modal
+        onClick={onClose}
       >
-        <img src={image.src} alt={image.username} style={{ maxWidth: '100%', maxHeight: '80vh' }} />
-        <h2>{image.username}</h2>
-        <p>{image.model}</p>
-        <p>{image.prompt}</p>
-        <p>{image.description}</p>
+        <div
+          style={{
+            padding: '20px',
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            display: 'inline-block',
+            minHeight: '300px',
+            margin: 'auto',
+            position: 'relative',
+            maxWidth: '80%',
+            textAlign: 'center',
+            color: 'black'
+          }}
+          onClick={e => e.stopPropagation()} // Prevent click from closing modal
+        >
+          <img src={image.src} alt={image.username} style={{ maxWidth: '100%', maxHeight: '80vh' }} />
+          <h2>{image.username}</h2>
+          <p>{image.model}</p>
+          <p>{image.prompt}</p>
+          <p>{image.description}</p>
+        </div>
       </div>
-    </div>
     ) : null
   );
 
@@ -91,9 +103,13 @@ const ExplorePage = () => {
           </a>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
-          {images?.map(image => renderImageCard(image, setSelectedImage))}
-        </div>
+
+        {images.length > 0 && (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
+            {images.map(image => renderImageCard(image))}
+          </div>
+        )}
+
       </div>
       <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />
     </div>

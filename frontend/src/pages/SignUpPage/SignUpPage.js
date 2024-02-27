@@ -44,7 +44,13 @@ const SignUpPage = () => {
         // setpageState('result');
         // setResult(data); // Set the caption in the state
         // console.log(data);
-        routeChange();
+        if (data.token) {
+            // Storing token in localStorage
+            console.log('Token:', data.token);
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('username', username);
+            routeChange();
+        }
 
         return data ? Promise.resolve(data) : Promise.resolve({});
     }).catch(error => {
