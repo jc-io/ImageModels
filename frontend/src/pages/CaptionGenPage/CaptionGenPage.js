@@ -29,133 +29,50 @@ function CaptionGenPage() {
         setSelectedFile(Array.from(files));
     };
     const handleRemoveFile =(index)=> {
-      // console.log("remove: " + index);
-      // console.log(selectedFiles);
-      // setSelectedFile(selectedFiles.splice(selectedFiles.indexOf(index)));
-      // console.log(selectedFiles);
+
       console.log(selectedFiles);
       setSelectedFile((prevFiles) => {
         const updatedFiles = [...prevFiles];
         updatedFiles.splice(index, 1);
         return updatedFiles;
       });
-      //console.log(selectedFiles);
+
       setCaption('');
       
   
     };
-    // const handleUpload = () => {
-    //     // You can implement your file upload logic here
-    //     if (selectedFiles.length > 0) {
-    //       // Example: send the file to a server
-    //       const formData = new FormData();
-    //       // Append each file to the FormData
-    //       selectedFiles.forEach((file, index) => {
-    //         formData.append(`file`, file);
-    //       });
-          
-    
-    //       setpageState('blip_phase');
-    //       // Add your API call or upload logic here
-    //       // For example using fetch or Axios
-
-    //       axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
-    //       .then(response => {
-    //         return response.data;
-    //       })
-    //       .then(data => {
-    //         // setpageState('result');
-    //         // Check if data.images is an array before calling map
-    //         setCaption(data.caption); // Set the caption in the state
-    //         const formDataTwo = new FormData();
-    //         formDataTwo.append(`captionGenerated`, data.caption);
-    //         formDataTwo.append(`tone`, selectedTone);
-    //         axios.post(`${process.env.REACT_APP_BACKEND_URL}/generateLLM`, formDataTwo)
-    //             .then(response => {
-    //               return response.data;
-    //             })
-    //             .then(data => {
-    //               // setpageState('result');
-    //               // Check if data.images is an array before calling map
-    //               setpageState('result');
-    //               setResult(data.result); // Set the caption in the state
-    //               // console.log(data);
-    //               return data ? Promise.resolve(data) : Promise.resolve({});
-    //           }).catch(error => {
-    //               console.error('Error:', error);
-    //               return Promise.reject(error);
-    //         });
-    //         // console.log(data);
-    //         return data ? Promise.resolve(data) : Promise.resolve({});
-    //     }).catch(error => {
-    //         console.error('Error:', error);
-    //         return Promise.reject(error);
-    //       });
-    //     }
-    //   };
 
     const handleUpload = () => {
-      // Check if there are any selected files before uploading
       if (selectedFiles.length > 0) {
-        // Example: send the file to a server using FormData
         const formData = new FormData();
-        // Append each file to the FormData
         selectedFiles.forEach((file, index) => {
           formData.append(`file`, file);
         });
-  
-        // // Change the page state to indicate the upload phase
-        setpageState('blip_phase'); //Left here for testing, wuill move to bottom later
-        
-        // Post the files to the backend for image to text conversion
-        axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
-        .then(response => {
-          return response.data;
-        })
-        .then(data => {
-
-
-          // setpageState('blip_phase');
-          // Set the caption with the data received from the backend
-          setCaption(data.caption);
-          
-
-          // Prepare the second FormData for the next post request
-          const formDataTwo = new FormData();
-          formDataTwo.append(`captionGenerated`, data.caption);
-          formDataTwo.append(`tone`, selectedTone);
-          
-          // Post the caption and tone to the backend for further processing
-          axios.post(`${process.env.REACT_APP_BACKEND_URL}/generateLLM`, formDataTwo)
-              .then(response => {
-                return response.data;
-              })
-              .then(data => {
-                // Change the page state to result after receiving the response
-                setpageState('result');
-                // Set the result in the state with the data received
-                setResult(data.result);
-                
-                return data ? Promise.resolve(data) : Promise.resolve({});
-            }).catch(error => {
-                // Log and handle any errors during the second post request
-                console.error('Error:', error);
-                return Promise.reject(error);
-          });
-          return data ? Promise.resolve(data) : Promise.resolve({});
-      }).catch(error => {
-          // Log and handle any errors during the first post request
-          console.error('Error:', error);
-          return Promise.reject(error);
-        });
+        setpageState('blip_phase');
       }
     };
   
+    const handleMakeIt = () => {
+      if (caption && selectedTone) {
+        const formDataTwo = new FormData();
+        formDataTwo.append(`captionGenerated`, caption);
+        formDataTwo.append(`tone`, selectedTone);
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/generateLLM`, formDataTwo)
+          .then(response => response.data)
+          .then(data => {
+            setpageState('result');
+            setResult(data.result);
+          })
+          .catch(error => console.error('Error:', error));
+      } else {
+        console.error('Caption or tone is not available');
+      }
+    };
   
     return (
 
       <div className="m-0 bg-second min-h-screen from-gray-100 to-gray-300"
-      style={{ backgroundImage: "url(https://photopedia.in/wp-content/uploads/2017/12/wide-angle.jpg)", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      style={{ backgroundImage: "url(https://wallpapers.com/images/featured/white-texture-background-kolol10tvs4xlfhp.jpg)", backgroundSize: 'cover', backgroundPosition: 'center' }}>
 
         <div className="container py-3 px-10 mx-0 min-w-full flex flex-col items-center">
             <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
@@ -286,7 +203,10 @@ function CaptionGenPage() {
                 Back
               </button>
 
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <button 
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={handleMakeIt}
+                >
                 Make it
               </button>
 
