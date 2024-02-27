@@ -48,7 +48,7 @@ function Upload() {
 
           // Add your API call or upload logic here
           // For example using fetch or Axios
-          fetch('https://df944eeb313ff8.lhr.life//upload', {
+          fetch('https://df944eeb313ff8.lhr.life/upload', {
             method: 'POST',
             body: formData
           }).then((res)=>{
