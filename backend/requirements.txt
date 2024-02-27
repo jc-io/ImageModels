@@ -6,6 +6,10 @@ accelerate
 timm==0.4.12 
 pycocoevalcap
 fairscale==0.4.4
-torch
 accelerate
 diffusers @ git+ssh://git@github.com/huggingface/diffusers
+--extra-index-url https://download.pytorch.org/whl/cu118
+torch 
+torchvision 
+torchaudio
+pymongo
