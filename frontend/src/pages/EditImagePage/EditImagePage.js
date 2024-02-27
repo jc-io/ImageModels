@@ -52,7 +52,7 @@ function EditImagePage() {
 
           // Add your API call or upload logic here
           // For example using fetch or Axios
-          axios.post('http://127.0.0.1:5000/editImage', formData)
+          axios.post('https://df944eeb313ff8.lhr.life/editImage', formData)
           .then(response => {
             return response.data;
           })

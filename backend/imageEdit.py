@@ -42,7 +42,7 @@ class ImageEdit:
     def generateDetailed(self, img, prompt="Didn't work sorry", strengthImg=0.8, guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
         #self.pipe = StableDiffusionImg2ImgPipeline.from_pretrained(self.model_id_base, torch_dtype=torch.float16, safety_checker=None)
         model_input_img = self.preprocess(img)
-        self.pipe = AutoPipelineForImage2Image(self.model_id_detailed, torch_dtype=torch.float16, variant="fp16",use_safetensors=True)
+        self.pipe = AutoPipelineForImage2Image.from_pretrained(self.model_id_detailed, torch_dtype=torch.float16, variant="fp16",use_safetensors=True)
         self.pipe = self.pipe.to("cuda")
         self.pipe.enable_model_cpu_offload()
         #self.pipe.enable_xformers_memory_efficient_attention()

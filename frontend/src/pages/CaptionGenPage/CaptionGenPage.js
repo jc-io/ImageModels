@@ -59,7 +59,7 @@ function CaptionGenPage() {
           // Add your API call or upload logic here
           // For example using fetch or Axios
 
-          axios.post('http://127.0.0.1:5000/imageTotext', formData)
+          axios.post('https://df944eeb313ff8.lhr.life/imageTotext', formData)
           .then(response => {
             return response.data;
           })

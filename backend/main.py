@@ -163,7 +163,7 @@ def edit_image():
         images = []
         for i in range(1):
           images.append({'image_data': editImageGenerate.generate(pathurl, prompt, strengthImg, guidance_scaleImg, stepsImg, negativeImg="", num_images=1)});
-          #images.append({'image_data': editImageGenerate.generateDetailed(pathurl, prompt, strengthImg, guidance_scaleImg, stepsImg, negativeImg="", num_images=1)});
+          images.append({'image_data': editImageGenerate.generateDetailed(pathurl, prompt, strengthImg, guidance_scaleImg, stepsImg, negativeImg="", num_images=1)});
 
         return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images});
 
