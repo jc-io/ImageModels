@@ -6,7 +6,7 @@ from imageGen import ImageGen
 from imageEdit import ImageEdit
 from queue import Queue
 import threading
-
+from bson import json_util
 import base64
 from captionGen import captionGen
 # from PIL import Image #uncomment if u want to see images pop up
@@ -66,11 +66,12 @@ def hello_world():
 def getImages():
     limit = 100  # Set your desired limit here
     images_data = list(images_collection.find({}).limit(limit))  # Fetch documents with the specified limit
-    images = []  # Initialize an empty list to store image data
+    
+    # Convert ObjectId to strings for each document
     for image in images_data:
-        # Assuming each document contains a field called 'url' that holds the image URL
-        images.append(image)
-    return jsonify({'message': 'Got Public Images','images':images}); #return the list of images
+        image['_id'] = str(image['_id'])
+    
+    return jsonify({'message': 'Got Public Images', 'images': images_data})
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
