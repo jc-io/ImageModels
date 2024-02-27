@@ -99,26 +99,33 @@ def getImages():
     
     return jsonify({'message': 'Got Public Images', 'images': images_data})
 
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/signup', methods=['POST'])
 def signup():
-    print("signup")
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
         hashed_password = generate_password_hash(password)
+        
         if users_collection.find_one({'username': username}):
             res = {'response': 'Username already exists!'}
-            res_message = jsonify(res);
-            return res_message;
+            return jsonify(res), 400
+
         else:
             users_collection.insert_one({'username': username, 'password': hashed_password, 'email': email})
-            res = {'response': 'Signed Up Successful'}
-            res_message = jsonify(res);
-            return res_message;
+            # Set the user's username in the session
+            # session['username'] = username
+            payload = {
+                'username': username,
+                # Other data if needed (user_id, roles, etc.)
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30) # Expiration
+            }
+            token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+            res = {'response': 'Signed Up Successful','token': token}
+            return jsonify(res), 200
+    
     res = {'response': 'Wrong method'}
-    res_message = jsonify(res);
-    return res_message;
+    return jsonify(res), 405
 
 @app.route('/signout', methods=['POST'])
 def signout():
