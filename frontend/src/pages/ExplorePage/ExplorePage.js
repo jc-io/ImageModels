@@ -13,6 +13,7 @@ const ExplorePage = () => {
           `${process.env.REACT_APP_BACKEND_URL}/getImages`,
           { crossorigin: true }
         ).then(response => {
+          console.log(response.data);
           const imagesGrabbed = Array.isArray(response.data.images) ? response.data.images : null;
           setImages(imagesGrabbed);
 
