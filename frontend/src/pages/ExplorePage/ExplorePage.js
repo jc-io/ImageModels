@@ -2,23 +2,24 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const ExplorePage = () => {
-  const [images, setImages] = useState(null); // Set initial state to null
+  const [images, setImages] = useState(null); // Initialize images as null
   const [selectedImage, setSelectedImage] = useState(null);
   const [mapTriggered, setMapTriggered] = useState(false);
 
   useEffect(() => {
-    if (images === null) { // Check if images is null
-      // Fetch user information using the token
-      axios.get(`${process.env.REACT_APP_BACKEND_URL}/get_user_info`)
-        .then(response => {
-          setImages(response.data.images);
-          console.log(response.data);
-        })
-        .catch(error => {
-          console.error('Error fetching user information:', error);
-        });
+    const fetchImages = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/get_user_info`);
+        setImages(response.data.images);
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      }
+    };
+
+    if (images === null) {
+      fetchImages();
     }
-  }, [images]);
+  }, [images]); // Run the effect whenever images changes
 
   // Function to handle image click
   const handleImageClick = (image) => {
@@ -92,7 +93,7 @@ const ExplorePage = () => {
           </a>
         </div>
 
-        {images !== null && images.length > 0 && ( // Check if images is not null
+        {images && images.length > 0 && ( // Check if images is not null
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
             {images.map(image => renderImageCard(image))}
           </div>
