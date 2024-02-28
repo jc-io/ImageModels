@@ -93,8 +93,9 @@ def get_user_info():
     
 @app.route("/getImages",  methods=['GET','POST'])
 def getImages():
-    
-    print("Hit")
+    token = request.headers.get('Authorization')
+    if not token:
+      return jsonify({'error': 'Unauthorized No Token'}), 401
     limit = 100  # Set your desired limit here
     images_data = list(images_collection.find({}).limit(limit))  # Fetch documents with the specified limit
       
