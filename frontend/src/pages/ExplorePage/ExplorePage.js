@@ -10,7 +10,7 @@ const ExplorePage = () => {
   useEffect(() => {
       if (images.length == 0) {
           // Fetch user information using the token
-          axios.get(`${process.env.REACT_APP_BACKEND_URL}/get_user_info`)
+          axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`)
           .then(response => {
             setImages(response.data.images);
             console.log(response.data);
