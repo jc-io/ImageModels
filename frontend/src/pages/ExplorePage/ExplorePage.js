@@ -8,7 +8,7 @@ const ExplorePage = () => {
 
 
   useEffect(() => {
-      if (images.length == 0) {
+      if (!images) {
           // Fetch user information using the token
           axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`)
           .then(response => {
