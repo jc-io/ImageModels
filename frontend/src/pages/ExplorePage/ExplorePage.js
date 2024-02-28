@@ -2,25 +2,23 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const ExplorePage = () => {
-  const [images, setImages] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null); // Add selectedImage state
-  const [mapTriggered, setMapTriggered] = useState(false); // State to track if map is triggered
-
+  const [images, setImages] = useState(null); // Set initial state to null
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [mapTriggered, setMapTriggered] = useState(false);
 
   useEffect(() => {
-      if (images.length == 0) {
-          // Fetch user information using the token
-          axios.get(`${process.env.REACT_APP_BACKEND_URL}/get_user_info`)
-          .then(response => {
-            setImages(response.data.images);
-            console.log(response.data);
-          })
-          .catch(error => {
-              console.error('Error fetching user information:', error);
-          });
-      }
+    if (images === null) { // Check if images is null
+      // Fetch user information using the token
+      axios.get(`${process.env.REACT_APP_BACKEND_URL}/get_user_info`)
+        .then(response => {
+          setImages(response.data.images);
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching user information:', error);
+        });
+    }
   }, [images]);
-  
 
   // Function to handle image click
   const handleImageClick = (image) => {
@@ -35,12 +33,6 @@ const ExplorePage = () => {
       <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">{image.username}</span>
     </a>
   );
-
-  // Function to trigger the map
-  const triggerMap = () => {
-    // Implement your logic to trigger the map here
-    console.log('Map triggered');
-  };
 
   // Modal component for displaying the selected image
   const ImageModal = ({ image, onClose }) => (
@@ -100,8 +92,7 @@ const ExplorePage = () => {
           </a>
         </div>
 
-
-        {images.length > 0 && (
+        {images !== null && images.length > 0 && ( // Check if images is not null
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
             {images.map(image => renderImageCard(image))}
           </div>
