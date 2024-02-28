@@ -22,23 +22,46 @@ const ExplorePage = () => {
   //   }
     
   // }, [images]); // Run the effect whenever images changes
+  // useEffect(() => {
+  //   if (token) {
+  //       // Fetch user information using the token
+  //       axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`, {
+  //           headers: {
+  //               Authorization: `Bearer ${token}`
+  //           }
+  //       })
+  //       .then(response => {
+  //         setImages(response.data.images);
+  //         console.log(response.data.images);
+  //       })
+  //       .catch(error => {
+  //           console.error('Error fetching user information:', error);
+  //       });
+  //   }
+  // }, [token,images]); // Empty dependency array to run the effect only once on mount
   useEffect(() => {
-    if (token) {
-        // Fetch user information using the token
-        axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        .then(response => {
-          setImages(response.data.images);
-          console.log(response.data.images);
-        })
-        .catch(error => {
-            console.error('Error fetching user information:', error);
-        });
+    const fetchImages = async () => {
+      try {
+        if (token) {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`,{
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      });
+  
+        console.log('Response:', response.data); // Log the received data
+        setImages(response.data.images);
     }
-  }, [token,images]); // Empty dependency array to run the effect only once on mount
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      }
+    };
+  
+    if (!images) {
+      fetchImages();
+    }
+  }, [images]);
+  
 
   // Function to handle image click
   const handleImageClick = (image) => {
