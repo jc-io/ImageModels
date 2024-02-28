@@ -10,23 +10,24 @@ const ExplorePage = () => {
     const fetchImages = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`);
-        if (response.data.images) {
-          setImages(response.data.images); // Assuming the API returns an array of images
-  
-          // Trigger the map when images are fetched and no images were present previously
-          if (!mapTriggered && response.data.images.length === 0) {
-            triggerMap(); // You need to define this function to trigger the map
-            setMapTriggered(true); // Set mapTriggered to true to avoid multiple triggers
-          }
+        const fetchedImages = response.data.images;
+
+        // If fetched images are not empty, update the state and stop fetching
+        if (fetchedImages.length > 0) {
+          setImages(fetchedImages);
+          return;
         }
+
+        // If fetched images are empty, continue fetching recursively
+        fetchImages();
       } catch (error) {
         console.error('Error fetching images:', error);
       }
     };
-  
+
+    // Start fetching images initially
     fetchImages();
   }, []); // Empty dependency array to execute only once on component mount
-  
 
   // Function to handle image click
   const handleImageClick = (image) => {
@@ -41,12 +42,6 @@ const ExplorePage = () => {
       <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">{image.username}</span>
     </a>
   );
-
-  // Function to trigger the map
-  const triggerMap = () => {
-    // Implement your logic to trigger the map here
-    console.log('Map triggered');
-  };
 
   // Modal component for displaying the selected image
   const ImageModal = ({ image, onClose }) => (
@@ -106,13 +101,11 @@ const ExplorePage = () => {
           </a>
         </div>
 
-
         {images.length > 0 && (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
             {images.map(image => renderImageCard(image))}
           </div>
         )}
-
       </div>
       <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />
     </div>
