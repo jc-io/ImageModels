@@ -11,7 +11,9 @@ const ExplorePage = () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND_URL}/getImages`,
-          { crossorigin: true }
+          { crossorigin: true, headers: {
+            "ngrok-skip-browser-warning": "69420"
+          } },
         ).then(response => {
           console.log(response.data);
           const imagesGrabbed = Array.isArray(response.data.images) ? response.data.images : null;
