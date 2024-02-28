@@ -12,8 +12,12 @@ const ExplorePage = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND_URL}/getImages`,
           { crossorigin: true }
-        );
-        setImages(response.data.images);
+        ).then(response => {
+          const imagesGrabbed = Array.isArray(response.data.images) ? response.data.images : null;
+          setImages(imagesGrabbed);
+
+        });
+        
       } catch (error) {
         console.error('Error fetching images:', error);
       }
