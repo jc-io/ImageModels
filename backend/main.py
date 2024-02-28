@@ -93,18 +93,16 @@ def get_user_info():
     
 @app.route("/getImages",  methods=['GET','POST'])
 def getImages():
-    if request.method == 'GET':
-      print("Hit")
-      limit = 100  # Set your desired limit here
-      images_data = list(images_collection.find({}).limit(limit))  # Fetch documents with the specified limit
+    
+    print("Hit")
+    limit = 100  # Set your desired limit here
+    images_data = list(images_collection.find({}).limit(limit))  # Fetch documents with the specified limit
       
       # Convert ObjectId to strings for each document
-      for image in images_data:
-          image['_id'] = str(image['_id'])
+    for image in images_data:
+        image['_id'] = str(image['_id'])
       
-      return jsonify({'message': 'Got Public Images', 'images': images_data}),200
-    else:
-      return jsonify({'error': 'Wrong method'}), 405;
+    return jsonify({'message': 'Got Public Images', 'images': images_data}),200
 
 @app.route('/signup', methods=['POST'])
 def signup():
