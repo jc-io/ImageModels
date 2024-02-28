@@ -57,7 +57,9 @@ GENERATED_FOLDER = 'generated';
 
 
 app = Flask(__name__)
-CORS(app)
+# CORS(app, origins='https://amp.d1t6iofhrx2j14.amplifyapp.com');
+CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins for all routes
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['GENERATED_FOLDER'] = GENERATED_FOLDER
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -93,9 +95,9 @@ def get_user_info():
     
 @app.route("/getImages",  methods=['GET','POST'])
 def getImages():
-    token = request.headers.get('Authorization')
-    if not token:
-      return jsonify({'error': 'Unauthorized No Token'}), 401
+    # token = request.headers.get('Authorization')
+    # if not token:
+    #   return jsonify({'error': 'Unauthorized No Token'}), 401
     limit = 100  # Set your desired limit here
     images_data = list(images_collection.find({}).limit(limit))  # Fetch documents with the specified limit
       

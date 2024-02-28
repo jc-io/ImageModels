@@ -5,63 +5,25 @@ const ExplorePage = () => {
   const [images, setImages] = useState(null); // Initialize images as null
   const [selectedImage, setSelectedImage] = useState(null);
   const [mapTriggered, setMapTriggered] = useState(false);
-  const token = localStorage.getItem('token');
 
-  // useEffect(() => {
-  //   const fetchImages = async () => {
-  //     try {
-  //       const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`);
-  //       setImages(response.data.images);
-  //     } catch (error) {
-  //       console.error('Error fetching images:', error);
-  //     }
-  //   };
-
-  //   if (images === null) {
-  //     fetchImages();
-  //   }
-    
-  // }, [images]); // Run the effect whenever images changes
-  // useEffect(() => {
-  //   if (token) {
-  //       // Fetch user information using the token
-  //       axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`, {
-  //           headers: {
-  //               Authorization: `Bearer ${token}`
-  //           }
-  //       })
-  //       .then(response => {
-  //         setImages(response.data.images);
-  //         console.log(response.data.images);
-  //       })
-  //       .catch(error => {
-  //           console.error('Error fetching user information:', error);
-  //       });
-  //   }
-  // }, [token,images]); // Empty dependency array to run the effect only once on mount
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        if (token) {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/getImages`,{
-          headers: {
-              Authorization: `Bearer ${token}`
-          }
-      });
-  
-        console.log('Response:', response.data); // Log the received data
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/getImages`,
+          { crossorigin: true }
+        );
         setImages(response.data.images);
-    }
       } catch (error) {
         console.error('Error fetching images:', error);
       }
     };
-  
-    if (!images) {
+    
+
+    if (images === null) {
       fetchImages();
     }
-  }, [images]);
-  
+  }, [images]); // Run the effect whenever images changes
 
   // Function to handle image click
   const handleImageClick = (image) => {
