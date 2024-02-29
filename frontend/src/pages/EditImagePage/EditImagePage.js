@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-
+import styles from './EditImagePage.module.css';
 function EditImagePage() {
     const [prompt, setPrompt] = useState('');
     const [selectedFiles, setSelectedFile] = useState([]);
@@ -38,73 +38,76 @@ function EditImagePage() {
   
     };
 
+
+    
+
     // # This function handles uplaoding the image correctly
   
-    // const handleUpload = () => {
-    //     // You can implement your file upload logic here
-    //     if (selectedFiles.length > 0) {
-    //       // Example: send the file to a server
-    //       const formData = new FormData();
-    //       // Append each file to the FormData
-    //       selectedFiles.forEach((file, index) => {
-    //         formData.append(`file`, file);
-    //       });
-    //       formData.append('prompt',prompt);
-    
-    //       setpageState('loading');
-
-    //       // Add your API call or upload logic here
-    //       // For example using fetch or Axios
-    //       axios.post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
-    //       .then(response => {
-    //         return response.data;
-    //       })
-    //       .then(data => {
-    //         setpageState('result');
-    //         // Check if data.images is an array before calling map
-    //         const imageUrls = Array.isArray(data.images) ? data.images.map(image => image.image_data) : [];
-    //         setImages(imageUrls);
-    //         setPrompt(data.prompt)
-    //         // console.log(data);
-    //         return data ? Promise.resolve(data) : Promise.resolve({});
-    //     }).catch(error => {
-    //         console.error('Error:', error);
-    //         alert('An error occurred while uploading the image. Please try again later.');
-    //             setpageState('main'); // Reset page state
-    //         return Promise.reject(error);
-    //       });
-
-
-    //     }
-    //   };
-
-
-// This function will return the same uploaded image after waiting for 10 seconds. *** For testing purposes only, replace with the function above when done testing
     const handleUpload = () => {
-      // Check if files are selected
-      if (selectedFiles.length > 0) {
-        // Set loading state
-        setpageState('loading');
+        // You can implement your file upload logic here
+        if (selectedFiles.length > 0) {
+          // Example: send the file to a server
+          const formData = new FormData();
+          // Append each file to the FormData
+          selectedFiles.forEach((file, index) => {
+            formData.append(`file`, file);
+          });
+          formData.append('prompt',prompt);
+    
+          setpageState('loading');
+
+          // Add your API call or upload logic here
+          // For example using fetch or Axios
+          axios.post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
+          .then(response => {
+            return response.data;
+          })
+          .then(data => {
+            setpageState('result');
+            // Check if data.images is an array before calling map
+            const imageUrls = Array.isArray(data.images) ? data.images.map(image => image.image_data) : [];
+            setImages(imageUrls);
+            setPrompt(data.prompt)
+            // console.log(data);
+            return data ? Promise.resolve(data) : Promise.resolve({});
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while uploading the image. Please try again later.');
+                setpageState('main'); // Reset page state
+            return Promise.reject(error);
+          });
+
+
+        }
+      };
+
+      // Testing function
+// This function will return the same uploaded image after waiting for 10 seconds. *** For testing purposes only, replace with the function above when done testing
+    // const handleUpload = () => {
+    //   // Check if files are selected
+    //   if (selectedFiles.length > 0) {
+    //     // Set loading state
+    //     setpageState('loading');
         
-        // Simulate delay using setTimeout
-        setTimeout(() => {
-          // Reset loading state
-          setpageState('result');
+    //     // Simulate delay using setTimeout
+    //     setTimeout(() => {
+    //       // Reset loading state
+    //       setpageState('result');
           
-          // Get the uploaded image URL
-          const uploadedImageUrls = selectedFiles.map(file => URL.createObjectURL(file));
+    //       // Get the uploaded image URL
+    //       const uploadedImageUrls = selectedFiles.map(file => URL.createObjectURL(file));
           
-          // Set the uploaded image URLs as result
-          setImages(uploadedImageUrls);
+    //       // Set the uploaded image URLs as result
+    //       setImages(uploadedImageUrls);
           
-          // Reset page state after displaying the result
-          // setTimeout(() => {
-          //   setpageState('main');
-          // }, 3000); // Change 3000 to 10000 for 10-second delay
+    //       // Reset page state after displaying the result
+    //       // setTimeout(() => {
+    //       //   setpageState('main');
+    //       // }, 3000); // Change 3000 to 10000 for 10-second delay
           
-        }, 10000); // Wait for 10 seconds
-      }
-    };
+    //     }, 10000); // Wait for 10 seconds
+    //   }
+    // };
   
     return (
       <div className="bg-second min-h-screen from-gray-100 to-gray-300">
@@ -181,7 +184,7 @@ function EditImagePage() {
         
                   <br/>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
-            Upload 
+            Generate 
             </button>
           </div>
       )}
@@ -216,21 +219,35 @@ function EditImagePage() {
         )}
 
       {pageState==="result" && (
-          <div>
+          <div class='parent'>
 
 
             <div className="image-display text-center">
                 
                 <h3 className="text-white font-bold">Generated Image[s]:</h3>
 
-                {selectedFiles.length > 0 && (
-              <div className="mr-4">
-                <h2 className="text-3xl font-semibold leading-normal text-white"></h2>
-                <div style={{ border: '5px solid black', borderRadius: '8px', backgroundColor: 'transparent' }}>
-                  <img src={URL.createObjectURL(selectedFiles[0])} alt="Uploaded" className="max-w-md" />
+
+                {/* show the uploaded image */}
+                <div class='child'>
+                    {selectedFiles.length > 0 && (
+                    <div className="mr-4">
+                      <h2 className="text-3xl font-semibold leading-normal text-white"></h2>
+                      <div style={{ border: '5px solid black', borderRadius: '8px', backgroundColor: 'transparent' }}>
+                        <img src={URL.createObjectURL(selectedFiles[0])} alt="Uploaded" className="max-w-md" />
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
+
+                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 child">
+                  {images.map((imageUrl, index) => (
+                      <div>
+                        <img className="h-auto max-w-full rounded-lg" key={index} alt={`Image ${index + 1}`} src={imageUrl} />
+                      </div>
+                    ))
+                    }
+                </div>  
+            </div>
                 {/* showing the uploaded image */}
                 {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {images.map((imageUrl, index) => (
@@ -240,30 +257,64 @@ function EditImagePage() {
                     ))
                     }
                 </div>   */}
-
+                {/* prompt = asfaf */}
+                
+                
                 {/* showing the prompt the user used */}
-                <h3 className="text-white font-bold">Prompt: {prompt}</h3>
+                <h3 className="text-white mt-20 font-bold">Prompt used: {prompt}</h3>
 
-                  <br></br>
-                  <div className="flex justify-center gap-4">
+
+                  
+                  {/* Buttons */}
+                  <div className="flex justify-center mt-8 gap-60">
+
                   <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
                         <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
                       </svg>
                       <span> Back</span>
                     </button>
+
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
+            Archive 
+            </button>
+
+            <button 
+              onClick={() => setpageState('main')}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Share
+              </button>
+
+              {/* <div class="box">
+                <a class="button" href="#popup1">Let me Pop up</a>
+              </div>
+
+              <div id="popup1" class="overlay">
+                <div class="popup">
+                  <h2>Here i am</h2>
+                  <a class="close" href="#">&times;</a>
+                  <div class="content">
+                    Thank to pop me out of that button, but now i'm done so you can close this window.
+                  </div>
+                </div>
+              </div> */}
+
+
+
                     </div>
+
+
 
                   {/* <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
 
 
                       <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+                          <p  ath strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
                       </svg>
                       <span> Back</span>
                   </button> */}
               </div>
-          </div>
+          // </div>
         )}
       </div>
       
