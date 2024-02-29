@@ -20,3 +20,45 @@ code {
     monospace;
 }
 
+
+/* loading animation  */
+.spinner {
+  background-image: linear-gradient(rgb(120, 209, 82) 35%,rgb(189, 87, 40));
+  width: 400px;
+  height: 400px;
+  animation: spinning82341 1.7s linear infinite;
+  text-align: center;
+  border-radius: 200px;
+  filter: blur(1px);
+  box-shadow: 0px -5px 20px 0px rgb(160, 176, 52), 0px 5px 20px 0px rgb(214, 122, 47);
+}
+
+.spinner1 {
+  background-color: rgb(36, 36, 36);
+  width: 400px;
+  height: 400px;
+  border-radius: 200px;
+  filter: blur(10px);
+}
+
+@keyframes spinning82341 {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.parent {
+ 
+  text-align: center;
+}
+.child {
+  display: inline-block;
+  /* border: 1px solid red; */
+  padding: 1rem 1rem;
+  vertical-align: middle;
+  margin-left:  140px;
+  margin-right:  150px;
+}
+
+
