@@ -50,7 +50,8 @@ function NavBar() {
             // Fetch user information using the token
             axios.get(`${process.env.REACT_APP_BACKEND_URL}/get_user_info`, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
+                    "ngrok-skip-browser-warning": "69420"
                 }
             })
             .then(response => {
