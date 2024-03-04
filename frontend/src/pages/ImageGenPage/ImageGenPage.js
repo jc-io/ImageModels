@@ -7,39 +7,31 @@ function ImageGenPage() {
   const [pageState, setpageState] = useState('main')
   const [images, setImages] = useState([]);
 
-  const handleGen = () => {
-      // You can implement your file upload logic here
-      if (prompt.length > 0) {
-          // Example: send the file to a server
-        const formData = new FormData();
-          // Append each file to the FormData
+  const [postCount, setPostCount] = useState(0);
 
-        formData.append('prompt',prompt);
-    
-        setpageState('loading');
+  const handleGen = async () => {
+    if (prompt.length > 0 && postCount < 6) {//check model chosen
+      setPageState('loading');
 
-        // Add your API call or upload logic here
-        // For example using fetch or Axios
-        axios.post(`${process.env.REACT_APP_BACKEND_URL}/generate`, formData)
-        .then(response => {
-          return response.data;
-        })
-        .then(data => {
-          setpageState('result');
-          // Check if data.images is an array before calling map
-          const imageUrls = Array.isArray(data.images) ? data.images.map(image => image.image_data) : [];
-          setImages(imageUrls);
-          setPrompt(data.prompt)
-          // console.log(data);
-          return data ? Promise.resolve(data) : Promise.resolve({});
-      }).catch(error => {
-          console.error('Error:', error);
-          return Promise.reject(error);
-        });
+      try {
+        for (let i = 0; i < 6; i++) {
+          const formData = new FormData();
+          formData.append('prompt', prompt);
 
+          const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/generate`, formData);
+          const data = response.data;
 
+          setImages(prevImages => [...prevImages, ...data.images.map(image => image.image_data)]);
+          setPageState('result');
+          setPostCount(prevCount => prevCount + 1);
+        }
+
+      } catch (error) {
+        console.error('Error:', error);
       }
-    };
+    }
+  };
+
   return (
   <>
 <div className="bg-second min-h-screen from-gray-100 to-gray-300">
