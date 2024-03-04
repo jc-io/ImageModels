@@ -43,71 +43,71 @@ function EditImagePage() {
 
     // # This function handles uplaoding the image correctly
   
-    const handleUpload = () => {
-        // You can implement your file upload logic here
-        if (selectedFiles.length > 0) {
-          // Example: send the file to a server
-          const formData = new FormData();
-          // Append each file to the FormData
-          selectedFiles.forEach((file, index) => {
-            formData.append(`file`, file);
-          });
-          formData.append('prompt',prompt);
+    // const handleUpload = () => {
+    //     // You can implement your file upload logic here
+    //     if (selectedFiles.length > 0) {
+    //       // Example: send the file to a server
+    //       const formData = new FormData();
+    //       // Append each file to the FormData
+    //       selectedFiles.forEach((file, index) => {
+    //         formData.append(`file`, file);
+    //       });
+    //       formData.append('prompt',prompt);
     
-          setpageState('loading');
+    //       setpageState('loading');
 
-          // Add your API call or upload logic here
-          // For example using fetch or Axios
-          axios.post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
-          .then(response => {
-            return response.data;
-          })
-          .then(data => {
-            setpageState('result');
-            // Check if data.images is an array before calling map
-            const imageUrls = Array.isArray(data.images) ? data.images.map(image => image.image_data) : [];
-            setImages(imageUrls);
-            setPrompt(data.prompt)
-            // console.log(data);
-            return data ? Promise.resolve(data) : Promise.resolve({});
-        }).catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while uploading the image. Please try again later.');
-                setpageState('main'); // Reset page state
-            return Promise.reject(error);
-          });
+    //       // Add your API call or upload logic here
+    //       // For example using fetch or Axios
+    //       axios.post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
+    //       .then(response => {
+    //         return response.data;
+    //       })
+    //       .then(data => {
+    //         setpageState('result');
+    //         // Check if data.images is an array before calling map
+    //         const imageUrls = Array.isArray(data.images) ? data.images.map(image => image.image_data) : [];
+    //         setImages(imageUrls);
+    //         setPrompt(data.prompt)
+    //         // console.log(data);
+    //         return data ? Promise.resolve(data) : Promise.resolve({});
+    //     }).catch(error => {
+    //         console.error('Error:', error);
+    //         alert('An error occurred while uploading the image. Please try again later.');
+    //             setpageState('main'); // Reset page state
+    //         return Promise.reject(error);
+    //       });
 
 
-        }
-      };
+    //     }
+    //   };
 
       // Testing function
 // This function will return the same uploaded image after waiting for 10 seconds. *** For testing purposes only, replace with the function above when done testing
-    // const handleUpload = () => {
-    //   // Check if files are selected
-    //   if (selectedFiles.length > 0) {
-    //     // Set loading state
-    //     setpageState('loading');
+    const handleUpload = () => {
+      // Check if files are selected
+      if (selectedFiles.length > 0) {
+        // Set loading state
+        setpageState('loading');
         
-    //     // Simulate delay using setTimeout
-    //     setTimeout(() => {
-    //       // Reset loading state
-    //       setpageState('result');
+        // Simulate delay using setTimeout
+        setTimeout(() => {
+          // Reset loading state
+          setpageState('result');
           
-    //       // Get the uploaded image URL
-    //       const uploadedImageUrls = selectedFiles.map(file => URL.createObjectURL(file));
+          // Get the uploaded image URL
+          const uploadedImageUrls = selectedFiles.map(file => URL.createObjectURL(file));
           
-    //       // Set the uploaded image URLs as result
-    //       setImages(uploadedImageUrls);
+          // Set the uploaded image URLs as result
+          setImages(uploadedImageUrls);
           
-    //       // Reset page state after displaying the result
-    //       // setTimeout(() => {
-    //       //   setpageState('main');
-    //       // }, 3000); // Change 3000 to 10000 for 10-second delay
+          // Reset page state after displaying the result
+          // setTimeout(() => {
+          //   setpageState('main');
+          // }, 3000); // Change 3000 to 10000 for 10-second delay
           
-    //     }, 10000); // Wait for 10 seconds
-    //   }
-    // };
+        }, 10000); // Wait for 10 seconds
+      }
+    };
   
     return (
       <div className="bg-second min-h-screen from-gray-100 to-gray-300">
@@ -122,10 +122,12 @@ function EditImagePage() {
         {/* <input type="file" onChange={handleFileChange} /> */}
           
       {pageState==="main" && (
-        <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center" onDrop={handleDrop} onDragOver={handleDragOver}>
+        
+        <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center parent" onDrop={handleDrop} onDragOver={handleDragOver}>
           <label
             htmlFor="dropzone-file"
-            className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+            // style={{ marginLeft: '-10%' }}
+            className="flex flex-col max-w-md w-1/3 child items-center justify-center h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
           >
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               <svg
@@ -239,14 +241,25 @@ function EditImagePage() {
                   )}
                 </div>
 
-                 <div class='child'>
+                <div className="child">
+                  {images.map((imageUrl, index) => (
+                      <div style={{ border: '5px solid black', borderRadius: '8px', backgroundColor: 'transparent' }}>
+                        <img className="max-w-md" key={index} alt={`Image ${index + 1}`} src={imageUrl} />
+                      </div>
+                    ))
+                    }
+                </div>  
+
+                {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {images.map((imageUrl, index) => (
                       <div>
                         <img className="h-auto max-w-full rounded-lg" key={index} alt={`Image ${index + 1}`} src={imageUrl} />
                       </div>
                     ))
                     }
-                </div>  
+                </div>   */}
+
+
             </div>
                 {/* showing the uploaded image */}
                 {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -257,8 +270,6 @@ function EditImagePage() {
                     ))
                     }
                 </div>   */}
-                {/* prompt = asfaf */}
-                
                 
                 {/* showing the prompt the user used */}
                 <h3 className="text-white mt-20 font-bold">Prompt used: {prompt}</h3>
