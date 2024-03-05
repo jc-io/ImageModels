@@ -13,15 +13,7 @@ function EditImagePage() {
   const [isOpen, setIsOpen] = useState(false);
   const [generatedImageUrl, setGeneratedImageUrl] = useState(null);
 
-  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
-
-  // // buttons
-
-  // const togglePopup = () => {
-  //   setIsOpen(!isOpen);
-  // };
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // // buttons
+  // const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
 
   //pop
   const [modal, setModal] = useState(false);
@@ -141,9 +133,9 @@ function EditImagePage() {
             : [];
           setImages(imageUrls);
           setPrompt(data.prompt);
-          setGeneratedImageUrl(imageUrls[0]);
-          const uploadedImageUrl = URL.createObjectURL(selectedFiles[0]);
-          setUploadedImageUrl(uploadedImageUrl);
+
+          const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
+          setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
 
           // console.log(data);
           return data ? Promise.resolve(data) : Promise.resolve({});
@@ -510,7 +502,7 @@ function EditImagePage() {
                       }}
                     >
                       <img
-                        src={URL.createObjectURL(selectedFiles[0])}
+                        src={generatedImageUrl}
                         alt="Uploaded"
                         className="max-w-md"
                       />
