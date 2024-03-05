@@ -46,7 +46,6 @@ const ExplorePage = () => {
     </a>
   );
 
-  // Modal component for displaying the selected image
   const ImageModal = ({ image, onClose }) => (
     image ? (
       <div 
@@ -66,24 +65,33 @@ const ExplorePage = () => {
       >
         <div
           style={{
-            padding: '20px',
+            width: '35vw', // 80% of the viewport width
+            height: '80vh', // 80% of the viewport height
+            padding: 0,
             backgroundColor: '#fff',
             borderRadius: '8px',
-            display: 'inline-block',
-            minHeight: '300px',
-            margin: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
             position: 'relative',
-            maxWidth: '80%',
-            textAlign: 'center',
-            color: 'black'
+            color: 'black',
+            overflow: 'hidden',
           }}
           onClick={e => e.stopPropagation()} // Prevent click from closing modal
         >
-          <img src={image.src} alt={image.username} style={{ maxWidth: '100%', maxHeight: '80vh' }} />
-          <h2>User: {image.username}</h2>
-          <p>Model: {image.model}</p>
-          <p>Prompt: {image.prompt}</p>
-          <p>Description: {image.description}</p>
+          <img src={image.src} alt={image.username} style={{
+            minHeight: '75%', // Scale up the image to be in the range
+            maxHeight: '75%', // Limit the image height to ensure text space
+            objectFit: 'contain', // Maintain aspect ratio without cropping
+            marginBottom: '10px', // Space between the image and the text
+          }} />
+          <div style={{ textAlign: 'center', overflowY: 'auto', maxHeight: '30%' }}>
+            <h2>User: {image.username}</h2>
+            <p>Model: {image.model}</p>
+            <p>Prompt: {image.prompt}</p>
+            <p>Description: {image.description}</p>
+          </div>
         </div>
       </div>
     ) : null
