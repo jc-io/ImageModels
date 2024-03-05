@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 const ImageGenPage = () => {
   const [prompt, setPrompt] = useState('');
-  const [pageState, setPageState] = useState('result')
+  const [pageState, setPageState] = useState('main')
   const [images, setImages] = useState([]);
   const token = localStorage.getItem('token');
   const [postCount, setPostCount] = useState(0);
