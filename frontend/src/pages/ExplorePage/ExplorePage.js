@@ -49,7 +49,7 @@ const ExplorePage = () => {
   // Modal component for displaying the selected image
   const ImageModal = ({ image, onClose }) => (
     image ? (
-      <div
+      <div 
         style={{
           position: 'fixed',
           top: 0,
@@ -91,7 +91,7 @@ const ExplorePage = () => {
 
   return (
     <div className="bg-primary dark:bg-primary h-screen h-full py-6 sm:py-8 lg:py-12">
-      <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
+      <div className="mx-auto max-w-screen-2xl px-4 md:px-8 bg-primary dark:bg-primary">
         <div className="mb-4 flex items-center justify-between gap-8 sm:mb-8 md:mb-12">
           <div className="flex items-center gap-12">
             <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl dark:text-white">Gallery</h2>
@@ -106,7 +106,7 @@ const ExplorePage = () => {
 
 
         {images && images.length > 0 && (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8 ">
             {images.map(image => renderImageCard(image))}
           </div>
         )}
