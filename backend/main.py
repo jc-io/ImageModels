@@ -113,7 +113,7 @@ def archive():
       
       prompt = request.form['prompt'];
       description = "Default no description Sorry" #request.form['description'];
-      model = "imageGen" #request.form['model'];
+      model = request.form['model'];
       images_collection.insert_one({'src': image, 'username': username, 'model':  model, 'date': datetime.datetime.now(),'prompt': prompt,'description': description})
       return jsonify({'username': user['username'], 'email': user.get('email', '')}), 200
     else:
@@ -268,12 +268,16 @@ def generateLLM():
 def generate_image():
     try:
         prompt = request.form.get('prompt');
+        model = request.form.get('model');
+
         print("Recieved prompt: " + prompt)
         generator = ImageGen();
         # image = generator.generate(prompt);
         images = []
-        
-        images.append({'image_data': generator.generate(prompt)});
+        if model == 'runwayml/stable-diffusion-v1-5':
+          images.append({'image_data': generator.generate(prompt)});
+        else: 
+          images.append({'image_data': generator.generateDetailed(prompt)});
         # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
  
 
