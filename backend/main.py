@@ -92,6 +92,38 @@ def get_user_info():
     return jsonify({'error': 'Token expired'}), 401
   except jwt.InvalidTokenError:
     return jsonify({'error': 'Invalid token'}), 401
+  
+
+
+@app.route('/Archive', methods=['GET','POST'])
+def archive():
+  token = request.headers.get('Authorization')
+  print("Token: " + str(token))
+  if not token:
+    return jsonify({'error': 'Unauthorized No Token'}), 401
+
+  try:
+    token = token.split()[1]  # Remove 'Bearer' from the token
+    payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+    username = payload['username']
+    
+    user = users_collection.find_one({'username': username})
+  
+    if user:
+      image = request.form['image']
+      prompt = request.form['prompt'];
+      description = "Default no description Sorry" #request.form['description'];
+      model = "imageGen" #request.form['model'];
+      images_collection.insert_one({'src': image, 'username': username, 'model':  model, 'date': datetime.datetime.now(),'prompt': prompt,'description': description})
+      return jsonify({'username': user['username'], 'email': user.get('email', '')}), 200
+    else:
+      return jsonify({'error': 'User not found'}), 404
+
+  except jwt.ExpiredSignatureError:
+    return jsonify({'error': 'Token expired'}), 401
+  except jwt.InvalidTokenError:
+    return jsonify({'error': 'Invalid token'}), 401
+  
     
 @app.route("/getImages",  methods=['GET','POST'])
 def getImages():

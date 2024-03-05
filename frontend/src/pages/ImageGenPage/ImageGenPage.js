@@ -1,13 +1,38 @@
 // src/pages/NotFoundPage.js
 import { React, useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const ImageGenPage = () => {
   const [prompt, setPrompt] = useState('');
-  const [pageState, setPageState] = useState('main')
+  const [pageState, setPageState] = useState('result')
   const [images, setImages] = useState([]);
-
+  const token = localStorage.getItem('token');
   const [postCount, setPostCount] = useState(0);
+
+  const achiveImage = async () => {
+    console.log("Image Archived!");
+    const formData = new FormData();
+    formData.append('image', images[0]);//whatever was selected
+    formData.append('prompt', prompt);
+    //add information about the model and setting and etc used to generate the image
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/Archive`, formData, {
+      headers: {
+          Authorization: `Bearer ${token}`
+      }
+    })
+    .then(response => {
+        // Handle successful sign out
+        console.log('Archived Image!', response.data);
+        toast('Archived Image!');
+    })
+    .catch(error => {
+        // Handle sign out error
+        toast.error('Error Archiving Image. Please Login.');
+        console.error('Error signing out:', error);
+    });
+
+  };
 
   const handleGen = async () => {
     if (prompt.length > 0 && postCount < 6) {//check model chosen
@@ -99,7 +124,9 @@ const ImageGenPage = () => {
           </div>  
           <h3 className="text-white font-bold">Prompt: {prompt}</h3>
 
-
+          <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => achiveImage()}>
+        <span> Archive</span>
+        </button>
             <br></br>
             <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setPageState('main')}>
 
