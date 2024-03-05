@@ -240,8 +240,8 @@ def generate_image():
         generator = ImageGen();
         # image = generator.generate(prompt);
         images = []
-        for i in range(6):
-          images.append({'image_data': generator.generate(prompt)});
+        
+        images.append({'image_data': generator.generate(prompt)});
         # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
  
 

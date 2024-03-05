@@ -2,44 +2,36 @@
 import { React, useState } from 'react';
 import axios from 'axios';
 
-function ImageGenPage() {
+const ImageGenPage = () => {
   const [prompt, setPrompt] = useState('');
-  const [pageState, setpageState] = useState('main')
+  const [pageState, setPageState] = useState('main')
   const [images, setImages] = useState([]);
 
-  const handleGen = () => {
-      // You can implement your file upload logic here
-      if (prompt.length > 0) {
-          // Example: send the file to a server
-        const formData = new FormData();
-          // Append each file to the FormData
+  const [postCount, setPostCount] = useState(0);
 
-        formData.append('prompt',prompt);
-    
-        setpageState('loading');
+  const handleGen = async () => {
+    if (prompt.length > 0 && postCount < 6) {//check model chosen
+      setPageState('loading');
 
-        // Add your API call or upload logic here
-        // For example using fetch or Axios
-        axios.post(`${process.env.REACT_APP_BACKEND_URL}/generate`, formData)
-        .then(response => {
-          return response.data;
-        })
-        .then(data => {
-          setpageState('result');
-          // Check if data.images is an array before calling map
-          const imageUrls = Array.isArray(data.images) ? data.images.map(image => image.image_data) : [];
-          setImages(imageUrls);
-          setPrompt(data.prompt)
-          // console.log(data);
-          return data ? Promise.resolve(data) : Promise.resolve({});
-      }).catch(error => {
-          console.error('Error:', error);
-          return Promise.reject(error);
-        });
+      try {
+        for (let i = 0; i < 6; i++) {
+          const formData = new FormData();
+          formData.append('prompt', prompt);
 
+          const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/generate`, formData);
+          const data = response.data;
 
+          setImages(prevImages => [...prevImages, ...data.images.map(image => image.image_data)]);
+          setPageState('result');
+          setPostCount(prevCount => prevCount + 1);
+        }
+
+      } catch (error) {
+        console.error('Error:', error);
       }
-    };
+    }
+  };
+
   return (
   <>
 <div className="bg-second min-h-screen from-gray-100 to-gray-300">
@@ -100,7 +92,7 @@ function ImageGenPage() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.map((imageUrl, index) => (
                 <div>
-                  <img className="h-auto max-w-full rounded-lg" key={index} alt={`Image ${index + 1}`} src={imageUrl} />
+                  <img className="h-auto max-w-full rounded-lg" key={index} alt={`Gen ${index + 1}`} src={imageUrl} />
                 </div>
               ))
               }
@@ -109,7 +101,7 @@ function ImageGenPage() {
 
 
             <br></br>
-            <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
+            <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setPageState('main')}>
 
 
                 <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">

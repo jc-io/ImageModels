@@ -21,11 +21,14 @@ import NavBar from './components/NavBar/NavBar';
 import NotFoundPage from './pages//NotFoundPage/NotFoundPage';
 import reportWebVitals from './reportWebVitals';
 import ExplorePage from './pages/ExplorePage/ExplorePage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <NavBar/>
+    <ToastContainer />
     <Router>
       <Routes>
         <Route path="/" exact element={<HomePage/>} />

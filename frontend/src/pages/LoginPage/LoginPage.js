@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 
 const LoginPage = () => {
@@ -55,6 +56,13 @@ const LoginPage = () => {
         })
         .catch(error => {
             console.error('Error:', error);
+            if (error.response && error.response.status === 401) {
+                // Username already exists, ask user to choose another
+                toast.error('Login Not Authorized');
+              } else {
+                // Other error occurred, handle it accordingly
+                toast.error('An error occurred. Please try again later.');
+            }
             return Promise.reject(error);
         });
 };

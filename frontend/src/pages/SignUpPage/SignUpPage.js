@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import axios from 'axios';
 
@@ -6,7 +7,7 @@ const SignUpPage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [pageState, setpageState] = useState('main')
+  const [confirmPassword, setConfirmPassword] = useState('');
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
@@ -18,6 +19,12 @@ const SignUpPage = () => {
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+  };
+  const isFormValid = () => {
+    return username && email && password && confirmPassword && password === confirmPassword;
+  };
 
   function routeChange() {
     window.location.href = '/Explore';
@@ -25,6 +32,12 @@ const SignUpPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      // Passwords do not match, handle error or display a message
+      console.log('Passwords do not match');
+      toast.error('Passwords do not match');
+      return;
+    }
     // Perform signup logic here
     console.log('Signup form submitted');
     console.log('Username:', username);
@@ -35,29 +48,32 @@ const SignUpPage = () => {
     formData.append(`password`, password);
     formData.append(`email`, email);
     axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, formData)
-        .then(response => {
+      .then(response => {
         return response.data;
-        })
-        .then(data => {
-        // setpageState('result');
-        // Check if data.images is an array before calling map
-        // setpageState('result');
-        // setResult(data); // Set the caption in the state
-        // console.log(data);
+      })
+      .then(data => {
         if (data.token) {
-            // Storing token in localStorage
-            console.log('Token:', data.token);
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('username', username);
-            routeChange();
+          // Storing token in localStorage
+          console.log('Token:', data.token);
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('username', username);
+          routeChange();
         }
-
         return data ? Promise.resolve(data) : Promise.resolve({});
-    }).catch(error => {
+      }).catch(error => {
         console.error('Error:', error);
+        if (error.response && error.response.status === 400) {
+          // Username already exists, ask user to choose another
+          toast.error('Username already exists. Please choose another one.');
+        } else {
+          // Other error occurred, handle it accordingly
+          toast.error('An error occurred. Please try again later.');
+        }
         return Promise.reject(error);
-    });
+      });
   };
+  
+  
 
   return (
     <div className="relative">
@@ -97,7 +113,7 @@ const SignUpPage = () => {
                         </div>
                         <div>
                             <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
-                            <input type="password" name="confirm-password" id="confirm-password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required=""/>
+                            <input value={confirmPassword} onChange={handleConfirmPasswordChange} type="password" name="confirm-password" id="confirm-password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required=""/>
                         </div>
 
                         <div class="flex items-start">
@@ -108,7 +124,7 @@ const SignUpPage = () => {
                                 <label for="terms" class="font-light text-gray-500 dark:text-gray-300">I accept the <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="/TermsandConditions">Terms and Conditions</a></label>
                             </div>
                         </div>
-                        <button type="submit" class="w-full text-white bg-primary hover:bg-primary focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Create an account</button>
+                        <button type="submit" class={`w-full text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 ${isFormValid() ? 'bg-button hover:bg-buttonHover focus:ring-buttonHover' : 'bg-gray-500 hover:bg-gray-600 focus:ring-gray-300'}`}>Create an account</button>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                             Already have an account? <a href="/login" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
                         </p>
