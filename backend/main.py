@@ -108,9 +108,9 @@ def archive():
     username = payload['username']
     
     user = users_collection.find_one({'username': username})
-  
-    if user:
-      image = request.form['image']
+    image = request.form['image']
+    if user and (image != None | image != "undefined") :
+      
       prompt = request.form['prompt'];
       description = "Default no description Sorry" #request.form['description'];
       model = "imageGen" #request.form['model'];
