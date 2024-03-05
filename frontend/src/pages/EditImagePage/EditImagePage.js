@@ -12,6 +12,9 @@ function EditImagePage() {
   const [images, setImages] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [generatedImageUrl, setGeneratedImageUrl] = useState(null);
+
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+
   // // buttons
 
   // const togglePopup = () => {
@@ -139,6 +142,9 @@ function EditImagePage() {
           setImages(imageUrls);
           setPrompt(data.prompt);
           setGeneratedImageUrl(imageUrls[0]);
+          const uploadedImageUrl = URL.createObjectURL(selectedFiles[0]);
+          setUploadedImageUrl(uploadedImageUrl);
+
           // console.log(data);
           return data ? Promise.resolve(data) : Promise.resolve({});
         })
@@ -455,7 +461,7 @@ function EditImagePage() {
                     }}
                   >
                     <img
-                      src={URL.createObjectURL(selectedFiles[0])}
+                      src={uploadedImageUrl}
                       alt="Uploaded"
                       className="max-w-md"
                     />
@@ -491,10 +497,10 @@ function EditImagePage() {
             <div className="image-display text-center">
               {/* <h3 className="text-white font-bold">Generated Image[s]:</h3> */}
 
-              {/* show the uploaded image */}
               <div class="child">
+                {/* show the uploaded image */}
                 {selectedFiles.length > 0 && (
-                  <div className="mr-4">
+                  <div className="mt-4 relative">
                     <h2 className="text-3xl font-semibold leading-normal text-white"></h2>
                     <div
                       style={{
@@ -594,11 +600,11 @@ function EditImagePage() {
                     <div onClick={toggleModal} className="overlay"></div>
                     <div className="modal-content">
                       <div className="share-buttons">
-                        <FacebookShareButton url={generatedImageUrl}>
+                        <FacebookShareButton url={shareUrl}>
                           <FacebookIcon size={50} round />
                         </FacebookShareButton>
                         <TwitterShareButton
-                          url={generatedImageUrl} // Replace with actual image URL
+                          url={shareUrl} // Replace with actual image URL
                           title="Check out this image I generated"
                           hashtags={["imagegeneration", "react"]}
                         >
