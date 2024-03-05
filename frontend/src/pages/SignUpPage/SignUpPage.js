@@ -8,7 +8,6 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [pageState, setpageState] = useState('main')
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };

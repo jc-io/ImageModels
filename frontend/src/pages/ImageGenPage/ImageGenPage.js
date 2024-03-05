@@ -2,9 +2,9 @@
 import { React, useState } from 'react';
 import axios from 'axios';
 
-function ImageGenPage() {
+const ImageGenPage = () => {
   const [prompt, setPrompt] = useState('');
-  const [pageState, setpageState] = useState('main')
+  const [pageState, setPageState] = useState('main')
   const [images, setImages] = useState([]);
 
   const [postCount, setPostCount] = useState(0);
@@ -92,7 +92,7 @@ function ImageGenPage() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.map((imageUrl, index) => (
                 <div>
-                  <img className="h-auto max-w-full rounded-lg" key={index} alt={`Image ${index + 1}`} src={imageUrl} />
+                  <img className="h-auto max-w-full rounded-lg" key={index} alt={`Gen ${index + 1}`} src={imageUrl} />
                 </div>
               ))
               }
@@ -101,7 +101,7 @@ function ImageGenPage() {
 
 
             <br></br>
-            <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
+            <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setPageState('main')}>
 
 
                 <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">

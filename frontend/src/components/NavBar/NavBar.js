@@ -7,6 +7,7 @@ function NavBar() {
     const token = localStorage.getItem('token');
     const [user, setUser] = useState(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isNavBarDown, setIsNavBarDown] = useState(false);
 
     const toggleDropdown = () => {
       setIsDropdownOpen(!isDropdownOpen);
@@ -150,14 +151,23 @@ function NavBar() {
                 {(!token || !user) && (
                             <>
                                 <a href="/login">
-                                    <button type="button" className="px-4 py-2 rounded-l-lg text-white m-0 bg-transperant hover:bg-transperant border-solid border-2 border-transperant transition">
+                                    {/* <button type="button" className="px-4 py-2 rounded-l-lg text-white m-0 bg-transperant hover:bg-transperant border-solid border-2 border-transperant transition">
                                         Login
-                                    </button>
+                                        
+                                    </button> */}
+
+                                        <button class="bg-transparent hover:underline text-white font-semibold hover:text-white py-2 px-4 hover:border-transparent rounded">
+                                        Login In ⬈ 
+                                        </button>
                                 </a>
                                 <a href="/signup">
-                                    <button type="button" className="px-4 py-2 rounded-r-lg bg-gray-300 hover:bg-gray-300 border-solid border-2 border-transperant transition">
+                                    {/* <button type="button" className="px-4 py-2 rounded-r-lg bg-gray-300 hover:bg-gray-300 border-solid border-2 border-transperant transition">
                                         SignUp
-                                    </button>
+                                    </button> */}
+                                    <button class="bg-transparent hover:bg-white text-white font-semibold hover:text-black py-2 px-4 border border-white hover:border-transparent rounded">
+                                        Try ImageGen ⬈
+                                    
+                                        </button>
                                 </a>
                             </>
                 )}
@@ -187,10 +197,10 @@ function NavBar() {
                             </div>
                             <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                                 <li>
-                                    <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Archive</a>
+                                    <a href="/" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Archive</a>
                                 </li>
                                 <li>
-                                    <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+                                    <a href="/Setting" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
                                 </li>
                             </ul>
                             <div className="py-2 text-sm text-gray-700 dark:text-gray-200">
@@ -204,8 +214,9 @@ function NavBar() {
 
 
 
+           
 
-                
+
             </div>
             
 
@@ -232,6 +243,8 @@ function NavBar() {
                 </ul>
             </div>
             </div>
+            
+            
             </nav>
 
       </div>
