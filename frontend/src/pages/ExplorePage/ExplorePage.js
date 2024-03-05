@@ -80,10 +80,10 @@ const ExplorePage = () => {
           onClick={e => e.stopPropagation()} // Prevent click from closing modal
         >
           <img src={image.src} alt={image.username} style={{ maxWidth: '100%', maxHeight: '80vh' }} />
-          <h2>{image.username}</h2>
-          <p>{image.model}</p>
-          <p>{image.prompt}</p>
-          <p>{image.description}</p>
+          <h2>User: {image.username}</h2>
+          <p>Model: {image.model}</p>
+          <p>Prompt: {image.prompt}</p>
+          <p>Description: {image.description}</p>
         </div>
       </div>
     ) : null
@@ -91,7 +91,7 @@ const ExplorePage = () => {
 
   return (
     <div className="bg-primary dark:bg-primary h-screen h-full py-6 sm:py-8 lg:py-12">
-      <div className="mx-auto max-w-screen-2xl px-4 md:px-8 bg-primary dark:bg-primary">
+      <div className="mx-auto max-w-screen-2xl px-4 md:px-8 ">
         <div className="mb-4 flex items-center justify-between gap-8 sm:mb-8 md:mb-12">
           <div className="flex items-center gap-12">
             <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl dark:text-white">Gallery</h2>

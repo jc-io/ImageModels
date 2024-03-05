@@ -7,6 +7,7 @@ const ImageGenPage = () => {
   const [prompt, setPrompt] = useState('');
   const [pageState, setPageState] = useState('main')
   const [images, setImages] = useState([]);
+  const [selectedModel, setSelectedModel] = useState('runwayml/stable-diffusion-v1-5'); // Default model selection
   const token = localStorage.getItem('token');
   const [postCount, setPostCount] = useState(0);
 
@@ -15,6 +16,7 @@ const ImageGenPage = () => {
     const formData = new FormData();
     formData.append('image', images[0]);//whatever was selected
     formData.append('prompt', prompt);
+    formData.append('model', selectedModel); // Include the selected model
     //add information about the model and setting and etc used to generate the image
     axios.post(`${process.env.REACT_APP_BACKEND_URL}/Archive`, formData, {
       headers: {
@@ -39,9 +41,11 @@ const ImageGenPage = () => {
       setPageState('loading');
 
       try {
-        for (let i = 0; i < 6; i++) {
+        const numImagesToGenerate = selectedModel === 'runwayml/stable-diffusion-v1-5' ? 6 : 3;
+        for (let i = 0; i < numImagesToGenerate; i++) {
           const formData = new FormData();
           formData.append('prompt', prompt);
+          formData.append('model', selectedModel); // Include the selected model
 
           const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/generate`, formData);
           const data = response.data;
@@ -77,10 +81,26 @@ const ImageGenPage = () => {
                     <br/>
                 <input htmlFor="Caption" type="text" id="default-input" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={(e) => setPrompt(e.target.value)}/>
                 <br/>
+                <label className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">
+              Choose Model:
+            </label>
+            <div className="flex space-x-4">
+              <button className={`text-white font-bold py-2 px-4 rounded ${selectedModel === 'runwayml/stable-diffusion-v1-5' ? 'bg-buttonHover' : 'bg-blue-700'}`} onClick={() => setSelectedModel('runwayml/stable-diffusion-v1-5')}>
+                RunwayML (Low Detail)
+              </button>
+              <button className={`text-white font-bold py-2 px-4 rounded ${selectedModel === 'stabilityai/stable-diffusion-xl-base-1.0' ? 'bg-buttonHover' : 'bg-blue-700'}`} onClick={() => setSelectedModel('stabilityai/stable-diffusion-xl-base-1.0')}>
+                StabilityAI (High Detail)
+              </button>
+              </div>
 
+              <br/>
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleGen}>
                 Generate Image
                 </button>
+                
+                
+
+            
           
                 
             </div>
