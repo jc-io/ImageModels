@@ -71,6 +71,8 @@ function NavBar() {
         const isEditImage = window.location.pathname === '/EditImage';
         const isImageGen = window.location.pathname === '/ImageGen';
         const isAbout = window.location.pathname === '/About';
+        const isExplore = window.location.pathname === '/Explore';
+
         const windowHeight = window.innerHeight || document.documentElement.clientHeight;
 
   
@@ -117,6 +119,11 @@ function NavBar() {
             document.getElementById('navbar-imageGen').classList.add('md:text-blue-700');
         }else{
             document.getElementById('navbar-imageGen').classList.remove('md:text-blue-700');  
+        }
+        if (isExplore){//md:text-blue-700
+            document.getElementById('navbar-Explore').classList.add('md:text-blue-700');
+        }else{
+            document.getElementById('navbar-Explore').classList.remove('md:text-blue-700');  
         }
         if (isAbout){//md:text-blue-700
             document.getElementById('navbar-About').classList.add('md:text-blue-700');
@@ -226,7 +233,7 @@ function NavBar() {
                     <a href="/" id="navbar-home" className="block py-2 px-3 text-white rounded md:bg-transparent md:p-0" aria-current="page">Home</a>
                 </li>
                 <li>
-                    <a href="/Explore" id="navbar-explore" className="block py-2 px-3 text-white rounded md:bg-transparent md:p-0">Explore</a>
+                    <a href="/Explore" id="navbar-Explore" className="block py-2 px-3 text-white rounded md:bg-transparent md:p-0">Explore</a>
                 </li>
                 <li>
                     <a href="/CaptionGen" id="navbar-caption" className="block py-2 px-3 text-white rounded md:bg-transparent md:p-0">CaptionGen</a>
