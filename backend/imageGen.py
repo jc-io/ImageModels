@@ -5,6 +5,8 @@ import base64
 import io
 from PIL import Image
 
+torch.cuda.empty_cache() #empty vram
+
 class ImageGen:
     def __init__(self):
         self.model_id = "runwayml/stable-diffusion-v1-5"
