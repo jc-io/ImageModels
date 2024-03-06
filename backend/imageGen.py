@@ -1,66 +1,76 @@
-from diffusers import StableDiffusionPipeline  # latest version transformers (clips)
-from diffusers import DiffusionPipeline # slow version
-import torch
-import base64
-import io
+import requests
 from PIL import Image
+import torch
+from transformers import BlipProcessor, BlipForConditionalGeneration, AutoModelForCausalLM, AutoTokenizer
 
+# Check if CUDA (GPU support) is available
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.cuda.empty_cache() #empty vram
 
-class ImageGen:
+class captionGen:
     def __init__(self):
-        self.model_id = "runwayml/stable-diffusion-v1-5"
-        self.detailed_model_id = "stabilityai/stable-diffusion-xl-base-1.0"
+        self.processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+        self.model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large").to(device)
 
-    def generate(self, prompt="No prompt given"):
-        try:
-            self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, safety_checker=None, filter_enabled=False)
-            self.pipe.enable_model_cpu_offload()
-            image = self.pipe(prompt).images[0]  
-           # Format the base64 string as a data URL for HTML
-            return self.covertToimgageJpeg(image);
+    def predict(self, imageurl):
+        raw_image = Image.open(imageurl).convert('RGB')
+        text = "a photo of"
+        inputs = self.processor(raw_image, text, return_tensors="pt").to(device)
 
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        out = self.model.generate(**inputs)
+        return self.processor.decode(out[0], skip_special_tokens=True)
 
-    def generateDetailed(self, prompt="No prompt given"):
-        try:
-            self.pipe = DiffusionPipeline.from_pretrained(self.detailed_model_id, torch_dtype=torch.float16, variant="fp16", filter_enabled=False, safety_checker=None)
-            self.pipe = self.pipe.to("cuda")
-            image = self.pipe(prompt).images[0] 
-            return self.covertToimgageJpeg(image);
+    def createCaption(self, caption, tone):
+        print("Using device: " + str(device))
+        #text = "Make a " + tone + " Instagram caption for : " + caption + "; make sure to only output the made Instagram caption. Do not output anything other then the made Instagram caption."
+        messages = [
+        {
+        "role": "system",
+        "content": "You are a bot that generates one " + tone + " Instagram caption",
+        },
+        {"role": "user", "content": caption},
+        ]
+        #print("Text to be sent to LLM: " + text)
+        tokenizer = AutoTokenizer.from_pretrained("HuggingFaceH4/zephyr-7b-beta")
+        model = AutoModelForCausalLM.from_pretrained("HuggingFaceH4/zephyr-7b-beta", torch_dtype=torch.float16).to(device)
+        # text = "What is a short witty and funny instagram caption for an image of, " + caption + "  and make sure not to add extra information:"
+        #text = "Make a" + tone + "Instagram caption for an image of " + caption + " and make sure to only output the caption"
+        #input_ids = tokenizer.encode(text, return_tensors="pt").to(device)
+        tokenized_chat = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_tensors="pt").to(device)
 
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        """
+        output = model.generate(
+            input_ids,
+            max_length=140,  # Increase or decrease this value for longer or shorter captions
+            num_return_sequences=1,  # Generate multiple sequences for diversity
+            temperature=1,  # Adjust the temperature for more diverse outputs
+            top_k=50,  # Adjust the top_k parameter for diversity
+            top_p=0.9,  # Adjust the top_p parameter for diversity
+            repetition_penalty=1.3,  # Penalize repetition for more diverse outputs
+            do_sample=True  # Sample from the distribution instead of greedy decoding
+        )
+        """
+        output = model.generate(
+            tokenized_chat,
+            max_length=140,  # Increase or decrease this value for longer or shorter captions
+            num_return_sequences=1,  # Generate multiple sequences for diversity
+            temperature=0.7,  # Adjust the temperature for more diverse outputs
+            top_k=50,  # Adjust the top_k parameter for diversity
+            top_p=0.9,  # Adjust the top_p parameter for diversity
+            repetition_penalty=1.3,  # Penalize repetition for more diverse outputs
+            do_sample=True  # Sample from the distribution instead of greedy decoding
+        )
 
-    def covertToimgageJpeg(self, image):
-        image = image.convert('RGB')
-                        # Convert the image to a byte array
-        with io.BytesIO() as buffer:
-            image.save(buffer, format="JPEG")
-            image_byte_array = buffer.getvalue()
+        generated_joke = tokenizer.decode(output[0], skip_special_tokens=True)
+        torch.cuda.empty_cache()
+        return generated_joke.partition("<|assistant|>")[2]
 
-            # Convert the image to a byte array
-            # image_byte_array = image.tobytes()
-
-            # Encode the byte array to base64
-        base64_encoded_image = base64.b64encode(image_byte_array)
-
-            # Convert the base64 bytes to a string
-        base64_encoded_image_string = base64_encoded_image.decode('utf-8')
-
-            # Format the base64 string as a data URL for HTML
-        data_url = f"data:image/jpeg;base64,{base64_encoded_image_string}"
-        return data_url
-
+    
 
 if __name__ == '__main__':
-    prompt = "horse space walk"
-    gen = ImageGen()
-    generated_image_url = gen.generate(prompt)
-    if generated_image_url:
-        print("Generated image URL:", generated_image_url)
-    else:
-        print("Failed to generate the image.")
+   location = "/Users/mattiwosbelachew/Repos/github.com/CSE115A/ImageModels/backend/uploads/wildcamping.jpg"
+   gen = captionGen()
+   caption = gen.predict(location)
+   print("Predicted caption:", caption)
+   funnycaption = gen.makeFunny(caption)
+   print("Funny caption:", funnycaption)

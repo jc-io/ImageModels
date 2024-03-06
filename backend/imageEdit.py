@@ -4,11 +4,7 @@ import torch
 from PIL import Image
 import base64
 import io
-
-"""
-image edit starter
-"""
-
+#import xformers
 
 class ImageEdit:
     def __init__(self):
