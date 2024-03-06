@@ -6,7 +6,7 @@ import base64
 import io
 #import xformers
 
-class ImageEdit:
+class imageEdit:
     def __init__(self):
         self.model_id = "runwayml/stable-diffusion-v1-5"
         self.detailed_model_id = "stabilityai/stable-diffusion-xl-base-1.0"
