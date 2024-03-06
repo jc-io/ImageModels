@@ -164,7 +164,7 @@ function NavBar() {
                                     </button> */}
 
                                         <button class="bg-transparent hover:underline text-white font-semibold hover:text-white py-2 px-4 hover:border-transparent rounded">
-                                        Login In ⬈ 
+                                        Log In ⬈ 
                                         </button>
                                 </a>
                                 <a href="/signup">
