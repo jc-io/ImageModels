@@ -269,10 +269,11 @@ def generate_image():
     try:
         prompt = request.form.get('prompt');
         model = request.form.get('model');
-        guidance = request.form.get('guidance');
-        inferenceSteps = request.form.get('inferenceSteps');
+        guidance = float(request.form.get('guidance'));
+        inferenceSteps = int(request.form.get('inferenceSteps'));
 
         print("Recieved prompt: " + prompt)
+
         generator = ImageGen();
         # image = generator.generate(prompt);
         images = []

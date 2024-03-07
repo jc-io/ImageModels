@@ -12,7 +12,7 @@ class ImageGen:
 
     def generate(self, prompt="Didn't work sorry", guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
         self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, safety_checker=None, filter_enabled=False)
-        #self.pipe = self.pipe.to("cuda")
+        self.pipe = self.pipe.to("cuda")
         self.pipe.enable_model_cpu_offload()
         images = self.pipe(prompt=prompt,
                 guidance_scale=guidance_scaleImg,
@@ -35,6 +35,7 @@ class ImageGen:
             ).images[0]
            # Format the base64 string as a data URL for HTML
         return self.covertToimgageJpeg(images);
+
 
     def covertToimgageJpeg(self, image):
         image = image.convert('RGB')

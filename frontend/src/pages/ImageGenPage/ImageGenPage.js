@@ -49,8 +49,7 @@ const ImageGenPage = () => {
     formData.append('image', featuredImage ? featuredImage : (images.length > 0 ? images[0] : ''));//whatever was selected
     formData.append('prompt', prompt);
     formData.append('model', selectedModel); // Include the selected model
-    formData.append('guidance', guidance);
-    formData.append('inferenceSteps', inferenceSteps);
+
     //add information about the model and setting and etc used to generate the image
     axios.post(`${process.env.REACT_APP_BACKEND_URL}/Archive`, formData, {
       headers: {
@@ -79,8 +78,8 @@ const ImageGenPage = () => {
           const formData = new FormData();
           formData.append('prompt', prompt);
           formData.append('model', selectedModel); // Include the selected model
-          // formData.append('guidance', guidance);
-          // formData.append('')
+          formData.append('guidance', guidance);
+          formData.append('inferenceSteps', inferenceSteps);
 
           const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/generate`, formData);
           const data = response.data;
@@ -98,6 +97,7 @@ const ImageGenPage = () => {
 
   const goBack = () => {
     setImages(prevImages => []);
+    setPostCount(prevCount => 0);
     setPageState('main');
   };
 
@@ -186,8 +186,8 @@ const ImageGenPage = () => {
                         <span className="text-xs text-gray-500"></span>
                       </div>
                       <div className="flex justify-between text-xs text-gray-500">
-                        <span>More Strict</span>
-                        <span>Less Strict</span>
+                        <span>More Strict to Prompt</span>
+                        <span>Less Strict to Prompt</span>
                       </div>
 
                       {/* Number of Images slider */}
