@@ -1,6 +1,6 @@
 import datetime
 from flask import Flask, jsonify, request, session
-from pymongo import MongoClient
+from pymongo import MongoClient, ReturnDocument
 import json
 from PIL import Image
 from imageGen import ImageGen
@@ -10,6 +10,8 @@ import threading
 import uuid
 import jwt
 from bson import json_util
+from bson.objectid import ObjectId
+
 import base64
 from captionGen import captionGen
 # from PIL import Image #uncomment if u want to see images pop up
@@ -46,10 +48,7 @@ import os
 client = MongoClient('mongodb+srv://imagegen:KF7pSnJVxSZIfyIU@imagegen.jz2d0rr.mongodb.net/?retryWrites=true&w=majority&appName=ImageGen')
 db = client['ImageGen']
 users_collection = db['users']
-users_archive_collection = db['users_archive']
-
 images_collection = db['images']
-
 
 
 UPLOAD_FOLDER = 'uploads'
@@ -57,9 +56,7 @@ GENERATED_FOLDER = 'generated';
 
 
 app = Flask(__name__)
-# CORS(app, origins='https://amp.d1t6iofhrx2j14.amplifyapp.com');
-CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins for all routes
-
+CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['GENERATED_FOLDER'] = GENERATED_FOLDER
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -92,11 +89,11 @@ def get_user_info():
     return jsonify({'error': 'Token expired'}), 401
   except jwt.InvalidTokenError:
     return jsonify({'error': 'Invalid token'}), 401
-  
+    
 
 
-@app.route('/Archive', methods=['GET','POST'])
-def archive():
+@app.route('/getArchivedImages', methods=['GET','POST'])
+def get_Archived_Images():
   token = request.headers.get('Authorization')
   print("Token: " + str(token))
   if not token:
@@ -107,15 +104,13 @@ def archive():
     payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
     username = payload['username']
     
-    user = users_collection.find_one({'username': username})
-    image = request.form['image']
-    if user and (image != None | image != "undefined") :
-      
-      prompt = request.form['prompt'];
-      description = "Default no description Sorry" #request.form['description'];
-      model = request.form['model'];
-      images_collection.insert_one({'src': image, 'username': username, 'model':  model, 'date': datetime.datetime.now(),'prompt': prompt,'description': description})
-      return jsonify({'username': user['username'], 'email': user.get('email', '')}), 200
+    images_data = list(images_collection.find({'username': username}))  # Fetch documents with the specified limit
+    # Convert ObjectId to strings for each document
+    for image in images_data:
+        image['_id'] = str(image['_id'])
+
+    if images_data:
+      return jsonify({'message': 'Got Public Images', 'images': images_data}), 200
     else:
       return jsonify({'error': 'User not found'}), 404
 
@@ -123,20 +118,55 @@ def archive():
     return jsonify({'error': 'Token expired'}), 401
   except jwt.InvalidTokenError:
     return jsonify({'error': 'Invalid token'}), 401
-  
+
+@app.route('/toggleImagePrivacy/<image_id>', methods=['PUT'])
+def toggleImagePrivacy(image_id):
+  token = request.headers.get('Authorization')
+  print("Token: " + str(token))
+  if not token:
+    return jsonify({'error': 'Unauthorized No Token'}), 401
+
+  try:
+    print("Beginning to toggle image privacy")
+    token = token.split()[1]  # Remove 'Bearer' from the token
+    payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+    username = payload['username']
+    # Extract the current user's username from JWT token
+
+    print("Current User: " + str(username))
+    # Check if the image exists in MongoDB
+    image = images_collection.find_one({"_id": ObjectId(image_id)})
+    if not image:
+        return jsonify({"error": "Image not found"}), 404
     
-@app.route("/getImages",  methods=['GET','POST'])
+        # Extract the new privacy status from the request
+    data = request.get_json()
+    is_public = data.get('isPublic')
+    # Update the privacy status of the image in MongoDB
+    update_query = {"$set": {"public": is_public}}
+    if 'public' not in image:  # If the 'public' field doesn't exist, add it
+        update_query = {"$set": {"public": is_public}}
+    updated_image = images_collection.find_one_and_update(
+            {"_id": ObjectId(image_id)},
+            update_query,
+            return_document=ReturnDocument.AFTER
+    )
+    return jsonify({"message": f"Privacy status of image {image_id} updated successfully","public": is_public}), 200
+
+  except jwt.ExpiredSignatureError:
+    return jsonify({'error': 'Token expired'}), 401
+  except jwt.InvalidTokenError:
+    return jsonify({'error': 'Invalid token'}), 401
+  
+@app.route("/getImages",  methods=['GET'])
 def getImages():
-    # token = request.headers.get('Authorization')
-    # if not token:
-    #   return jsonify({'error': 'Unauthorized No Token'}), 401
     limit = 100  # Set your desired limit here
-    images_data = list(images_collection.find({}).limit(limit))  # Fetch documents with the specified limit
-      
-      # Convert ObjectId to strings for each document
+    images_data = list(images_collection.find({"public":True}).limit(limit))  # Fetch documents with the specified limit
+    
+    # Convert ObjectId to strings for each document
     for image in images_data:
         image['_id'] = str(image['_id'])
-      
+    
     return jsonify({'message': 'Got Public Images', 'images': images_data}),200
 
 @app.route('/signup', methods=['POST'])
@@ -199,16 +229,7 @@ def login():
             res = {'response': 'Invalid username or password'}
             return jsonify(res), 401
 
-# Example restricted route that requires authentication
-# @app.route('/restricted')
-# def restricted():
-#     if 'token' in session:
-#         # Here you can check for additional permissions if needed
-#         res = {'response': 'Welcome to the restricted area, ' + session['username']}
-#         return jsonify(res), 200
-#     else:
-#         res = {'response': 'Unauthorized'}
-#         return jsonify(res), 401
+
     
 @app.route("/imageTotext", methods=['post'])
 def imageToText():
@@ -268,16 +289,12 @@ def generateLLM():
 def generate_image():
     try:
         prompt = request.form.get('prompt');
-        model = request.form.get('model');
-
         print("Recieved prompt: " + prompt)
         generator = ImageGen();
         # image = generator.generate(prompt);
         images = []
-        if model == 'runwayml/stable-diffusion-v1-5':
+        for i in range(6):
           images.append({'image_data': generator.generate(prompt)});
-        else: 
-          images.append({'image_data': generator.generateDetailed(prompt)});
         # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
  
 

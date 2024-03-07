@@ -204,7 +204,7 @@ function NavBar() {
                             </div>
                             <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                                 <li>
-                                    <a href="/" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Archive</a>
+                                    <a href="/Archive" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Archive</a>
                                 </li>
                                 <li>
                                     <a href="/Setting" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>

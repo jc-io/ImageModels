@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import CaptionGenPage from './pages/CaptionGenPage/CaptionGenPage';
 import SignUpPage from './pages/SignUpPage/SignUpPage';
 
+import ArchivePage from './pages/ArchivePage/ArchivePage';
 
 import NavBar from './components/NavBar/NavBar';
 
@@ -41,6 +42,7 @@ root.render(
         <Route path="/ImageGen" element={<ImageGenPage/>} />
         <Route path="/SignUp" element={<SignUpPage/>} />
         <Route path="/Login" element={<LoginPage/>} />
+        <Route path="/Archive" element={<ArchivePage/>} />
         <Route path="/TermsandConditions" element={<TermsPage/>} />
         <Route path="/Setting" element={<SettingPage/>} />
         <Route path="*" exact={true} element={<NotFoundPage/>} />
