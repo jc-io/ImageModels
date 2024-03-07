@@ -32,7 +32,7 @@ class ImageGen:
                 num_images_per_prompt=num_images
             ).images
            # Format the base64 string as a data URL for HTML
-        return self.covertToimgageJpeg(image[0]);
+        return self.covertToimgageJpeg(images);
 
     def generateDetailed(self, img, prompt="Didn't work sorry", guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
         model_input_img = self.preprocess(img)
@@ -46,7 +46,7 @@ class ImageGen:
                 num_images_per_prompt=num_images
             ).images
            # Format the base64 string as a data URL for HTML
-        return self.covertToimgageJpeg(image[0]);
+        return self.covertToimgageJpeg(images);
 
     def covertToimgageJpeg(self, image):
         image = image.convert('RGB')
