@@ -10,28 +10,43 @@ class ImageGen:
         self.model_id = "runwayml/stable-diffusion-v1-5"
         self.detailed_model_id = "stabilityai/stable-diffusion-xl-base-1.0"
 
-    def generate(self, prompt="No prompt given"):
+    def preprocess(self, img):
         try:
-            self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, safety_checker=None, filter_enabled=False)
-            self.pipe.enable_model_cpu_offload()
-            image = self.pipe(prompt).images[0]  
+            file = open(img, "rb")
+            og_image = Image.open(file).convert("RGB")
+            og_image = og_image.resize((768, 512))
+            return og_image
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+
+    def generate(self, img, prompt="Didn't work sorry", guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
+        model_input_img = self.preprocess(img)
+        self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, safety_checker=None, filter_enabled=False)
+        self.pipe = self.pipe.to("cuda")
+        self.pipe.enable_model_cpu_offload()
+        images = self.pipe(prompt=prompt, image=model_input_img,
+                guidance_scale=guidance_scaleImg,
+                num_inference_steps=stepsImg,
+                negative_prompt=negativeImg,
+                num_images_per_prompt=num_images
+            ).images
            # Format the base64 string as a data URL for HTML
-            return self.covertToimgageJpeg(image);
+        return self.covertToimgageJpeg(image[0]);
 
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
-
-    def generateDetailed(self, prompt="No prompt given"):
-        try:
-            self.pipe = DiffusionPipeline.from_pretrained(self.detailed_model_id, torch_dtype=torch.float16, variant="fp16", filter_enabled=False, safety_checker=None)
-            self.pipe = self.pipe.to("cuda")
-            image = self.pipe(prompt).images[0] 
-            return self.covertToimgageJpeg(image);
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+    def generateDetailed(self, img, prompt="Didn't work sorry", guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
+        model_input_img = self.preprocess(img)
+        self.pipe = DiffusionPipeline.from_pretrained(self.detailed_model_id, torch_dtype=torch.float16, variant="fp16", filter_enabled=False, safety_checker=None)
+        self.pipe = self.pipe.to("cuda")
+        self.pipe.enable_model_cpu_offload()
+        images = self.pipe(prompt=prompt, image=model_input_img,
+                guidance_scale=guidance_scaleImg,
+                num_inference_steps=stepsImg,
+                negative_prompt=negativeImg,
+                num_images_per_prompt=num_images
+            ).images
+           # Format the base64 string as a data URL for HTML
+        return self.covertToimgageJpeg(image[0]);
 
     def covertToimgageJpeg(self, image):
         image = image.convert('RGB')
@@ -52,13 +67,3 @@ class ImageGen:
             # Format the base64 string as a data URL for HTML
         data_url = f"data:image/jpeg;base64,{base64_encoded_image_string}"
         return data_url
-
-
-if __name__ == '__main__':
-    prompt = "horse space walk"
-    gen = ImageGen()
-    generated_image_url = gen.generate(prompt)
-    if generated_image_url:
-        print("Generated image URL:", generated_image_url)
-    else:
-        print("Failed to generate the image.")
