@@ -14,7 +14,7 @@ class ImageGen:
         self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, safety_checker=None, filter_enabled=False)
         #self.pipe = self.pipe.to("cuda")
         self.pipe.enable_model_cpu_offload()
-        images = self.pipe(prompt=prompt, image=model_input_img,
+        images = self.pipe(prompt=prompt,
                 guidance_scale=guidance_scaleImg,
                 num_inference_steps=stepsImg,
                 negative_prompt=negativeImg,
@@ -27,7 +27,7 @@ class ImageGen:
         self.pipe = DiffusionPipeline.from_pretrained(self.detailed_model_id, torch_dtype=torch.float16, variant="fp16", filter_enabled=False, safety_checker=None)
         self.pipe = self.pipe.to("cuda")
         self.pipe.enable_model_cpu_offload()
-        images = self.pipe(prompt=prompt, image=model_input_img,
+        images = self.pipe(prompt=prompt,
                 guidance_scale=guidance_scaleImg,
                 num_inference_steps=stepsImg,
                 negative_prompt=negativeImg,
