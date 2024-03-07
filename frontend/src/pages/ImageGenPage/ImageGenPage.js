@@ -264,12 +264,15 @@ const ImageGenPage = () => {
           {pageState === "result" && (
             <>
               <div className="image-display text-center flex flex-col items-center overflow-hidden">
-                <h3 className="text-white font-bold">Generated Images:</h3>
+                <h3 className="text-white font-bold mb-1">Generated Featured Image:</h3>
                 <div className="w-full max-w-[57vh]">
                   {images.length > 0 && (
-                    <img className="h-auto w-full rounded-lg mb-4" src={featuredImage} alt="Featured Image" />
+                    <img className="h-auto w-full rounded-lg mb-1" src={featuredImage} alt="Featured Image" />
                   )}
                 </div>
+                {numImages > 1 && (
+                  <h3 className="text-white font-bold mb-1">Generated Selectable Images:</h3>
+                )}
                 <div className="grid grid-cols-5 gap-4 w-full max-w-[57vh] mx-auto h-full">
                   {images.slice(1, 6).map((imageUrl, index) => (
                     <div key={index} className="w-full h-full" onClick={() => handleClickImage(imageUrl)}>
@@ -302,8 +305,8 @@ const ImageGenPage = () => {
                   </svg>
                   <span>Back</span>
                 </button>
-                <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 w-24 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => archiveImage()}>
-                  <span>Archive</span>
+                <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 w-48 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => archiveImage()}>
+                  <span>Archive Featured</span>
                 </button>
                 <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 w-24 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => share()}>
                   <span>Share</span>
