@@ -10,20 +10,9 @@ class ImageGen:
         self.model_id = "runwayml/stable-diffusion-v1-5"
         self.detailed_model_id = "stabilityai/stable-diffusion-xl-base-1.0"
 
-    def preprocess(self, img):
-        try:
-            file = open(img, "rb")
-            og_image = Image.open(file).convert("RGB")
-            og_image = og_image.resize((768, 512))
-            return og_image
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
-
-    def generate(self, img, prompt="Didn't work sorry", guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
-        model_input_img = self.preprocess(img)
+    def generate(self, prompt="Didn't work sorry", guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
         self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, safety_checker=None, filter_enabled=False)
-        self.pipe = self.pipe.to("cuda")
+        #self.pipe = self.pipe.to("cuda")
         self.pipe.enable_model_cpu_offload()
         images = self.pipe(prompt=prompt, image=model_input_img,
                 guidance_scale=guidance_scaleImg,
@@ -34,8 +23,7 @@ class ImageGen:
            # Format the base64 string as a data URL for HTML
         return self.covertToimgageJpeg(images);
 
-    def generateDetailed(self, img, prompt="Didn't work sorry", guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
-        model_input_img = self.preprocess(img)
+    def generateDetailed(self, prompt="Didn't work sorry", guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
         self.pipe = DiffusionPipeline.from_pretrained(self.detailed_model_id, torch_dtype=torch.float16, variant="fp16", filter_enabled=False, safety_checker=None)
         self.pipe = self.pipe.to("cuda")
         self.pipe.enable_model_cpu_offload()
