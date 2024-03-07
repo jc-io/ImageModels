@@ -27,7 +27,6 @@ const ImageGenPage = () => {
       const updatedImages = [imageUrl, ...images.filter(img => img !== imageUrl)];
       setImages(updatedImages);
       setFeaturedImage(imageUrl);
-      console.log(featuredImage);
     }
   };
 
@@ -98,6 +97,10 @@ const ImageGenPage = () => {
   const goBack = () => {
     setImages(prevImages => []);
     setPageState('main');
+  };
+
+  const share = () => {
+    console.log("Share/Download Image")
   };
 
   return (
@@ -263,20 +266,20 @@ const ImageGenPage = () => {
               <div className="image-display text-center flex flex-col items-center overflow-hidden">
                 <h3 className="text-white font-bold">Generated Images:</h3>
                 <div className="w-full max-w-[57vh]">
-                  {featuredImage && (
+                  {images.length > 0 && (
                     <img className="h-auto w-full rounded-lg mb-4" src={featuredImage} alt="Featured Image" />
                   )}
                 </div>
                 <div className="grid grid-cols-5 gap-4 w-full max-w-[57vh] mx-auto h-full">
-                  {images.slice(0, 5).map((imageUrl, index) => (
+                  {images.slice(1, 6).map((imageUrl, index) => (
                     <div key={index} className="w-full h-full" onClick={() => handleClickImage(imageUrl)}>
                       <img className="h-full w-full rounded-lg" src={imageUrl} alt={`Image ${index + 1}`} />
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="text-center prompt-display">
-                <h2 className="text-white font-bold mb-2 py-7">Prompt:</h2>
+              <div className="prompt-display text-center pt-2">
+                <h2 className="text-white font-bold mb-2">Prompt:</h2>
                 <textarea
                   readOnly
                   className="w-1/2 py-2 px-2 text-center text-white border rounded-lg focus:outline-none"
@@ -285,32 +288,33 @@ const ImageGenPage = () => {
                   onChange={(e) => setPrompt(e.target.value)}
                   style={{
                     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    padding: '20px',
+                    padding: '10px',
                     borderRadius: '8px',
                     marginTop: '5px',
                     resize: 'none' // Disable textarea resizing
                   }}
                 ></textarea>
-                <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => archiveImage()}>
-                  <span>Archive</span>
-                </button>
-                <br />
-                <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => goBack()}>
+              </div>
+              <div className="flex justify-center space-x-28 mt-4">
+                <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 w-24 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => goBack()}>
                   <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
                   </svg>
                   <span>Back</span>
                 </button>
+                <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 w-24 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => archiveImage()}>
+                  <span>Archive</span>
+                </button>
+                <button className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 w-24 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => share()}>
+                  <span>Share</span>
+                </button>
               </div>
             </>
           )}
         </div>
-
       </div>
-
     </>
   );
-
 };
 
 export default ImageGenPage;
