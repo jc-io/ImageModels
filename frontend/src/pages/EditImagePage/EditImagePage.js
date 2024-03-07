@@ -105,80 +105,80 @@ function EditImagePage() {
 
   // # This function handles uplaoding the image correctly
 
-  const handleUpload = () => {
-    // You can implement your file upload logic here
-    if (selectedFiles.length > 0) {
-      // Example: send the file to a server
-      const formData = new FormData();
-      // Append each file to the FormData
-      selectedFiles.forEach((file, index) => {
-        formData.append(`file`, file);
-      });
-      formData.append("prompt", prompt);
+  // const handleUpload = () => {
+  //   // You can implement your file upload logic here
+  //   if (selectedFiles.length > 0) {
+  //     // Example: send the file to a server
+  //     const formData = new FormData();
+  //     // Append each file to the FormData
+  //     selectedFiles.forEach((file, index) => {
+  //       formData.append(`file`, file);
+  //     });
+  //     formData.append("prompt", prompt);
 
-      setpageState("loading");
+  //     setpageState("loading");
 
-      // Add your API call or upload logic here
-      // For example using fetch or Axios
-      axios
-        .post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
-        .then((response) => {
-          return response.data;
-        })
-        .then((data) => {
-          setpageState("result");
-          // Check if data.images is an array before calling map
-          const imageUrls = Array.isArray(data.images)
-            ? data.images.map((image) => image.image_data)
-            : [];
-          setImages(imageUrls);
-          setPrompt(data.prompt);
+  //     // Add your API call or upload logic here
+  //     // For example using fetch or Axios
+  //     axios
+  //       .post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
+  //       .then((response) => {
+  //         return response.data;
+  //       })
+  //       .then((data) => {
+  //         setpageState("result");
+  //         // Check if data.images is an array before calling map
+  //         const imageUrls = Array.isArray(data.images)
+  //           ? data.images.map((image) => image.image_data)
+  //           : [];
+  //         setImages(imageUrls);
+  //         setPrompt(data.prompt);
 
-          const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
-          setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
+  //         const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
+  //         setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
 
-          // console.log(data);
-          return data ? Promise.resolve(data) : Promise.resolve({});
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          alert(
-            "An error occurred while uploading the image. Please try again later."
-          );
-          setpageState("main"); // Reset page state
-          return Promise.reject(error);
-        });
-    }
-  };
+  //         // console.log(data);
+  //         return data ? Promise.resolve(data) : Promise.resolve({});
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error:", error);
+  //         alert(
+  //           "An error occurred while uploading the image. Please try again later."
+  //         );
+  //         setpageState("main"); // Reset page state
+  //         return Promise.reject(error);
+  //       });
+  //   }
+  // };
 
   // Testing function
   // This function will return the same uploaded image after waiting for 10 seconds. *** Replace with the function above when done testing
-  // const handleUpload = () => {
-  //   // Check if files are selected
-  //   if (selectedFiles.length > 0) {
-  //     // Set loading state
-  //     setpageState("loading");
+  const handleUpload = () => {
+    // Check if files are selected
+    if (selectedFiles.length > 0) {
+      // Set loading state
+      setpageState("loading");
 
-  //     // Simulate delay using setTimeout
-  //     setTimeout(() => {
-  //       // Reset loading state
-  //       setpageState("result");
+      // Simulate delay using setTimeout
+      setTimeout(() => {
+        // Reset loading state
+        setpageState("result");
 
-  //       // Get the uploaded image URL
-  //       const uploadedImageUrls = selectedFiles.map((file) =>
-  //         URL.createObjectURL(file)
-  //       );
+        // Get the uploaded image URL
+        const uploadedImageUrls = selectedFiles.map((file) =>
+          URL.createObjectURL(file)
+        );
 
-  //       // Set the uploaded image URLs as result
-  //       setImages(uploadedImageUrls);
+        // Set the uploaded image URLs as result
+        setImages(uploadedImageUrls);
 
-  //       // Reset page state after displaying the result
-  //       // setTimeout(() => {
-  //       //   setpageState('main');
-  //       // }, 3000); // Change 3000 to 10000 for 10-second delay
-  //     }, 5000); // Wait for 10 seconds
-  //   }
-  // };
+        // Reset page state after displaying the result
+        // setTimeout(() => {
+        //   setpageState('main');
+        // }, 3000); // Change 3000 to 10000 for 10-second delay
+      }, 5000); // Wait for 10 seconds
+    }
+  };
 
   return (
     <div className="bg-second min-h-screen from-gray-100 to-gray-300">
@@ -241,7 +241,6 @@ function EditImagePage() {
                     <br></br>
                     <br></br>
                     <h3 className="text-white font-bold">Generating</h3>
-                    {/* <p className="text-white font-bold">This may take a few seconds, please don't close this page.</p> */}
                   </div>
 
                   <label className="flex child flex-col items-center justify-center w-96 h-72 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
@@ -438,6 +437,7 @@ function EditImagePage() {
         )}
         {/* {pageState==="loading" && (
         <div> */}
+
         {pageState === "loading" && (
           <div class="parent">
             <div class="child">
@@ -453,7 +453,7 @@ function EditImagePage() {
                     }}
                   >
                     <img
-                      src={uploadedImageUrl}
+                      src={URL.createObjectURL(selectedFiles[0])}
                       alt="Uploaded"
                       className="max-w-md"
                     />
@@ -462,7 +462,7 @@ function EditImagePage() {
               )}
             </div>
 
-            <div class="child" style={{ margin: "5px" }}>
+            <div class="child">
               <div class="spinner">
                 <div class="spinner1"></div>
               </div>
@@ -489,9 +489,9 @@ function EditImagePage() {
             <div className="image-display text-center">
               {/* <h3 className="text-white font-bold">Generated Image[s]:</h3> */}
 
-              <div class="child">
-                {/* show the uploaded image */}
-                {selectedFiles.length > 0 && (
+              {/* <div class="child"> */}
+              {/* show the uploaded image */}
+              {/* {selectedFiles.length > 0 && (
                   <div className="mt-4 relative">
                     <h2 className="text-3xl font-semibold leading-normal text-white"></h2>
                     <div
@@ -509,6 +509,24 @@ function EditImagePage() {
                     </div>
                   </div>
                 )}
+              </div> */}
+
+              <div class="child">
+                {images.map((imageUrl, index) => (
+                  <div>
+                    <img
+                      className="h-auto max-w-full rounded-lg max-w-md"
+                      key={index}
+                      alt={`Image ${index + 1}`}
+                      src={imageUrl}
+                      style={{
+                        border: "5px solid black",
+                        borderRadius: "8px",
+                        backgroundColor: "transparent",
+                      }}
+                    />
+                  </div>
+                ))}
               </div>
 
               <div
