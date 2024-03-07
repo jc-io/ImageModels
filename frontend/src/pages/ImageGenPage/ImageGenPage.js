@@ -49,6 +49,8 @@ const ImageGenPage = () => {
     formData.append('image', featuredImage ? featuredImage : (images.length > 0 ? images[0] : ''));//whatever was selected
     formData.append('prompt', prompt);
     formData.append('model', selectedModel); // Include the selected model
+    formData.append('guidance', guidance);
+    formData.append('inferenceSteps', inferenceSteps);
     //add information about the model and setting and etc used to generate the image
     axios.post(`${process.env.REACT_APP_BACKEND_URL}/Archive`, formData, {
       headers: {
@@ -147,7 +149,7 @@ const ImageGenPage = () => {
                   type="button"
                   className="inline-flex justify-between w-[27.4rem] rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-200 text-base font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100"
                 >
-                  <span>Image Settings</span>
+                  <span>Advanced Image Settings</span>
                   {/* Icon for dropdown */}
                   <svg
                     className={`-mr-1 ml-2 h-5 w-5 ${dropdownOpen ? 'transform rotate-180' : ''}`}

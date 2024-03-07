@@ -109,7 +109,7 @@ def archive():
     
     user = users_collection.find_one({'username': username})
     image = request.form['image']
-    if user and (image != None | image != "undefined") :
+    if user :
       
       prompt = request.form['prompt'];
       description = "Default no description Sorry" #request.form['description'];
@@ -269,15 +269,17 @@ def generate_image():
     try:
         prompt = request.form.get('prompt');
         model = request.form.get('model');
+        guidance = request.form.get('guidance');
+        inferenceSteps = request.form.get('inferenceSteps');
 
         print("Recieved prompt: " + prompt)
         generator = ImageGen();
         # image = generator.generate(prompt);
         images = []
         if model == 'runwayml/stable-diffusion-v1-5':
-          images.append({'image_data': generator.generate(prompt)});
+          images.append({'image_data': generator.generate(prompt, guidance, inferenceSteps)});
         else: 
-          images.append({'image_data': generator.generateDetailed(prompt)});
+          images.append({'image_data': generator.generateDetailed(prompt, guidance, inferenceSteps)});
         # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
  
 
