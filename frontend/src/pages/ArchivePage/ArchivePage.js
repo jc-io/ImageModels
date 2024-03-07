@@ -160,7 +160,7 @@ const ArchivePage = () => {
                 id={`privacy-toggle-${image._id}`}
                 type="checkbox"
                 className="hidden"
-                checked={image.public}
+                checked={images?.find(img => img._id === image._id)?.public || false}
                 onChange={() => toggleImagePrivacy(image._id, image.public)}
             />
             <div className={`w-10 h-4 flex items-center justify-between rounded-full p-1 ${image.public ? 'bg-blue-500' : 'bg-gray-400'}`}>
