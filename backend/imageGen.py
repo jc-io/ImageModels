@@ -30,7 +30,7 @@ class ImageGen:
                 num_inference_steps=stepsImg,
                 negative_prompt=negativeImg,
                 num_images_per_prompt=num_images
-            ).images
+            ).images[0]
            # Format the base64 string as a data URL for HTML
         return self.covertToimgageJpeg(images);
 
@@ -44,7 +44,7 @@ class ImageGen:
                 num_inference_steps=stepsImg,
                 negative_prompt=negativeImg,
                 num_images_per_prompt=num_images
-            ).images
+            ).images[0]
            # Format the base64 string as a data URL for HTML
         return self.covertToimgageJpeg(images);
 
