@@ -10,7 +10,10 @@ const ImageGenPage = () => {
   const [selectedModel, setSelectedModel] = useState('runwayml/stable-diffusion-v1-5'); // Default model selection
   const token = localStorage.getItem('token');
   const [postCount, setPostCount] = useState(0);
-  const MAX_CHAR_LIMIT = 200;
+  const MAX_CHAR_LIMIT_LOWD = 100;
+  const MAX_CHAR_LIMIT_HIGHD = 50;
+  const MAX_SELECTED_CHAR_LIMIT = selectedModel === 'runwayml/stable-diffusion-v1-5' ? MAX_CHAR_LIMIT_LOWD : MAX_CHAR_LIMIT_HIGHD;
+
 
   // Image settings state
   const [imageSettingsVisible, setImageSettingsVisible] = useState(false);
@@ -95,9 +98,21 @@ const ImageGenPage = () => {
     }
   };
 
+  const chooseLowDetail = () => {
+    setSelectedModel('runwayml/stable-diffusion-v1-5');
+    document.getElementById('prompt-input').value = "";
+    setPrompt(prevPrompt => "");
+  }
+  const chooseHighDetail = () => {
+    setSelectedModel('stabilityai/stable-diffusion-xl-base-1.0');
+    document.getElementById('prompt-input').value = "";
+    setPrompt(prevPrompt => "");
+  }
+
   const goBack = () => {
     setImages(prevImages => []);
     setPostCount(prevCount => 0);
+    setPrompt(prevPrompt => "");
     setPageState('main');
   };
 
@@ -123,21 +138,21 @@ const ImageGenPage = () => {
                 id="prompt-input"
                 className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-2/3 h-24" // Adjusted width to 1/2 and height to 6rem
                 placeholder="Enter Image Description"
-                maxLength={MAX_CHAR_LIMIT}
+                maxLength={MAX_SELECTED_CHAR_LIMIT}
                 onChange={(e) => setPrompt(e.target.value)}
               ></textarea>
               <div className="text-right mt-2 text-sm text-gray-600">
-                {`${prompt.length}/${MAX_CHAR_LIMIT} Characters Remaining`}
+                {`${prompt.length}/${MAX_SELECTED_CHAR_LIMIT} Characters Remaining`}
               </div>
               <br />
               <label className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">
                 Choose Model:
               </label>
               <div className="flex space-x-4">
-                <button className={`text-white font-bold py-2 px-4 rounded ${selectedModel === 'runwayml/stable-diffusion-v1-5' ? 'bg-buttonHover' : 'bg-blue-700'}`} onClick={() => setSelectedModel('runwayml/stable-diffusion-v1-5')}>
+                <button className={`text-white font-bold py-2 px-4 rounded ${selectedModel === 'runwayml/stable-diffusion-v1-5' ? 'bg-buttonHover' : 'bg-blue-700'}`} onClick={() => chooseLowDetail()}>
                   RunwayML (Low Detail)
                 </button>
-                <button className={`text-white font-bold py-2 px-4 rounded ${selectedModel === 'stabilityai/stable-diffusion-xl-base-1.0' ? 'bg-buttonHover' : 'bg-blue-700'}`} onClick={() => setSelectedModel('stabilityai/stable-diffusion-xl-base-1.0')}>
+                <button className={`text-white font-bold py-2 px-4 rounded ${selectedModel === 'stabilityai/stable-diffusion-xl-base-1.0' ? 'bg-buttonHover' : 'bg-blue-700'}`} onClick={() => chooseHighDetail()}>
                   StabilityAI (High Detail)
                 </button>
               </div>
