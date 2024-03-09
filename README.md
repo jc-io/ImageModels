@@ -28,14 +28,14 @@ This will create a backend REST API running on port 5000, which is used to inter
 
 ## Testing Upload and Responses
 
-Visit [http://localhost:3000/upload](http://localhost:3000/upload):
+Visit [http://localhost:3000/ImageGen](http://localhost:3000/ImageGen):
 - Click and select a file, then click upload.
 - Make sure to have the console open to see logs of requests sent and responses.
 - The files should be uploaded to the backend's `uploads` folder. Ensure that data is being received correctly.
 
 ## Utilizing Machine Learning and Backend
 
-You can add your machine learning models to the backend and test your functionality. Replace responses with altered images or other relevant data.
+You can add your machine learning models to the backend and test your functionality. Replace responses with altered images or other relevant data. The Models used were Stable Diffusion and BLIP models. These models were researched and sourced from HuggingFace
 
 ## API Documentation
 
