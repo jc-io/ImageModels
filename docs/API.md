@@ -307,3 +307,42 @@
   - `500 Internal Server Error` if an error occurs
 
 ---
+
+### 13. `PUT /updateImageDescription/<image_id>`
+
+- **Description**: Updates the Description of Image.
+- **Request Method**: `PUT`
+- **URL Parameters**:
+  - `image_id`: The ID of the image to update description.
+- **Headers**:
+  - `Authorization`: Bearer token
+- **Request Body**:
+  ```json
+  {
+    "description": string
+  }
+  ```
+- **Response**:
+  - Status Code: `200 OK`
+  - Body:
+    ```json
+    {
+        "message": "Updated the description of image <image_id> successfully",
+        "description": description
+    }
+    ```
+- **Error Responses**:
+  - Status Code: `401 Unauthorized`
+    ```json
+    {
+        "error": "Unauthorized No Token"
+    }
+    ```
+  - Status Code: `404 Not Found`
+    ```json
+    {
+        "error": "Image not found"
+    }
+    ```
+
+---

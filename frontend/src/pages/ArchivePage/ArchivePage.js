@@ -74,38 +74,6 @@ const ArchivePage = () => {
     }
   }, [images]); // Run the effect whenever images changes
 
-  const toggleImagePrivacy = async (imageId, isPublic) => {
-    try {
-      // Toggle the privacy status of the image in the backend
-      const response = await axios.put(
-        `${process.env.REACT_APP_BACKEND_URL}/toggleImagePrivacy/${imageId}`,
-        { isPublic: !isPublic }, // Use 'isPublic' consistently
-        {
-          headers: {
-            "ngrok-skip-browser-warning": "69420",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // Check if the toggle was successful
-      if (response.status === 200) {
-        // Update the state of the images to reflect the change
-        setImages((prevImages) =>
-          prevImages.map(
-            (image) =>
-              image._id === imageId
-                ? { ...image, public: response.data.public }
-                : image // Update 'public' property consistently
-          )
-        );
-        toast(`Image privacy toggled successfully! Set to ${response.data.public ? "Public" : "Private"}`);
-        handleImageClick(); //Exits image preview to reset state.
-      }
-    } catch (error) {
-      console.error("Error toggling image privacy:", error);
-    }
-  };
 
   // Function to handle image click
   const handleImageClick = (image) => {
@@ -136,90 +104,6 @@ const ArchivePage = () => {
     </a>
   );
 
-  const ImageModal = ({ image, onClose }) =>
-    image ? (
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000,
-        }}
-        onClick={onClose}
-      >
-        <div
-          style={{
-            width: "35vw", // 80% of the viewport width
-            height: "80vh", // 80% of the viewport height
-            padding: 0,
-            backgroundColor: "#fff",
-            borderRadius: "8px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "relative",
-            color: "black",
-            overflow: "hidden",
-          }}
-          onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
-        >
-          <img
-            src={image.src}
-            alt={image.username}
-            style={{
-              minHeight: "75%", // Scale up the image to be in the range
-              maxHeight: "75%", // Limit the image height to ensure text space
-              objectFit: "contain", // Maintain aspect ratio without cropping
-              marginBottom: "10px", // Space between the image and the text
-            }}
-          />
-          <div
-            style={{ textAlign: "center", overflowY: "auto", maxHeight: "30%" }}
-          >
-            <h2>User: {image.username}</h2>
-            <p>Model: {image.model}</p>
-            <p>Prompt: {image.prompt}</p>
-            <p>Description: {image.description}</p>
-              
-            <label
-              htmlFor={`privacy-toggle-${image._id}`}
-              className="absolute top-4 right-4 flex items-center cursor-pointer"
-            >
-              <input
-                id={`privacy-toggle-${image._id}`}
-                type="checkbox"
-                className="hidden"
-                checked={
-                  images?.find((img) => img._id === image._id)?.public || false
-                }
-                onChange={() => toggleImagePrivacy(image._id, image.public)}
-              />
-              <div
-                className={`w-10 h-4 flex items-center justify-between rounded-full p-1 ${
-                  image.public ? "bg-blue-500" : "bg-gray-400"
-                }`}
-              >
-                <div
-                  className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
-                    image.public ? "translate-x-5" : "translate-x-0"
-                  }`}
-                ></div>
-              </div>
-              <span className="ml-2 text-black">Public</span>
-            </label>
-
-          </div>
-        </div>
-      </div>
-    ) : null;
-
   return (
     <div className="bg-primary dark:bg-primary min-h-screen py-6 sm:py-8 lg:py-12">
       {" "}
@@ -243,9 +127,189 @@ const ArchivePage = () => {
       <ImageModal
         image={selectedImage}
         onClose={() => setSelectedImage(null)}
+        setImages={setImages} // Pass setImages as a prop to update the images
       />
     </div>
   );
 };
+const ImageModal = ({ image, onClose, setImages }) => {
+  const [shareStates, setShareStates] = useState(image?.public || false);
+  const [editedDescription, setEditedDescription] = useState(
+    image?.description || ""
+  );
+  // Reset state when a new image is selected
+  useEffect(() => {
+    setShareStates(image?.public || false);
+    setEditedDescription(image?.description || "");
+  }, [image]);
 
+  const token = localStorage.getItem("token");
+
+  const toggleImagePrivacy = async (imageId, isPublic) => {
+    try {
+      // Toggle the privacy status of the image in the backend
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACKEND_URL}/toggleImagePrivacy/${imageId}`,
+        { isPublic: isPublic }, // Use 'isPublic' consistently
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "69420",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Check if the toggle was successful
+      if (response.status === 200) {
+        // Update the state of the images to reflect the change
+        setImages((prevImages) =>
+          prevImages.map(
+            (image) =>
+              image._id === imageId
+                ? { ...image, public: response.data.public }
+                : image // Update 'public' property consistently
+          )
+        );
+        toast(
+          `Image privacy toggled successfully! Set to ${
+            response.data.public ? "Public" : "Private"
+          }`
+        );
+        setShareStates(response.data.public);
+        // handleImageClick(); //Exits image preview to reset state.
+      }
+    } catch (error) {
+      console.error("Error toggling image privacy:", error);
+    }
+  };
+  const handleToggleChange = async () => {
+    try {
+      // Toggle the privacy status locally
+      const updatedShareStates = !shareStates;
+      setShareStates(updatedShareStates);
+      // Toggle the privacy status in the backend
+      await toggleImagePrivacy(image._id, updatedShareStates);
+    } catch (error) {
+      console.error("Error toggling image privacy:", error);
+    }
+  };
+  const handleDescriptionChange = (event) => {
+    setEditedDescription(event.target.value);
+  };
+  const handleSaveDescription = async () => {
+    try {
+      // Send a POST request with the updated description to the server
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACKEND_URL}/updateImageDescription/${image._id}`,
+        { description: editedDescription },
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "69420",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // Optionally update local state or show a success message
+        toast("Description updated successfully!");
+      }
+    } catch (error) {
+      console.error("Error updating image description:", error);
+    }
+  };
+
+  return image ? (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          width: "35vw", // 80% of the viewport width
+          height: "80vh", // 80% of the viewport height
+          padding: 0,
+          backgroundColor: "#fff",
+          borderRadius: "8px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+          color: "black",
+          overflow: "hidden",
+        }}
+        onClick={(e) => e.stopPropagation()} // Prevent click from closing modal
+      >
+        <img
+          src={image.src}
+          alt={image.username}
+          style={{
+            minHeight: "75%", // Scale up the image to be in the range
+            maxHeight: "75%", // Limit the image height to ensure text space
+            objectFit: "contain", // Maintain aspect ratio without cropping
+            marginBottom: "10px", // Space between the image and the text
+            marginTop: "40px"
+          }}
+        />
+        <div
+          style={{ textAlign: "center", overflowY: "auto", maxHeight: "30%" }}
+        >
+          <h2>User: {image.username}</h2>
+          <p>Model: {image.model}</p>
+          <p>Prompt: {image.prompt}</p>
+          <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">Description:</label>
+
+            <textarea
+            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" // Adjusted width to 1/2 and height to 6rem
+              placeholder="Enter Image Description"
+              value={editedDescription}
+              onChange={handleDescriptionChange}
+            />
+       
+
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleSaveDescription}>Save Description</button>
+
+          <label
+            htmlFor={`privacy-toggle-${image._id}`}
+            className="absolute top-4 right-4 flex items-center cursor-pointer"
+          >
+            <input
+              id={`privacy-toggle-${image._id}`}
+              type="checkbox"
+              className="hidden"
+              checked={shareStates}
+              onChange={handleToggleChange}
+            />
+            <div
+              className={`w-10 h-4 flex items-center justify-between rounded-full p-1 ${
+                shareStates ? "bg-blue-500" : "bg-gray-400"
+              }`}
+            >
+              <div
+                className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                  shareStates ? "translate-x-5" : "translate-x-0"
+                }`}
+              ></div>
+            </div>
+            <span className="ml-2 text-black">Public</span>
+          </label>
+        </div>
+
+        
+      </div>
+    </div>
+  ) : null;
+};
 export default ArchivePage;
