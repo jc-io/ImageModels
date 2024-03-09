@@ -286,9 +286,24 @@
 
 ### 12. `POST /editImage`
 
-- **Description**: Edit an image based on a prompt using the Stable Diffusion model.
-- **Request Method**: `POST`
+- **Description:** Edit an image based on a prompt using the Stable Diffusion model.
+- **Request Body:** Image file and prompt
 - **Request Body**:
-  - `file`: Image file
   - `prompt`: Prompt for image generation
-- **Response
+  - `image`: Image requested to be edited 
+
+- **Response**: Success message with edited image
+  - Status Code: `200 OK`
+  - Body:
+    ```json
+    {
+        "message": "File uploaded successfully",
+        "prompt": "prompt",
+        "images": [{"image_data": "base64_encoded_image"}]
+    }
+    ```
+- **Status Codes:** 
+  - `200 OK` if successful
+  - `500 Internal Server Error` if an error occurs
+
+---
