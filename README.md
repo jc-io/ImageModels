@@ -1,41 +1,52 @@
-# ImageModels
+Sure, here's the updated README.md file:
 
-dev/backend branch 
+```markdown
+# ImageGen
 
-## How to Run frontend  
+**dev/backend branch**
 
-```
+## How to Run the Frontend
+
+Navigate to the `frontend` directory and install dependencies, then start the development server:
+
+```bash
 cd frontend
-npm i
-npm run start
+npm install
+npm start
 ```
-Open http://localhost:3000/ in browser   
-## How to Run backend    
-```
+
+Open [http://localhost:3000/](http://localhost:3000/) in your browser to access the webpage.
+
+## How to Run the Backend
+
+Navigate to the `backend` directory, install Python dependencies, and start the backend server:
+
+```bash
 cd backend
 python -m pip install -r requirements.txt
 python main.py
-
 ```
-creates a backend rest api at port 5000
-this is used to interact with the upload page in react
 
-## To Test Upload and Responses  
-visit http://localhost:3000/upload  
-- click and select a file and click upload
-- make sure to have console open to see log of request sent and response  
-the files should be uploaded to backend "uploads" folder  
-make sure that stuff is being recieved   
+This will create a backend REST API running on port 5000, which is used to interact with the upload page in the React frontend.
 
-## Things you can do in ML and backend  
-add the models in backend and tests you stuff 
-and replace response with your altered image or sumthing   
+## Testing Upload and Responses
 
+Visit [http://localhost:3000/upload](http://localhost:3000/upload):
+- Click and select a file, then click upload.
+- Make sure to have the console open to see logs of requests sent and responses.
+- The files should be uploaded to the backend's `uploads` folder. Ensure that data is being received correctly.
 
+## Utilizing Machine Learning and Backend
 
+You can add your machine learning models to the backend and test your functionality. Replace responses with altered images or other relevant data.
 
-## Side Note  
+## API Documentation
 
-This is a basic frontend boilerplate 
-Used facebook create-react-app boilerplate  
-https://github.com/facebook/create-react-app
+You can find the documentation for the backend APIs in the [doc/API.md](doc/API.md) file.
+
+## Side Note
+
+This project utilizes a basic frontend boilerplate based on Facebook's Create React App. You can find more information about it [here](https://github.com/facebook/create-react-app).
+```
+
+This README now includes a reference to the API documentation in the `doc/API.md` file.
