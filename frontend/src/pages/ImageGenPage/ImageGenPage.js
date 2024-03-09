@@ -122,7 +122,7 @@ const ImageGenPage = () => {
 
   return (
     <>
-      <div className="bg-second min-h-screen from-gray-100 to-gray-300">
+      <div className="bg-second min-h-screen dark:bg-lighter bg-lighter">
         <div className="scrollable-container">
           {pageState === "main" && (
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
@@ -252,7 +252,7 @@ const ImageGenPage = () => {
               </div>
               {/* End of Image Settings */}
               <br />
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleGen}>
+              <button className="bg-darker hover:bg-buttonHover text-white font-bold py-2 px-4 rounded items-center" onClick={handleGen}>
                 Generate Image
               </button>
             </div>
