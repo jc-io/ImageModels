@@ -99,6 +99,8 @@ const ArchivePage = () => {
                 : image // Update 'public' property consistently
           )
         );
+        toast(`Image privacy toggled successfully! Set to ${response.data.public ? "Public" : "Private"}`);
+        handleImageClick(); //Exits image preview to reset state.
       }
     } catch (error) {
       console.error("Error toggling image privacy:", error);
@@ -129,7 +131,7 @@ const ArchivePage = () => {
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
       <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">
-        {image.username}
+        {image.public ? "Public" : "Private"}
       </span>
     </a>
   );
@@ -185,7 +187,7 @@ const ArchivePage = () => {
             <p>Model: {image.model}</p>
             <p>Prompt: {image.prompt}</p>
             <p>Description: {image.description}</p>
-            <p>Inital Public: {String(image.public)}</p>
+              
             <label
               htmlFor={`privacy-toggle-${image._id}`}
               className="absolute top-4 right-4 flex items-center cursor-pointer"
@@ -212,6 +214,7 @@ const ArchivePage = () => {
               </div>
               <span className="ml-2 text-black">Public</span>
             </label>
+
           </div>
         </div>
       </div>
