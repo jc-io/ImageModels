@@ -44,6 +44,3 @@ You can find the documentation for the backend APIs in the [doc/API.md](doc/API.
 ## Side Note
 
 This project utilizes a basic frontend boilerplate based on Facebook's Create React App. You can find more information about it [here](https://github.com/facebook/create-react-app).
-
-
-This README now includes a reference to the API documentation in the `doc/API.md` file.
