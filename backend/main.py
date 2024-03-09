@@ -331,27 +331,37 @@ def generate_LLM(): #This API takes a caption/description of an image to generat
         print(str(e)); #Return an error if an error occurs
         return jsonify({'error': str(e)}), 500
     
-@app.route("/generate", methods=['post']) #This API is used to generate an image based on a given prompt using the Stable Diffusion model
+@app.route("/generate", methods=['post'])
 def generate_image():
-  try:
-    prompt = request.form.get('prompt')  # Get the prompt from the request body
-    model = request.form.get('model')  # Get the model from the request body
-    guidance = request.form.get('guidance')  # Get the guidance from the request body
-    inference_steps = request.form.get('inferenceSteps')  # Get the inference steps from the request body
+    try:
+        prompt = request.form.get('prompt');
+        model = request.form.get('model');
+        guidance = float(request.form.get('guidance'));
+        inferenceSteps = int(request.form.get('inferenceSteps'));
 
-    print("Received prompt: " + prompt)
-    generator = ImageGen()  # Create a new instance of the ImageGen class containing the Stable Diffusion model
-    images = []
-    if model == 'runwayml/stable-diffusion-v1-5':  # If the model is the base model then generate an image using the base model
-      images.append({'image_data': generator.generate(prompt=prompt, guidance=guidance, inference_steps=inference_steps)})
-    else:  # If the model is the detailed model then generate an image using the detailed model
-      images.append({'image_data': generator.generate_detailed(prompt=prompt, guidance=guidance, inference_steps=inference_steps)})
-    
-    return jsonify({'message': 'File uploaded successfully', 'prompt': prompt, 'images': images})  # returns the generated image
-    
-  except Exception as e:  # Return an error if an error occurs
-    print(str(e))
-    return jsonify({'error': str(e)}), 500
+        print("Recieved prompt: " + prompt)
+
+        generator = ImageGen();
+        # image = generator.generate(prompt);
+        images = []
+        if model == 'runwayml/stable-diffusion-v1-5':
+          images.append({'image_data': generator.generate(prompt, guidance, inferenceSteps)});
+        else: 
+          images.append({'image_data': generator.generateDetailed(prompt, guidance, inferenceSteps)});
+        # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
+ 
+
+        # for i in range(1, 2):  # Assuming there are three images named image1.jpg, image2.jpg, and image3.jpg
+        #   image_path = os.path.join(app.config['GENERATED_FOLDER'],f"generated_image{i}.jpg");
+        #   with open(image_path, 'rb') as file:
+        #       image_data = base64.b64encode(file.read()).decode('utf-8')
+        #       images.append({'image_data': image_data})
+        # print(len(images))
+        return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images});
+        
+    except Exception as e:
+        print(str(e));
+        return jsonify({'error': str(e)}), 500
 
 @app.route("/editImage", methods=['post']) #This API is used to edit an image based on a given prompt using the Stable Diffusion model
 def edit_image():
