@@ -117,80 +117,80 @@ function EditImagePage() {
 
   // # This function handles uplaoding the image correctly
 
-  // const handleUpload = () => {
-  //   // You can implement your file upload logic here
-  //   if (selectedFiles.length > 0) {
-  //     // Example: send the file to a server
-  //     const formData = new FormData();
-  //     // Append each file to the FormData
-  //     selectedFiles.forEach((file, index) => {
-  //       formData.append(`file`, file);
-  //     });
-  //     formData.append("prompt", prompt);
+  const handleUpload = () => {
+    // You can implement your file upload logic here
+    if (selectedFiles.length > 0) {
+      // Example: send the file to a server
+      const formData = new FormData();
+      // Append each file to the FormData
+      selectedFiles.forEach((file, index) => {
+        formData.append(`file`, file);
+      });
+      formData.append("prompt", prompt);
 
-  //     setpageState("loading");
+      setpageState("loading");
 
-  //     // Add your API call or upload logic here
-  //     // For example using fetch or Axios
-  //     axios
-  //       .post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
-  //       .then((response) => {
-  //         return response.data;
-  //       })
-  //       .then((data) => {
-  //         setpageState("result");
-  //         // Check if data.images is an array before calling map
-  //         const imageUrls = Array.isArray(data.images)
-  //           ? data.images.map((image) => image.image_data)
-  //           : [];
-  //         setImages(imageUrls);
-  //         setPrompt(data.prompt);
+      // Add your API call or upload logic here
+      // For example using fetch or Axios
+      axios
+        .post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
+        .then((response) => {
+          return response.data;
+        })
+        .then((data) => {
+          setpageState("result");
+          // Check if data.images is an array before calling map
+          const imageUrls = Array.isArray(data.images)
+            ? data.images.map((image) => image.image_data)
+            : [];
+          setImages(imageUrls);
+          setPrompt(data.prompt);
 
-  //         // const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
-  //         // setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
+          // const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
+          // setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
 
-  //         // console.log(data);
-  //         return data ? Promise.resolve(data) : Promise.resolve({});
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error:", error);
-  //         alert(
-  //           "An error occurred while uploading the image. Please try again later."
-  //         );
-  //         setpageState("main"); // Reset page state
-  //         return Promise.reject(error);
-  //       });
-  //   }
-  // };
+          // console.log(data);
+          return data ? Promise.resolve(data) : Promise.resolve({});
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert(
+            "An error occurred while uploading the image. Please try again later."
+          );
+          setpageState("main"); // Reset page state
+          return Promise.reject(error);
+        });
+    }
+  };
 
   // Testing function
   // This function will return the same uploaded image after waiting for 10 seconds. *** Replace with the function above when done testing
-  const handleUpload = () => {
-    // Check if files are selected
-    if (selectedFiles.length > 0) {
-      // Set loading state
-      setpageState("loading");
+  // const handleUpload = () => {
+  //   // Check if files are selected
+  //   if (selectedFiles.length > 0) {
+  //     // Set loading state
+  //     setpageState("loading");
 
-      // Simulate delay using setTimeout
-      setTimeout(() => {
-        // Reset loading state
-        setpageState("result");
+  //     // Simulate delay using setTimeout
+  //     setTimeout(() => {
+  //       // Reset loading state
+  //       setpageState("result");
 
-        // Get the uploaded image URL
-        const uploadedImageUrls = selectedFiles.map((file) =>
-          URL.createObjectURL(file)
-        );
+  //       // Get the uploaded image URL
+  //       const uploadedImageUrls = selectedFiles.map((file) =>
+  //         URL.createObjectURL(file)
+  //       );
 
-        // Set the uploaded image URLs as result
-        setImages(uploadedImageUrls);
+  //       // Set the uploaded image URLs as result
+  //       setImages(uploadedImageUrls);
 
-        // Reset page state after displaying the result
-        // setTimeout(() => {
-        //   setpageState('main');
-        // }, 3000); // Change 3000 to 10000 for 10-second delay
-      }, 10000); // Wait for 10 seconds
-    }
-  };
+  //       // Reset page state after displaying the result
+  //       // setTimeout(() => {
+  //       //   setpageState('main');
+  //       // }, 3000); // Change 3000 to 10000 for 10-second delay
+  //     }, 10000); // Wait for 10 seconds
+  //   }
+  // };
 
   return (
     <div className="bg-second min-h-screen from-gray-100 to-gray-300">
@@ -395,7 +395,7 @@ function EditImagePage() {
             {/* <div className="image-display text-center"> */}
             <div className="grid gap-x-80 items-center grid-flow-col min-w-48">
               {/* showing the uploaded image */}
-              <div className="grid justify-items-center w-full">
+              {/* <div className="grid justify-items-center w-full">
                 {images.map((imageUrl, index) => (
                   <img
                     className="h-auto rounded-lg w-full"
@@ -409,7 +409,21 @@ function EditImagePage() {
                     }}
                   />
                 ))}
-              </div>
+              </div> */}
+              {imageSrc && (
+                <div className="grid justify-items-center w-full">
+                  <img
+                    className="h-auto rounded-lg w-full"
+                    src={imageSrc}
+                    alt="Uploaded"
+                    style={{
+                      border: "5px solid black",
+                      borderRadius: "8px",
+                      backgroundColor: "transparent",
+                    }}
+                  />
+                </div>
+              )}
 
               {/* show the generated image */}
               <div className="grid justify-items-center w-full">
