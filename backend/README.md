@@ -1,12 +1,12 @@
-## Quick backend to test frontend file uplaod and response  
-## Using flask  
+## How to Run the Backend
 
-## How to run     
-```
+Navigate to the `backend` directory, install Python dependencies, and start the backend server:
+
+```bash
+cd backend
 python -m pip install -r requirements.txt
-python main.py 
-
+python main.py
 ```
-creates a backend rest api at port 5000   
-this is used to interact with the upload page in react  
+
+This will create a backend REST API running on port 5000, which is used to interact with the upload page in the React frontend.
 

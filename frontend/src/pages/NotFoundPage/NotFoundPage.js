@@ -2,14 +2,7 @@
 import React from 'react';
 
 const NotFoundPage = () => {
-  const styles = {
-    container: {
-      height: '100%'
-    },
-    first: {
-      
-    }
-  }
+
   return (//From https://freefrontend.com/tailwind-404-page-templates/
   <>
       <div className="bg-indigo-900 relative overflow-hidden h-screen">

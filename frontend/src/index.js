@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import CaptionGenPage from './pages/CaptionGenPage/CaptionGenPage';
 import SignUpPage from './pages/SignUpPage/SignUpPage';
 
+import ArchivePage from './pages/ArchivePage/ArchivePage';
 
 import NavBar from './components/NavBar/NavBar';
 
@@ -21,11 +22,14 @@ import NavBar from './components/NavBar/NavBar';
 import NotFoundPage from './pages//NotFoundPage/NotFoundPage';
 import reportWebVitals from './reportWebVitals';
 import ExplorePage from './pages/ExplorePage/ExplorePage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <NavBar/>
+    <ToastContainer />
     <Router>
       <Routes>
         <Route path="/" exact element={<HomePage/>} />
@@ -38,6 +42,7 @@ root.render(
         <Route path="/ImageGen" element={<ImageGenPage/>} />
         <Route path="/SignUp" element={<SignUpPage/>} />
         <Route path="/Login" element={<LoginPage/>} />
+        <Route path="/Archive" element={<ArchivePage/>} />
         <Route path="/TermsandConditions" element={<TermsPage/>} />
         <Route path="/Setting" element={<SettingPage/>} />
         <Route path="*" exact={true} element={<NotFoundPage/>} />

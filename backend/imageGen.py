@@ -5,6 +5,8 @@ import base64
 import io
 from PIL import Image
 
+torch.cuda.empty_cache() #empty vram
+
 class ImageGen:
     def __init__(self):
         self.model_id = "runwayml/stable-diffusion-v1-5"
@@ -12,7 +14,7 @@ class ImageGen:
 
     def generate(self, prompt="No prompt given"):
         try:
-            self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, safety_checker=None)
+            self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, safety_checker=None, filter_enabled=False)
             self.pipe.enable_model_cpu_offload()
             image = self.pipe(prompt).images[0]  
            # Format the base64 string as a data URL for HTML
@@ -22,11 +24,12 @@ class ImageGen:
             print(f"An error occurred: {e}")
             return None
 
-    def generateDetailed(self, prompt="No prompt given"):
+    def generateDetailed(self, guidance, inferenceSteps, prompt="No prompt given"):
         try:
-            self.pipe = DiffusionPipeline.from_pretrained(self.detailed_model_id, torch_dtype=torch.float16, use_safetensors=True, variant="fp16")
+            self.pipe = DiffusionPipeline.from_pretrained(self.detailed_model_id, torch_dtype=torch.float16, variant="fp16", filter_enabled=False, safety_checker=None)
             self.pipe = self.pipe.to("cuda")
-            image = self.pipe(prompt).images[0] 
+            # image = self.pipe(prompt).images[0] 
+            image = self.pipe(prompt, guidance=guidance, inference_steps=inferenceSteps).images[0]
             return self.covertToimgageJpeg(image);
 
         except Exception as e:
