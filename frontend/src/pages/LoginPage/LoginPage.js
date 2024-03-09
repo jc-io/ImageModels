@@ -7,7 +7,6 @@ const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [pageState, setpageState] = useState('main')
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };

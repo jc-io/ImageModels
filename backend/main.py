@@ -61,76 +61,78 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['GENERATED_FOLDER'] = GENERATED_FOLDER
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
-
+#Used to debug the server and determine wether it is running
 @app.route("/")
 def hello_world():
     print("Hit")
-    return "Hello, World!"
+    return "Connection Established"
 
+#This function is used to determine if the user is logged in and authinticated
 @app.route('/get_user_info', methods=['GET','POST'])
 def get_user_info():
-  token = request.headers.get('Authorization')
+  token = request.headers.get('Authorization') #Get the token from the request headers
   print("Token: " + str(token))
-  if not token:
+  if not token:#If the token is not present return an error
     return jsonify({'error': 'Unauthorized No Token'}), 401
 
-  try:
+  try:#Try to decode the token and get the user information from the token
     token = token.split()[1]  # Remove 'Bearer' from the token
     payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
     username = payload['username']
     
-    user = users_collection.find_one({'username': username})
-    if user:
+    user = users_collection.find_one({'username': username}) #Get the user from the database
+    if user: #If the user is found return the user information
       return jsonify({'username': user['username'], 'email': user.get('email', '')}), 200
-    else:
+    else: #If the user is not found return an error
       return jsonify({'error': 'User not found'}), 404
 
-  except jwt.ExpiredSignatureError:
+  except jwt.ExpiredSignatureError: #If the token is expired return an error
     return jsonify({'error': 'Token expired'}), 401
-  except jwt.InvalidTokenError:
+  except jwt.InvalidTokenError: #If the token is invalid return an error
     return jsonify({'error': 'Invalid token'}), 401
     
 
-
+#This function is used to get a user private images from the database
 @app.route('/getArchivedImages', methods=['GET','POST'])
 def get_Archived_Images():
-  token = request.headers.get('Authorization')
+  token = request.headers.get('Authorization') #Get the token from the request headers
   print("Token: " + str(token))
-  if not token:
+  if not token: #If the token is not present return an error
     return jsonify({'error': 'Unauthorized No Token'}), 401
 
   try:
     token = token.split()[1]  # Remove 'Bearer' from the token
-    payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+    payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']) #Decode the token and get the user information from the token
     username = payload['username']
     
-    images_data = list(images_collection.find({'username': username}))  # Fetch documents with the specified limit
+    images_data = list(images_collection.find({'username': username}))  # attempts to find all images with the user's username
     # Convert ObjectId to strings for each document
-    for image in images_data:
+    for image in images_data: #Convert the object id to a string so it can be jsonified without errors
         image['_id'] = str(image['_id'])
 
-    if images_data:
+    if images_data: #If the user is found return all the images it found to the user
       return jsonify({'message': 'Got Public Images', 'images': images_data}), 200
-    else:
+    else: #If the user is not found return an error
       return jsonify({'error': 'User not found'}), 404
 
-  except jwt.ExpiredSignatureError:
+  except jwt.ExpiredSignatureError: #If the token is expired return an error
     return jsonify({'error': 'Token expired'}), 401
-  except jwt.InvalidTokenError:
+  except jwt.InvalidTokenError: #If the token is invalid return an error
     return jsonify({'error': 'Invalid token'}), 401
 
+#This function is used to turn sepecific images publc or private
 @app.route('/toggleImagePrivacy/<image_id>', methods=['PUT'])
-def toggleImagePrivacy(image_id):
-  token = request.headers.get('Authorization')
+def toggleImagePrivacy(image_id): #Get the image id from the url (from POST request)
+  token = request.headers.get('Authorization') #Get the token from the request headers
   print("Token: " + str(token))
-  if not token:
+  if not token: #If the token is not present return an error
     return jsonify({'error': 'Unauthorized No Token'}), 401
 
   try:
     print("Beginning to toggle image privacy")
     token = token.split()[1]  # Remove 'Bearer' from the token
     payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
-    username = payload['username']
+    username = payload['username'] # Extract the current user's username from JWT token
     # Extract the current user's username from JWT token
 
     print("Current User: " + str(username))
@@ -139,24 +141,24 @@ def toggleImagePrivacy(image_id):
     if not image:
         return jsonify({"error": "Image not found"}), 404
     
-        # Extract the new privacy status from the request
     data = request.get_json()
-    is_public = data.get('isPublic')
+    is_public = data.get('isPublic') # Get the isPublic value from the request body
     # Update the privacy status of the image in MongoDB
-    update_query = {"$set": {"public": is_public}}
+    update_query = {"$set": {"public": is_public}} # Set the 'public' field to the value of isPublic
     if 'public' not in image:  # If the 'public' field doesn't exist, add it
         update_query = {"$set": {"public": is_public}}
-    updated_image = images_collection.find_one_and_update(
+    updated_image = images_collection.find_one_and_update( #Update the image in the database
             {"_id": ObjectId(image_id)},
             update_query,
             return_document=ReturnDocument.AFTER
     )
+    # Return a success message with the updated privacy status
     return jsonify({"message": f"Privacy status of image {image_id} updated successfully","public": is_public}), 200
 
-  except jwt.ExpiredSignatureError:
-    return jsonify({'error': 'Token expired'}), 401
-  except jwt.InvalidTokenError:
-    return jsonify({'error': 'Invalid token'}), 401
+  except jwt.ExpiredSignatureError: #If the token is expired return an error
+    return jsonify({'error': 'Token expired'}), 401 # Return an error if the token is expired
+  except jwt.InvalidTokenError: #If the token is invalid return an error
+    return jsonify({'error': 'Invalid token'}), 401 # Return an error if the token is invalid
   
 @app.route("/getImages",  methods=['GET'])
 def getImages():
@@ -289,21 +291,20 @@ def generateLLM():
 def generate_image():
     try:
         prompt = request.form.get('prompt');
+        model = request.form.get('model');
+        guidance = request.form.get('guidance');
+        inferenceSteps = request.form.get('inferenceSteps');
+  #  formData.append('guidance', guidance);
+  #         formData.append('inferenceSteps', inferenceSteps);
         print("Recieved prompt: " + prompt)
         generator = ImageGen();
         # image = generator.generate(prompt);
         images = []
-        for i in range(6):
-          images.append({'image_data': generator.generate(prompt)});
-        # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
- 
-
-        # for i in range(1, 2):  # Assuming there are three images named image1.jpg, image2.jpg, and image3.jpg
-        #   image_path = os.path.join(app.config['GENERATED_FOLDER'],f"generated_image{i}.jpg");
-        #   with open(image_path, 'rb') as file:
-        #       image_data = base64.b64encode(file.read()).decode('utf-8')
-        #       images.append({'image_data': image_data})
-        # print(len(images))
+        if model == 'runwayml/stable-diffusion-v1-5':
+          images.append({'image_data': generator.generate(prompt=prompt,guidance=guidance,inferenceSteps=inferenceSteps)});
+        else: 
+          images.append({'image_data': generator.generateDetailed(prompt=prompt,guidance=guidance,inferenceSteps=inferenceSteps)});
+        
         return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images});
         
     except Exception as e:
@@ -337,7 +338,7 @@ def edit_image():
         return jsonify({'error': str(e)}), 500
   
 if __name__ == '__main__':
-   app.run(port=80, debug=True, threaded=True)
+   app.run(port=5000, debug=True, threaded=True)
 
 
 

@@ -24,11 +24,12 @@ class ImageGen:
             print(f"An error occurred: {e}")
             return None
 
-    def generateDetailed(self, prompt="No prompt given"):
+    def generateDetailed(self, guidance, inferenceSteps, prompt="No prompt given"):
         try:
             self.pipe = DiffusionPipeline.from_pretrained(self.detailed_model_id, torch_dtype=torch.float16, variant="fp16", filter_enabled=False, safety_checker=None)
             self.pipe = self.pipe.to("cuda")
-            image = self.pipe(prompt).images[0] 
+            # image = self.pipe(prompt).images[0] 
+            image = self.pipe(prompt, guidance=guidance, inference_steps=inferenceSteps).images[0]
             return self.covertToimgageJpeg(image);
 
         except Exception as e:
