@@ -146,8 +146,8 @@ function EditImagePage() {
   //         setImages(imageUrls);
   //         setPrompt(data.prompt);
 
-  //         const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
-  //         setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
+  //         // const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
+  //         // setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
 
   //         // console.log(data);
   //         return data ? Promise.resolve(data) : Promise.resolve({});
@@ -188,7 +188,7 @@ function EditImagePage() {
         // setTimeout(() => {
         //   setpageState('main');
         // }, 3000); // Change 3000 to 10000 for 10-second delay
-      }, 500000); // Wait for 10 seconds
+      }, 10000); // Wait for 10 seconds
     }
   };
 
@@ -202,9 +202,6 @@ function EditImagePage() {
             </span>
           </h1>
         </div>
-
-        {/* <br />
-        <br /> */}
 
         {pageState === "main" && (
           <div>
@@ -245,32 +242,7 @@ function EditImagePage() {
                       {/* handleRemoveFile(0) --> this assume that there is only one file */}
                     </div>
                   )}
-                  {/* </div> */}
 
-                  {/* Display the list of selected files */}
-
-                  {/* <div
-                      class="child "
-                      style={{ visibility: "hidden", margin: "5px" }}
-                    >
-                      <div class="spinner">
-                        <div class="spinner1"></div>
-                      </div>
-                      <br></br>
-                      <br></br>
-                      <h3 className="text-white font-bold">Generating</h3>
-                    </div> */}
-
-                  {/* <label className="flex child flex-col items-center justify-center w-96 h-72 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                      <div className="flex h-full flex-col items-center justify-center pt-5 pb-6">
-                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                          <span className="font-semibold">
-                            The generated image will appear here
-                          </span>{" "}
-                        </p>
-                      </div>
-                    </label> */}
-                  {/* </div> */}
                   <div className="child w-full" style={{ marginLeft: "auto" }}>
                     {selectedFiles.length > 0 && selectedFiles.length > 0 && (
                       <div>
@@ -346,28 +318,6 @@ function EditImagePage() {
                         onChange={handleFileChange}
                       />
                     </label>
-
-                    {/* <div
-                      class="child"
-                      style={{ visibility: "hidden", margin: "5px" }}
-                    >
-                      <div class="spinner">
-                        <div class="spinner1"></div>
-                      </div>
-                      <br></br>
-                      <br></br>
-                      <h3 className="text-white font-bold">Generating</h3>
-                    </div> */}
-
-                    {/* <label className="flex child flex-col items-center justify-center w-96 h-72 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                      <div className="flex h-full flex-col items-center justify-center pt-5 pb-6">
-                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                          <span className="font-semibold">
-                            The generated image will appear here
-                          </span>{" "}
-                        </p>
-                      </div>
-                    </label> */}
                   </div>
                 </div>
               )}
@@ -405,12 +355,11 @@ function EditImagePage() {
         )}
 
         {pageState === "loading" && (
-          <div class="parent">
-            <div class="child">
-              {/* show the uploaded image */}
-              {selectedFiles.length > 0 && (
-                <div className="mr-4">
-                  <h2 className="text-3xl font-semibold leading-normal text-white"></h2>
+          <div className="w-3/5 m-auto max-w-[1220px]">
+            <div className="grid gap-x-80 items-center grid-flow-col min-w-48">
+              <div class="grid justify-items-center w-full">
+                {/* show the uploaded image */}
+                {selectedFiles.length > 0 && (
                   <div
                     style={{
                       border: "5px solid black",
@@ -424,59 +373,27 @@ function EditImagePage() {
                       className="max-w-md"
                     />
                   </div>
+                )}
+              </div>
+
+              <div class="grid justify-items-center w-full">
+                <div class="spinner">
+                  <div class="spinner1"></div>
                 </div>
-              )}
-            </div>
-
-            {/* <div class="child" style={{ visibility: "hidden", margin: "5px" }}>
-              <div class="spinner">
-                <div class="spinner1"></div>
+                <br></br>
+                <br></br>
+                <h3 className="justify-self text-white font-bold">
+                  Generating
+                </h3>
               </div>
-              <br></br>
-              <br></br>
-              <h3 className="text-white font-bold">Generating</h3>
-            </div> */}
-
-            <div class="child">
-              <div class="spinner">
-                <div class="spinner1"></div>
-              </div>
-              <br></br>
-              <br></br>
-              <h3 className="text-white font-bold">Generating</h3>
-              {/* <p className="text-white font-bold">This may take a few seconds, please don't close this page.</p> */}
             </div>
           </div>
         )}
 
         {pageState === "result" && (
-          <div className="w-3/5 m-auto max-w-[1000px]">
+          <div className="w-3/5 m-auto max-w-[1220px]">
             {/* <div className="image-display text-center"> */}
-            <div className="grid gap-x-40 items-center grid-flow-col">
-              {/* <h3 className="text-white font-bold">Generated Image[s]:</h3> */}
-
-              {/* <div class="child"> */}
-              {/* show the uploaded image */}
-              {/* {selectedFiles.length > 0 && (
-                  <div className="mt-4 relative">
-                    <h2 className="text-3xl font-semibold leading-normal text-white"></h2>
-                    <div
-                      style={{
-                        border: "5px solid black",
-                        borderRadius: "8px",
-                        backgroundColor: "transparent",
-                      }}
-                    >
-                      <img
-                        src={generatedImageUrl}
-                        alt="Uploaded"
-                        className="max-w-md"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div> */}
-
+            <div className="grid gap-x-80 items-center grid-flow-col min-w-48">
               {/* showing the uploaded image */}
               <div className="grid justify-items-center w-full">
                 {images.map((imageUrl, index) => (
@@ -494,46 +411,25 @@ function EditImagePage() {
                 ))}
               </div>
 
-              {/* <div
-                class="child "
-                style={{ visibility: "hidden", margin: "5px" }}
-              >
-                <div class="spinner">
-                  <div class="spinner1"></div>
-                </div>
-                <br></br>
-                <br></br>
-                <h3 className="text-white font-bold">Generating</h3>
-              </div> */}
-
               {/* show the generated image */}
               <div className="grid justify-items-center w-full">
                 {images.map((imageUrl, index) => (
-                  // <div>
-                  <img
-                    className="h-auto  rounded-lg w-full"
-                    key={index}
-                    alt={`Image ${index + 1}`}
-                    src={imageUrl}
-                    style={{
-                      border: "5px solid black",
-                      borderRadius: "8px",
-                      backgroundColor: "transparent",
-                    }}
-                  />
-                  // </div>
+                  <div>
+                    <img
+                      className="h-auto  rounded-lg w-full"
+                      key={index}
+                      alt={`Image ${index + 1}`}
+                      src={imageUrl}
+                      style={{
+                        border: "5px solid black",
+                        borderRadius: "8px",
+                        backgroundColor: "transparent",
+                      }}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
-            {/* showing the uploaded image */}
-            {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {images.map((imageUrl, index) => (
-                      <div>
-                        <img className="h-auto max-w-full rounded-lg" key={index} alt={`Image ${index + 1}`} src={imageUrl} />
-                      </div>
-                    ))
-                    }
-                </div>   */}
 
             {/* showing the prompt the user used */}
             <h3 className="text-white mt-20 font-bold inline-block text-center w-full mb-8">
@@ -579,7 +475,7 @@ function EditImagePage() {
                           <FacebookIcon size={50} round />
                         </FacebookShareButton>
                         <TwitterShareButton
-                          url={generatedImageUrl} // Replace with actual image URL
+                          url={shareUrl} // Replace with actual image URL
                           title="Check out this image I generated"
                           hashtags={["imagegeneration", "react"]}
                         >
