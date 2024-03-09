@@ -38,7 +38,7 @@ You can add your machine learning models to the backend and test your functional
 
 ## API Documentation
 
-You can find the documentation for the backend APIs in the [doc/API.md](doc/API.md) file.
+You can find the documentation for the backend APIs in the [docs/API.md](docs/API.md) file.
 
 ## Side Note
 
