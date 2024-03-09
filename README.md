@@ -1,6 +1,5 @@
 # ImageGen
 
-**dev/backend branch**
 
 ## How to Run the Frontend
 
