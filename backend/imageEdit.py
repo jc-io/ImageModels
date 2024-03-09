@@ -6,6 +6,8 @@ import base64
 import io
 #import xformers
 
+torch.cuda.empty_cache() #empty vram
+
 class ImageEdit:
     def __init__(self):
         self.model_id = "runwayml/stable-diffusion-v1-5"
