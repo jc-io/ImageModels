@@ -124,7 +124,7 @@ def get_Archived_Images():
 
 #This function is used to turn sepecific images publc or private
 @app.route('/toggleImagePrivacy/<image_id>', methods=['PUT'])
-def toggleImagePrivacy(image_id): #Get the image id from the url (from POST request)
+def toggle_image_privacy(image_id): #Get the image id from the url (from POST request)
   token = request.headers.get('Authorization') #Get the token from the request headers
   print("Token: " + str(token))
   if not token: #If the token is not present return an error
@@ -139,7 +139,7 @@ def toggleImagePrivacy(image_id): #Get the image id from the url (from POST requ
 
     print("Current User: " + str(username))
     # Check if the image exists in MongoDB
-    image = images_collection.find_one({"_id": ObjectId(image_id)})
+    image = images_collection.find_one({"_id": ObjectId(image_id), "username": username})
     if not image:
         return jsonify({"error": "Image not found"}), 404
     
@@ -161,7 +161,50 @@ def toggleImagePrivacy(image_id): #Get the image id from the url (from POST requ
     return jsonify({'error': 'Token expired'}), 401 # Return an error if the token is expired
   except jwt.InvalidTokenError: #If the token is invalid return an error
     return jsonify({'error': 'Invalid token'}), 401 # Return an error if the token is invalid
+
+
+# Updates the description of an image  
+@app.route('/updateImageDescription/<image_id>', methods=['PUT'])
+def update_image_description(image_id): #Get the image id from the url (from POST request)
+  token = request.headers.get('Authorization') #Get the token from the request headers
+  print("Token: " + str(token))
+  if not token: #If the token is not present return an error
+    return jsonify({'error': 'Unauthorized No Token'}), 401
+
+  try:
+    print("Beginning to toggle image privacy")
+    token = token.split()[1]  # Remove 'Bearer' from the token
+    payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+    username = payload['username'] # Extract the current user's username from JWT token
+    # Extract the current user's username from JWT token
+
+    print("Current User: " + str(username))
+    # Check if the image exists in MongoDB
+    image = images_collection.find_one({"_id": ObjectId(image_id), "username": username})
+    if not image:
+        return jsonify({"error": "Image not found"}), 404
+    
+    data = request.get_json()
+    description = data.get('description') # Get the description value from the request body
+    # Update the privacy status of the image in MongoDB
+    update_query = {"$set": {"description": description}} # Set the description field to the value of description
+    if 'description' not in image:  # If descripion not exist, add it
+        update_query = {"$set": {"description": description}}
+    updated_image = images_collection.find_one_and_update( #Update the image in the database
+            {"_id": ObjectId(image_id)},
+            update_query,
+            return_document=ReturnDocument.AFTER
+    )
+    # Return a success message with the updated privacy status
+    return jsonify({"message": f"Updated the description of image {image_id} successfully","description": description}), 200
   
+
+  except jwt.ExpiredSignatureError: #If the token is expired return an error
+    return jsonify({'error': 'Token expired'}), 401 # Return an error if the token is expired
+  except jwt.InvalidTokenError: #If the token is invalid return an error
+    return jsonify({'error': 'Invalid token'}), 401 # Return an error if the token is invalid
+  
+
 @app.route("/getImages",  methods=['GET'])
 def getImages():
     limit = 100  # Set your desired limit here
