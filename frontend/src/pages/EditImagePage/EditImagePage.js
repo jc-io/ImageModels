@@ -32,17 +32,29 @@ function EditImagePage() {
   //img
   const [imageSrc, setImageSrc] = useState(null);
 
-  const handleFileChanges = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImageSrc(reader.result);
-      };
-      reader.readAsDataURL(file);
+  // const handleFileChanges = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       setImageSrc(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
+  // download function
+  const handleDownload = () => {
+    if (images.length > 0) {
+      const imageUrl = images[images.length - 1];
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = imageUrl;
+      downloadLink.download = "generated_image.jpg"; // the filename for download
+
+      downloadLink.click();
     }
   };
-
   //img
 
   const handleDrop = (event) => {
@@ -495,7 +507,12 @@ function EditImagePage() {
                         >
                           <TwitterIcon size={50} round />
                         </TwitterShareButton>
-                        <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+
+                        {/* downbload button */}
+                        <button
+                          onClick={handleDownload}
+                          class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+                        >
                           <svg
                             class="fill-current w-4 h-4 mr-2"
                             xmlns="http://www.w3.org/2000/svg"
