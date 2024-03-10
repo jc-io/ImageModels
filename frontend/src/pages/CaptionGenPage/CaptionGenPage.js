@@ -11,6 +11,17 @@ function CaptionGenPage() {
     const [result, setResult] = useState('')
     const [pageState, setpageState] = useState('main')
     const [selectedTone, setSelectedTone] = useState('');
+
+    {/*Drop Down state Managment*/}
+    const [showDropdown, setShowDropdown] = useState(false);
+
+    // This function is called when a tone is selected from the dropdown
+    const handleSelectTone = (tone) => {
+        setSelectedTone(tone);
+        setShowDropdown(false); // Close the dropdown
+        handleMakeIt(); // Trigger the action associated with the tone selection
+    };
+    
   
     // Handler function to update the selected tone when the user makes a selection
     const handleToneChange = (event) => {
@@ -80,16 +91,15 @@ function CaptionGenPage() {
 
     return (
 
-      <div className="m-0 bg-second dark:bg-second min-h-screen">
+      <div className="m-0 bg-second dark:bg-second" style={{ minHeight: '100vh' }}>
 
         <div className="container py-3 px-10 mx-0 min-w-full flex flex-col items-center">
             <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
               <span className="text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">CaptionGen</span></h1>
         </div>
 
-        {/* <br/>
-        <br/> */}
-        {/* <input type="file" onChange={handleFileChange} /> */}
+        {/*Main state*/}
+  
         {pageState==="main" && (  
           <div className="bg-indigo-900 min-h-screen from-gray-100 to-gray-300">
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center" onDrop={handleDrop} onDragOver={handleDragOver}>
@@ -145,25 +155,9 @@ function CaptionGenPage() {
                 </div>
               )) }
               
-            {/* <p className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">Tone:</p> */}
-            <form className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">
-                <label htmlFor="large" className="block mb-2 text-base font-medium text-gray-900 dark:text-white">Select a Tone</label>
-                <select
-                  id="large"
-                  className="block w-full px-4 py-3 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  value={selectedTone}  // Bind the value of the select element to state
-                  onChange={handleToneChange} // Call the handler function when the value changes
-                >
-                  <option value="">Choose a Tone</option>
-                  <option value="Funny">Funny</option>
-                  <option value="Witty">Witty</option>
-                  <option value="Mysterious">Mysterious</option>
-                  <option value="Satire">Satire</option>
-                </select>
-              </form>
 
-            {/* <br/> */}
-            {/* Radio active */}
+            <br/>
+
 
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
             Upload 
@@ -171,6 +165,8 @@ function CaptionGenPage() {
           </div>
       </div>
       )}
+
+      {/*BLIP STATE*/}
       {pageState==="blip_phase" && (
         <div>
       
@@ -209,6 +205,8 @@ function CaptionGenPage() {
                 }}
             ></textarea>
         </div>
+
+        
             <br/><br/>
             
             {/*Buttons*/}
@@ -218,47 +216,107 @@ function CaptionGenPage() {
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Back
               </button>
-
-              <button 
+                
+            {/*Original*/}
+              {/* <button 
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={handleMakeIt}
                 >
                 Make it
+              </button> */}
+
+                {/*Original end*/}
+
+
+              
+              {/* <button 
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setIsDropdownVisible(!isDropdownVisible)}>
+                Make it
               </button>
+              
+            {isDropdownVisible && (
+              <form className="mb-4">
+                  <label htmlFor="tone-dropdown" className="text-gray-700">Select a Tone:</label>
+                  <select
+                    id="tone-dropdown"
+                    className="block w-full px-4 py-2 mt-2 bg-white border rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                    value={selectedTone}
+                    onChange={(event) => {
+                      setSelectedTone(event.target.value);
+                      setIsDropdownVisible(false); 
+                      handleMakeIt();
+                    }}
+                  >
+                    <option value="">Choose a Tone</option>
+                    <option value="Funny">Funny</option>
+                    <option value="Witty">Witty</option>
+                    <option value="Mysterious">Mysterious</option>
+                    <option value="Satire">Satire</option>
+                  </select>
+              </form>
+            )} */}
+
+
+            {/*dropdown test*/}
+            <div className='relative inline-block text-left'>
+
+            <button
+                  id="dropdownDefaultButton"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  type="button"
+                  onClick={() => setShowDropdown(!showDropdown)}>
+                  Make it 
+                      <svg className="w-2.5 h-2.5 ml-2" aria-hidden="true" fill="none" viewBox="0 0 10 6">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1l4 4 4-4" />
+                  </svg>
+                    </button>
+
+                        {/* Dropdown menu */}
+                        {showDropdown && (
+                            <div className="origin-top-right absolute left-0 mt-1 rounded-md shadow-lg bg-black ring-1 ring-black ring-opacity-5" style={{ top: '100%', left: '0' }}>
+                              <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                                  <li>
+                                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-black" onClick={() => handleSelectTone('Funny')}>Funny</button>
+                                </li>
+                                <li>
+                                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-black" onClick={() => handleSelectTone('Witty')}>Witty</button>
+                                </li>
+                                <li>
+                                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-black" onClick={() => handleSelectTone('Mysterious')}>Mysterious</button>
+                                </li>
+                                <li>
+                                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-black" onClick={() => handleSelectTone('Satire')}>Satire</button>
+                                </li>
+                              </ul>
+                            </div>
+                        )}
+
+            </div>
+            {/*dropdown test end*/}
+
 
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Share
               </button>
             </div>
-
-
-            {/* <div role="status">
-                  <svg aria-hidden="true" class="inline w-12 h-12 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                  <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-              </svg>
-                <h3 className="text-white font-bold">Loading...</h3>
-                <p className="text-white font-bold">This may take a few seconds, please don't close this page.</p>
-
-            </div> */}
         </div>
         </div>
         
       )}
 
+
+
+
+      {/*Result State*/}
+
     {pageState==="result" && (
       <div>
-
-
     <div className="caption-display text-center">
         <h3 className="text-white font-bold">Generated Caption:</h3>
           <div className='text-white font-extrabold font-size: 20px justify-center'>{result}</div>
-     
-
           <br></br>
           <button class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
-
-
               <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
               </svg>
@@ -267,14 +325,8 @@ function CaptionGenPage() {
     </div>
     </div>
     )}
-     {/* <a className="share_linkedin social" title="linkedin" target="popup" onclick="window.open('http://www.linkedin.com/shareArticle?mini=true&url={{content.absolute_url}}','LinkedIn Share','width=600,height=600')"><span class="icon-circle fa-brands fa-linkedin-in">
-      asdasdas</span></a>
- <a class="share_facebook social" title="facebook" target="popup" onclick="window.open('http://www.facebook.com/sharer/sharer.php?u={{content.absolute_url}}','Facebook Share','width=600,height=600')"><span class="icon-circle fab fa-facebook"></span></a> */}
-
       </div>
     );
   }
 
   export default CaptionGenPage;
-
-
