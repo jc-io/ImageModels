@@ -312,6 +312,21 @@ function CaptionGenPage() {
 
     {pageState==="result" && (
       <div>
+        
+          {/*Preview Image*/}
+          {selectedFiles.length > 0 && (
+          <div className="text-center mt-0 pt-0">
+            <h2 className="text-3xl font-semibold leading-normal text-white">Uploaded Image:</h2>
+            <div className="flex justify-center items-center mt-5">
+              {selectedFiles.map((file, index) => (
+                <div key={index} style={{ border: '5px solid black', borderRadius: '8px', backgroundColor: 'transparent'}}>
+                  <img src={URL.createObjectURL(file)} alt="Uploaded" className="max-w-md" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
     <div className="caption-display text-center">
         <h3 className="text-white font-bold">Generated Caption:</h3>
           <div className='text-white font-extrabold font-size: 20px justify-center'>{result}</div>
