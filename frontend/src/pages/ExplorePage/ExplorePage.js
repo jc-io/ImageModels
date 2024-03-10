@@ -98,7 +98,7 @@ const ExplorePage = () => {
   );
 
   return (
-    <div className="bg-primary dark:bg-primary min-h-screen py-6 sm:py-8 lg:py-12"> {/* Changed h-screen to min-h-screen */}
+    <div className="bg-lighter dark:bg-lighter min-h-screen py-6 sm:py-8 lg:py-12"> {/* Changed h-screen to min-h-screen */}
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
         <div className="mb-4 flex items-center justify-between gap-8 sm:mb-8 md:mb-12">
           <div className="flex items-center gap-12">
