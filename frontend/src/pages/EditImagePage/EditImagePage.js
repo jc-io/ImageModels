@@ -111,7 +111,7 @@ function EditImagePage() {
   };
 
   const goBack = () => {
-    setSelectedFile([]);
+    handleRemoveFile(0);
     setpageState("main");
   };
 
