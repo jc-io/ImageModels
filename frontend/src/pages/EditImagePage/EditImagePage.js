@@ -2,7 +2,10 @@ import { useState } from "react";
 import axios from "axios";
 import { FacebookShareButton, FacebookIcon } from "react-share";
 import { TwitterShareButton, TwitterIcon } from "react-share";
+import { toast } from 'react-toastify';
 const shareUrl = "https://www.youtube.com/";
+
+
 
 function EditImagePage() {
   const [prompt, setPrompt] = useState("");
@@ -332,8 +335,11 @@ function EditImagePage() {
               <br />
 
               <label className="block mb-2 text-lg font-medium text-gray-900 dark:text-white w-full">
-                Enter Prompt:
+                <center>
+                  Enter Prompt:
+                </center>
               </label>
+              <center>
               <input
                 htmlFor="Caption"
                 type="text"
@@ -344,6 +350,7 @@ function EditImagePage() {
                 onChange={(e) => setPrompt(e.target.value)}
                 //change the size of prompt box
               />
+              </center>
               <div className="text-right mt-2 text-sm text-gray-600">
                 {`${prompt.length}/${MAX_SELECTED_CHAR_LIMIT} Characters Remaining`}
               </div>
