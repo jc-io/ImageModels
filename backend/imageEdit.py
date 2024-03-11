@@ -11,7 +11,7 @@ torch.cuda.empty_cache() #empty vram
 class ImageEdit:
     def __init__(self):
         self.model_id = "runwayml/stable-diffusion-v1-5"
-        self.detailed_model_id = "stabilityai/stable-diffusion-xl-base-1.0"
+        self.model_id_detailed = "stabilityai/stable-diffusion-xl-base-1.0"
         #editImageGenerate = ImageEdit(AutoPipelineForImage2Image,"runwayml/stable-diffusion-v1-5");
 
     def preprocess(self, img):
