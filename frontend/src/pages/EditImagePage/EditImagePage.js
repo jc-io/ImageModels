@@ -14,7 +14,6 @@ function EditImagePage() {
     "runwayml/stable-diffusion-v1-5"
   ); // Default model selection
   const token = localStorage.getItem("token");
-  const [postCount, setPostCount] = useState(0);
   const MAX_CHAR_LIMIT_LOWD = 100;
   const MAX_CHAR_LIMIT_HIGHD = 50;
   const MAX_SELECTED_CHAR_LIMIT =
@@ -28,7 +27,7 @@ function EditImagePage() {
   const [strength, setStrength] = useState(0.8);
   const [inferenceSteps, setInferenceSteps] = useState(50);
   const [dropdownOpen, setDropdownOpen] = useState(false); // Define dropdownOpen state variable
-
+  const [imageUploaded, setImageUploaded] = useState(false);
   const [featuredImage, setFeaturedImage] = useState("");
   //pop
   const [modal, setModal] = useState(false);
@@ -66,20 +65,30 @@ function EditImagePage() {
     setPrompt((prevPrompt) => "");
   };
   const handleDrop = (event) => {
+    // event.preventDefault();
+    // const files = event.dataTransfer.files;
+    // const imageFiles = Array.from(files).filter((file) =>
+    //   file.type.startsWith("image/")
+    // );
+    // setSelectedFile((prevFiles) => [...prevFiles, ...imageFiles]);
+    // const droppedImage = imageFiles[0]; // Assuming only one image is dropped
+    // if (droppedImage && files.length === 1 ) {
+    //   const reader = new FileReader();
+    //   reader.onload = () => {
+    //     setImageSrc(reader.result);
+    //   };
+    //   reader.readAsDataURL(droppedImage);
+    // }
     event.preventDefault();
+    // event.stopPropagation();
     const files = event.dataTransfer.files;
-    const imageFiles = Array.from(files).filter((file) =>
-      file.type.startsWith("image/")
-    );
-    setSelectedFile((prevFiles) => [...prevFiles, ...imageFiles]);
-
-    const droppedImage = imageFiles[0]; // Assuming only one image is dropped
-    if (droppedImage) {
+    if (files.length === 1 && files[0].type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = () => {
         setImageSrc(reader.result);
       };
-      reader.readAsDataURL(droppedImage);
+      reader.readAsDataURL(files[0]);
+      setSelectedFile([files[0]]);
     }
   };
 
@@ -106,17 +115,6 @@ function EditImagePage() {
     }
   };
 
-  // original function
-  // const handleRemoveFile = (index) => {
-  //   console.log(selectedFiles);
-  //   setSelectedFile((prevFiles) => {
-  //     const updatedFiles = [...prevFiles];
-  //     updatedFiles.splice(index, 1);
-  //     return updatedFiles;
-  //   });
-  //   setImageSrc(null);
-  // };
-
   const handleRemoveFile = (index) => {
     setSelectedFile((prevFiles) => {
       const updatedFiles = [...prevFiles];
@@ -129,86 +127,88 @@ function EditImagePage() {
     setSelectedFile([]);
   };
 
+  const goBack = () => {
+    handleRemoveFile(0);
+    setpageState("main");
+  };
+
   // # This function handles uplaoding the image correctly
 
-  // const handleUpload = () => {
-  //   // You can implement your file upload logic here
-  //   if (selectedFiles.length > 0) {
-  //     // Example: send the file to a server
-  //     const formData = new FormData();
-  //     // Append each file to the FormData
-  //     selectedFiles.forEach((file, index) => {
-  //       formData.append(`file`, file);
-  //     });
-  //     formData.append("prompt", prompt);
-  //     formData.append("model", selectedModel);
-  //     formData.append("guidance", guidance);
-  //     formData.append("inferenceSteps", inferenceSteps);
-  //     formData.append("strength", strength);
+  const handleUpload = () => {
+    // You can implement your file upload logic here
+    if (selectedFiles.length > 0) {
+      // Example: send the file to a server
+      const formData = new FormData();
+      // Append each file to the FormData
+      selectedFiles.forEach((file, index) => {
+        formData.append(`file`, file);
+      });
+      formData.append("prompt", prompt);
+      formData.append("model", selectedModel);
+      formData.append("guidance", guidance);
+      formData.append("inferenceSteps", inferenceSteps);
+      formData.append("strength", strength);
 
-  //     setpageState("loading");
+      setpageState("loading");
 
-  //     // Add your API call or upload logic here
-  //     // For example using fetch or Axios
-  //     axios
-  //       .post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
-  //       .then((response) => {
-  //         return response.data;
-  //       })
-  //       .then((data) => {
-  //         setpageState("result");
-  //         // Check if data.images is an array before calling map
-  //         const imageUrls = Array.isArray(data.images)
-  //           ? data.images.map((image) => image.image_data)
-  //           : [];
-  //         setImages(imageUrls);
-  //         setPrompt(data.prompt);
+      // Add your API call or upload logic here
+      // For example using fetch or Axios
+      axios
+        .post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
+        .then((response) => {
+          return response.data;
+        })
+        .then((data) => {
+          setpageState("result");
+          // Check if data.images is an array before calling map
+          const imageUrls = Array.isArray(data.images)
+            ? data.images.map((image) => image.image_data)
+            : [];
+          setImages(imageUrls);
+          setPrompt(data.prompt);
 
-  //         // const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
-  //         // setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
-
-  //         // console.log(data);
-  //         return data ? Promise.resolve(data) : Promise.resolve({});
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error:", error);
-  //         alert(
-  //           "An error occurred while uploading the image. Please try again later."
-  //         );
-  //         setpageState("main"); // Reset page state
-  //         return Promise.reject(error);
-  //       });
-  //   }
-  // };
+          // console.log(data);
+          return data ? Promise.resolve(data) : Promise.resolve({});
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert(
+            "An error occurred while uploading the image. Please try again later."
+          );
+          setpageState("main"); // Reset page state
+          return Promise.reject(error);
+        });
+    }
+  };
 
   // Testing function
   // This function will return the same uploaded image after waiting for 10 seconds. *** Replace with the function above when done testing
-  const handleUpload = () => {
-    // Check if files are selected
-    if (selectedFiles.length > 0) {
-      // Set loading state
-      setpageState("loading");
+  // const handleUpload = () => {
+  //   // Check if files are selected
+  //   if (selectedFiles.length > 0) {
+  //     // Set loading state
+  //     setpageState("loading");
 
-      // Simulate delay using setTimeout
-      setTimeout(() => {
-        // Reset loading state
-        setpageState("result");
+  //     // Simulate delay using setTimeout
+  //     setTimeout(() => {
+  //       // Reset loading state
+  //       setpageState("result");
 
-        // Get the uploaded image URL
-        const uploadedImageUrls = selectedFiles.map((file) =>
-          URL.createObjectURL(file)
-        );
+  //       // Get the uploaded image URL
+  //       const uploadedImageUrls = selectedFiles.map((file) =>
+  //         URL.createObjectURL(file)
+  //       );
 
-        // Set the uploaded image URLs as result
-        setImages(uploadedImageUrls);
+  //       // Set the uploaded image URLs as result
+  //       setImages(uploadedImageUrls);
 
-        // Reset page state after displaying the result
-        // setTimeout(() => {
-        //   setpageState('main');
-        // }, 3000); // Change 3000 to 10000 for 10-second delay
-      }, 10000); // Wait for 10 seconds
-    }
-  };
+  //       // Reset page state after displaying the result
+  //       // setTimeout(() => {
+  //       //   setpageState('main');
+  //       // }, 3000); // Change 3000 to 10000 for 10-second delay
+  //     }, 10000); // Wait for 10 seconds
+  //   }
+  // };
 
   return (
     <div className="bg-second min-h-screen from-gray-100 to-gray-300">
@@ -327,7 +327,7 @@ function EditImagePage() {
                       </div>
                       <input
                         id="dropzone-file"
-                        multiple
+                        multiple={false}
                         type="file"
                         className="hidden"
                         onChange={handleFileChange}
@@ -584,7 +584,7 @@ function EditImagePage() {
             <div className="flex gap-1 w-full mt-8 justify-between">
               <button
                 className=" bg-blue-500 hover:bg-blue-400 text-white flex gap-2 font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-                onClick={() => setpageState("main")}
+                onClick={goBack()}
               >
                 <svg
                   className="w-5 h-5 rtl:rotate-180"
