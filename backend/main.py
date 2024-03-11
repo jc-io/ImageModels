@@ -423,4 +423,4 @@ def edit_image():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-   app.run(port=80, debug=True, threaded=True) #Run the server on port 5000 with deubg mode enabled and threading enabled
+   app.run(port=80, debug=True, threaded=True) #Run the server on port 80 with deubg mode enabled and threading enabled
