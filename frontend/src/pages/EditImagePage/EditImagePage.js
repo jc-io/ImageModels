@@ -1,23 +1,37 @@
 import { useState } from "react";
 import axios from "axios";
-import styles from "./EditImagePage.module.css";
 import { FacebookShareButton, FacebookIcon } from "react-share";
 import { TwitterShareButton, TwitterIcon } from "react-share";
 const shareUrl = "https://www.youtube.com/";
-// const ImgComponent = (props) => {
-//   return <div>{props.dog}</div>;
-// };
+
 function EditImagePage() {
   const [prompt, setPrompt] = useState("");
   const [selectedFiles, setSelectedFile] = useState([]);
   const [pageState, setpageState] = useState("main");
   const [images, setImages] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [generatedImageUrl, setGeneratedImageUrl] = useState(null);
 
+  const [selectedModel, setSelectedModel] = useState(
+    "runwayml/stable-diffusion-v1-5"
+  ); // Default model selection
+  const token = localStorage.getItem("token");
+  const [postCount, setPostCount] = useState(0);
+  const MAX_CHAR_LIMIT_LOWD = 100;
+  const MAX_CHAR_LIMIT_HIGHD = 50;
+  const MAX_SELECTED_CHAR_LIMIT =
+    selectedModel === "runwayml/stable-diffusion-v1-5"
+      ? MAX_CHAR_LIMIT_LOWD
+      : MAX_CHAR_LIMIT_HIGHD;
+
+  // Image settings state
+  const [imageSettingsVisible, setImageSettingsVisible] = useState(false);
+  const [guidance, setGuidance] = useState(7.5);
+  const [strength, setStrength] = useState(0.8);
+  const [inferenceSteps, setInferenceSteps] = useState(50);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // Define dropdownOpen state variable
+
+  const [featuredImage, setFeaturedImage] = useState("");
   //pop
   const [modal, setModal] = useState(false);
-
   const toggleModal = () => {
     setModal(!modal);
   };
@@ -26,28 +40,14 @@ function EditImagePage() {
   } else {
     document.body.classList.remove("active-modal");
   }
-
   //pop
 
-  //img
   const [imageSrc, setImageSrc] = useState(null);
-
-  // const handleFileChanges = (event) => {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       setImageSrc(reader.result);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
 
   // download function
   const handleDownload = () => {
     if (images.length > 0) {
       const imageUrl = images[images.length - 1];
-
       const downloadLink = document.createElement("a");
       downloadLink.href = imageUrl;
       downloadLink.download = "generated_image.jpg"; // the filename for download
@@ -55,20 +55,17 @@ function EditImagePage() {
       downloadLink.click();
     }
   };
-  //img
-
+  const chooseLowDetail = () => {
+    setSelectedModel("runwayml/stable-diffusion-v1-5");
+    document.getElementById("prompt-input").value = "";
+    setPrompt((prevPrompt) => "");
+  };
+  const chooseHighDetail = () => {
+    setSelectedModel("stabilityai/stable-diffusion-xl-base-1.0");
+    document.getElementById("prompt-input").value = "";
+    setPrompt((prevPrompt) => "");
+  };
   const handleDrop = (event) => {
-    // event.preventDefault();
-    // const files = event.dataTransfer.files;
-    // setSelectedFile(Array.from(files));
-    //working
-    // event.preventDefault();
-    // const files = event.dataTransfer.files;
-    // const imageFiles = Array.from(files).filter((file) =>
-    //   file.type.startsWith("image/")
-    // );
-    // setSelectedFile((prevFiles) => [...prevFiles, ...imageFiles]);
-    //working
     event.preventDefault();
     const files = event.dataTransfer.files;
     const imageFiles = Array.from(files).filter((file) =>
@@ -84,6 +81,11 @@ function EditImagePage() {
       };
       reader.readAsDataURL(droppedImage);
     }
+  };
+
+  const toggleImageSettings = () => {
+    setImageSettingsVisible(!imageSettingsVisible);
+    setDropdownOpen(!dropdownOpen); // Toggle dropdownOpen state
   };
 
   const handleDragOver = (event) => {
@@ -129,80 +131,84 @@ function EditImagePage() {
 
   // # This function handles uplaoding the image correctly
 
-  const handleUpload = () => {
-    // You can implement your file upload logic here
-    if (selectedFiles.length > 0) {
-      // Example: send the file to a server
-      const formData = new FormData();
-      // Append each file to the FormData
-      selectedFiles.forEach((file, index) => {
-        formData.append(`file`, file);
-      });
-      formData.append("prompt", prompt);
+  // const handleUpload = () => {
+  //   // You can implement your file upload logic here
+  //   if (selectedFiles.length > 0) {
+  //     // Example: send the file to a server
+  //     const formData = new FormData();
+  //     // Append each file to the FormData
+  //     selectedFiles.forEach((file, index) => {
+  //       formData.append(`file`, file);
+  //     });
+  //     formData.append("prompt", prompt);
+  //     formData.append("model", selectedModel);
+  //     formData.append("guidance", guidance);
+  //     formData.append("inferenceSteps", inferenceSteps);
+  //     formData.append("strength", strength);
 
-      setpageState("loading");
+  //     setpageState("loading");
 
-      // Add your API call or upload logic here
-      // For example using fetch or Axios
-      axios
-        .post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
-        .then((response) => {
-          return response.data;
-        })
-        .then((data) => {
-          setpageState("result");
-          // Check if data.images is an array before calling map
-          const imageUrls = Array.isArray(data.images)
-            ? data.images.map((image) => image.image_data)
-            : [];
-          setImages(imageUrls);
-          setPrompt(data.prompt);
+  //     // Add your API call or upload logic here
+  //     // For example using fetch or Axios
+  //     axios
+  //       .post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
+  //       .then((response) => {
+  //         return response.data;
+  //       })
+  //       .then((data) => {
+  //         setpageState("result");
+  //         // Check if data.images is an array before calling map
+  //         const imageUrls = Array.isArray(data.images)
+  //           ? data.images.map((image) => image.image_data)
+  //           : [];
+  //         setImages(imageUrls);
+  //         setPrompt(data.prompt);
 
-          // const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
-          // setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
+  //         // const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
+  //         // setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
 
-          // console.log(data);
-          return data ? Promise.resolve(data) : Promise.resolve({});
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          alert(
-            "An error occurred while uploading the image. Please try again later."
-          );
-          setpageState("main"); // Reset page state
-          return Promise.reject(error);
-        });
-    }
-  };
+  //         // console.log(data);
+  //         return data ? Promise.resolve(data) : Promise.resolve({});
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error:", error);
+  //         alert(
+  //           "An error occurred while uploading the image. Please try again later."
+  //         );
+  //         setpageState("main"); // Reset page state
+  //         return Promise.reject(error);
+  //       });
+  //   }
+  // };
 
   // Testing function
   // This function will return the same uploaded image after waiting for 10 seconds. *** Replace with the function above when done testing
-  // const handleUpload = () => {
-  //   // Check if files are selected
-  //   if (selectedFiles.length > 0) {
-  //     // Set loading state
-  //     setpageState("loading");
+  const handleUpload = () => {
+    // Check if files are selected
+    if (selectedFiles.length > 0) {
+      // Set loading state
+      setpageState("loading");
 
-  //     // Simulate delay using setTimeout
-  //     setTimeout(() => {
-  //       // Reset loading state
-  //       setpageState("result");
+      // Simulate delay using setTimeout
+      setTimeout(() => {
+        // Reset loading state
+        setpageState("result");
 
-  //       // Get the uploaded image URL
-  //       const uploadedImageUrls = selectedFiles.map((file) =>
-  //         URL.createObjectURL(file)
-  //       );
+        // Get the uploaded image URL
+        const uploadedImageUrls = selectedFiles.map((file) =>
+          URL.createObjectURL(file)
+        );
 
-  //       // Set the uploaded image URLs as result
-  //       setImages(uploadedImageUrls);
+        // Set the uploaded image URLs as result
+        setImages(uploadedImageUrls);
 
-  //       // Reset page state after displaying the result
-  //       // setTimeout(() => {
-  //       //   setpageState('main');
-  //       // }, 3000); // Change 3000 to 10000 for 10-second delay
-  //     }, 10000); // Wait for 10 seconds
-  //   }
-  // };
+        // Reset page state after displaying the result
+        // setTimeout(() => {
+        //   setpageState('main');
+        // }, 3000); // Change 3000 to 10000 for 10-second delay
+      }, 10000); // Wait for 10 seconds
+    }
+  };
 
   return (
     <div className="bg-second min-h-screen from-gray-100 to-gray-300">
@@ -225,12 +231,9 @@ function EditImagePage() {
               {imageSrc ? (
                 // The layout of the page when an image is uploaded
                 <div>
-                  {/* <div className=""> */}
-                  {/* <div class="child mx-0 "> */}
                   {/* show the uploaded image */}
                   {selectedFiles.length > 0 && (
                     <div className="mt-1 relative w-full">
-                      {/* <h2 className="text-3xl font-semibold leading-normal text-white"></h2> */}
                       <div
                         className="w-full"
                         style={{
@@ -345,14 +348,147 @@ function EditImagePage() {
               <input
                 htmlFor="Caption"
                 type="text"
-                id="default-input"
+                id="prompt-input"
+                maxLength={MAX_SELECTED_CHAR_LIMIT}
                 placeholder="Example: Change the color of the background to red"
                 className="w-1/3 min-w-[300px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 onChange={(e) => setPrompt(e.target.value)}
                 //change the size of prompt box
               />
+              <div className="text-right mt-2 text-sm text-gray-600">
+                {`${prompt.length}/${MAX_SELECTED_CHAR_LIMIT} Characters Remaining`}
+              </div>
 
               <br />
+              <div className="relative inline-block text-left">
+                <button
+                  onClick={toggleImageSettings}
+                  type="button"
+                  className="inline-flex justify-between w-[27.4rem] rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-200 text-base font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100"
+                >
+                  <span>Advanced Image Settings</span>
+                  {/* Icon for dropdown */}
+                  <svg
+                    className={`-mr-1 ml-2 h-5 w-5 ${
+                      dropdownOpen ? "transform rotate-180" : ""
+                    }`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10.293 13.707a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L10 11.586l3.293-3.293a1 1 0 111.414 1.414l-4 4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+                {/* Dropdown content */}
+                {imageSettingsVisible && (
+                  <div className="origin-top-right absolute right-0 w-[27.4rem] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <div className="p-4">
+                      {/* Guidance slider */}
+                      <label
+                        htmlFor="guidance"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Guidance: {guidance}
+                      </label>
+                      <div className="flex justify-between items-center mt-1">
+                        <input
+                          type="range"
+                          min="0"
+                          max="10"
+                          step="0.1"
+                          value={guidance}
+                          onChange={(e) => setGuidance(e.target.value)}
+                          className="block w-full mt-1"
+                        />
+                        <span className="text-xs text-gray-500"></span>
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-500">
+                        <span>More Strict to Prompt</span>
+                        <span>Less Strict to Prompt</span>
+                      </div>
+
+                      {/* Strength slider */}
+                      <label
+                        htmlFor="strength"
+                        className="block mt-3 text-sm font-medium text-gray-700"
+                      >
+                        Strength: {strength}
+                      </label>
+                      <div className="flex justify-between items-center mt-1">
+                        <input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.1"
+                          value={strength}
+                          onChange={(e) => setStrength(e.target.value)}
+                          className="block w-full mt-1"
+                        />
+                        <span className="text-xs text-gray-500"></span>
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-500">
+                        <span>Less creative</span>
+                        <span>More creative</span>
+                      </div>
+
+                      {/* Inference Steps slider */}
+                      <label
+                        htmlFor="inferenceSteps"
+                        className="block mt-3 text-sm font-medium text-gray-700"
+                      >
+                        Inference Steps: {inferenceSteps}
+                      </label>
+                      <div className="flex justify-between items-center mt-1">
+                        <input
+                          type="range"
+                          min="50"
+                          max="150"
+                          step="10"
+                          value={inferenceSteps}
+                          onChange={(e) => setInferenceSteps(e.target.value)}
+                          className="block w-full mt-1"
+                        />
+                        <span className="text-xs text-gray-500"></span>
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-500">
+                        <span>Lower Quality but Faster</span>
+                        <span>Higher Quality but Slower</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <label className="block mb-2 text-lg font-medium text-gray-900 dark:text-white">
+                Choose Model:
+              </label>
+              <div className="flex space-x-4">
+                <button
+                  className={`text-white font-bold py-2 px-4 rounded ${
+                    selectedModel === "runwayml/stable-diffusion-v1-5"
+                      ? "bg-buttonHover"
+                      : "bg-blue-700"
+                  }`}
+                  onClick={() => chooseLowDetail()}
+                >
+                  RunwayML (Low Detail)
+                </button>
+                <button
+                  className={`text-white font-bold py-2 px-4 rounded ${
+                    selectedModel === "stabilityai/stable-diffusion-xl-base-1.0"
+                      ? "bg-buttonHover"
+                      : "bg-blue-700"
+                  }`}
+                  onClick={() => chooseHighDetail()}
+                >
+                  StabilityAI (High Detail)
+                </button>
+              </div>
 
               <div className="flex justify-center mt-8 gap-60">
                 <button
@@ -404,24 +540,7 @@ function EditImagePage() {
 
         {pageState === "result" && (
           <div className="w-3/5 m-auto max-w-[1220px]">
-            {/* <div className="image-display text-center"> */}
             <div className="grid gap-x-80 items-center grid-flow-col min-w-48">
-              {/* showing the uploaded image */}
-              {/* <div className="grid justify-items-center w-full">
-                {images.map((imageUrl, index) => (
-                  <img
-                    className="h-auto rounded-lg w-full"
-                    key={index}
-                    alt={`Image ${index + 1}`}
-                    src={imageUrl}
-                    style={{
-                      border: "5px solid black",
-                      borderRadius: "8px",
-                      backgroundColor: "transparent",
-                    }}
-                  />
-                ))}
-              </div> */}
               {imageSrc && (
                 <div className="grid justify-items-center w-full">
                   <img
