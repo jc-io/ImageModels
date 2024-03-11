@@ -42,7 +42,7 @@ return self.covertToimgageJpeg(images);
 from diffusers import DiffusionPipeline # slow version
 import torch
 ```
-2. We take the user inputs on the image, prompt, and parameters given by the user and pass it to the generateDetailed function:
+2. We take the user inputs on the prompt, and parameters given by the user and pass it to the generateDetailed function:
 ```
 def generateDetailed(self, prompt="Didn't work sorry", guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
 ```
