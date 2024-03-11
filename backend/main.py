@@ -402,12 +402,20 @@ def edit_image():
           pathurl = os.path.join(app.config['UPLOAD_FOLDER'],file.filename);
 
         prompt = request.form.get('prompt'); #Get the prompt from the request body
+        model = request.form.get('model');
+        guidance = float(request.form.get('guidance'));
+        strength = float(request.form.get('strength'));
+        inferenceSteps = int(request.form.get('inferenceSteps'));
         print("Recieved prompt: " + prompt)
         editImageGenerate = ImageEdit(); #Create a new instance of the ImageEdit class containing the Stable Diffusion model
            
         images = []
-        images.append({'image_data': editImageGenerate.generate(pathurl, prompt)}); #Generate an image based on the given prompt
+        # images.append({'image_data': editImageGenerate.generate(pathurl, prompt)}); #Generate an image based on the given prompt
         
+        if model == 'runwayml/stable-diffusion-v1-5':
+          images.append({'image_data': editImageGenerate.generate(pathurl,prompt,  strength, guidance, inferenceSteps)});
+        else: 
+          images.append({'image_data': editImageGenerate.generateDetailed(pathurl, prompt,  strength, guidance, inferenceSteps)});
         return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images}); #Return a success message with the generated image
 
     except Exception as e: # Return an error if an error occurs
