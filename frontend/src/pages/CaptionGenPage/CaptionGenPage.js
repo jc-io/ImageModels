@@ -297,11 +297,46 @@ function CaptionGenPage() {
     {pageState==="result" && (
       <div>
 
+          {/*Preview Image*/}
+          {selectedFiles.length > 0 && (
+          <div className="text-center mt-0 pt-0">
+            <h2 className="text-3xl font-semibold leading-normal text-white">Uploaded Image:</h2>
+            <div className="flex justify-center items-center mt-5">
+              {selectedFiles.map((file, index) => (
+                <div key={index} style={{ border: '5px solid black', borderRadius: '8px', backgroundColor: 'transparent'}}>
+                  <img src={URL.createObjectURL(file)} alt="Uploaded" className="max-w-md" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+        )}
+
 
     <div className="caption-display text-center">
-        <h3 className="text-white font-bold">Generated Caption:</h3>
+        <h3 className="text-white font-bold">New Generated Caption:</h3>
           <div className='text-white font-extrabold font-size: 20px justify-center'>{result}</div>
 
+
+{/*Display Caption*/}
+<div className="caption-display">
+            <h2 className="text-white font-bold mb-2 py-7">Generated Caption:</h2>
+            <textarea
+                readOnly
+                className="w-1/2 py-2 px-2 text-center text-white border rounded-lg focus:outline-none"
+                rows={textareaRows} // Use the calculated number of rows
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    padding: '20px',
+                    borderRadius: '8px',
+                    marginTop: '5px',
+                    resize: 'none' // Disable textarea resizing
+                }}
+
+            ></textarea>
+        </div>
 
           <br></br>
           <button class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
