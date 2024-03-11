@@ -14,7 +14,6 @@ function EditImagePage() {
     "runwayml/stable-diffusion-v1-5"
   ); // Default model selection
   const token = localStorage.getItem("token");
-  const [postCount, setPostCount] = useState(0);
   const MAX_CHAR_LIMIT_LOWD = 100;
   const MAX_CHAR_LIMIT_HIGHD = 50;
   const MAX_SELECTED_CHAR_LIMIT =
@@ -128,8 +127,6 @@ function EditImagePage() {
     setSelectedFile([]);
   };
 
-  // # This function handles uplaoding the image correctly
-
   const handleUpload = () => {
     // You can implement your file upload logic here
     if (selectedFiles.length > 0) {
@@ -163,10 +160,6 @@ function EditImagePage() {
           setImages(imageUrls);
           setPrompt(data.prompt);
 
-          // const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
-          // setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
-
-          // console.log(data);
           return data ? Promise.resolve(data) : Promise.resolve({});
         })
         .catch((error) => {
@@ -179,35 +172,6 @@ function EditImagePage() {
         });
     }
   };
-
-  // Testing function
-  // This function will return the same uploaded image after waiting for 10 seconds. *** Replace with the function above when done testing
-  // const handleUpload = () => {
-  //   // Check if files are selected
-  //   if (selectedFiles.length > 0) {
-  //     // Set loading state
-  //     setpageState("loading");
-
-  //     // Simulate delay using setTimeout
-  //     setTimeout(() => {
-  //       // Reset loading state
-  //       setpageState("result");
-
-  //       // Get the uploaded image URL
-  //       const uploadedImageUrls = selectedFiles.map((file) =>
-  //         URL.createObjectURL(file)
-  //       );
-
-  //       // Set the uploaded image URLs as result
-  //       setImages(uploadedImageUrls);
-
-  //       // Reset page state after displaying the result
-  //       // setTimeout(() => {
-  //       //   setpageState('main');
-  //       // }, 3000); // Change 3000 to 10000 for 10-second delay
-  //     }, 10000); // Wait for 10 seconds
-  //   }
-  // };
 
   return (
     <div className="bg-second min-h-screen from-gray-100 to-gray-300">
