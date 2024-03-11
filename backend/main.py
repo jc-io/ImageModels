@@ -80,7 +80,7 @@ def archive():
     token = token.split()[1]  # Remove 'Bearer' from the token
     payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
     username = payload['username']
-    
+
     user = users_collection.find_one({'username': username})
     image = request.form['image']
     if user:
@@ -96,7 +96,7 @@ def archive():
     return jsonify({'error': 'Token expired'}), 401
   except jwt.InvalidTokenError:
     return jsonify({'error': 'Invalid token'}), 401
-  
+
 #This function is used to determine if the user is logged in and authinticated
 @app.route('/get_user_info', methods=['GET','POST'])
 def get_user_info():
@@ -109,7 +109,7 @@ def get_user_info():
     token = token.split()[1]  # Remove 'Bearer' from the token
     payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
     username = payload['username']
-    
+
     user = users_collection.find_one({'username': username}) #Get the user from the database
     if user: #If the user is found return the user information
       return jsonify({'username': user['username'], 'email': user.get('email', '')}), 200
@@ -120,7 +120,7 @@ def get_user_info():
     return jsonify({'error': 'Token expired'}), 401
   except jwt.InvalidTokenError: #If the token is invalid return an error
     return jsonify({'error': 'Invalid token'}), 401
-    
+
 
 #This function is used to get a user private images from the database
 @app.route('/getArchivedImages', methods=['GET','POST'])
@@ -134,7 +134,7 @@ def get_Archived_Images():
     token = token.split()[1]  # Remove 'Bearer' from the token
     payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']) #Decode the token and get the user information from the token
     username = payload['username']
-    
+
     images_data = list(images_collection.find({'username': username}))  # attempts to find all images with the user's username
     # Convert ObjectId to strings for each document
     for image in images_data: #Convert the object id to a string so it can be jsonified without errors
@@ -170,7 +170,7 @@ def toggle_image_privacy(image_id): #Get the image id from the url (from POST re
     image = images_collection.find_one({"_id": ObjectId(image_id), "username": username})
     if not image:
         return jsonify({"error": "Image not found"}), 404
-    
+
     data = request.get_json()
     is_public = data.get('isPublic') # Get the isPublic value from the request body
     # Update the privacy status of the image in MongoDB
@@ -191,7 +191,7 @@ def toggle_image_privacy(image_id): #Get the image id from the url (from POST re
     return jsonify({'error': 'Invalid token'}), 401 # Return an error if the token is invalid
 
 
-# Updates the description of an image  
+# Updates the description of an image
 @app.route('/updateImageDescription/<image_id>', methods=['PUT'])
 def update_image_description(image_id): #Get the image id from the url (from POST request)
   token = request.headers.get('Authorization') #Get the token from the request headers
@@ -211,7 +211,7 @@ def update_image_description(image_id): #Get the image id from the url (from POS
     image = images_collection.find_one({"_id": ObjectId(image_id), "username": username})
     if not image:
         return jsonify({"error": "Image not found"}), 404
-    
+
     data = request.get_json()
     description = data.get('description') # Get the description value from the request body
     # Update the privacy status of the image in MongoDB
@@ -225,23 +225,23 @@ def update_image_description(image_id): #Get the image id from the url (from POS
     )
     # Return a success message with the updated privacy status
     return jsonify({"message": f"Updated the description of image {image_id} successfully","description": description}), 200
-  
+
 
   except jwt.ExpiredSignatureError: #If the token is expired return an error
     return jsonify({'error': 'Token expired'}), 401 # Return an error if the token is expired
   except jwt.InvalidTokenError: #If the token is invalid return an error
     return jsonify({'error': 'Invalid token'}), 401 # Return an error if the token is invalid
-  
+
 
 @app.route("/getImages",  methods=['GET'])
 def getImages():
     limit = 100  # Set your desired limit here
     images_data = list(images_collection.find({"public":True}).limit(limit))  # Fetch documents with the specified limit
-    
+
     # Convert ObjectId to strings for each document
     for image in images_data:
         image['_id'] = str(image['_id'])
-    
+
     return jsonify({'message': 'Got Public Images', 'images': images_data}),200
 
 @app.route('/signup', methods=['POST'])
@@ -251,7 +251,7 @@ def signup():
         password = request.form['password']
         email = request.form['email']
         hashed_password = generate_password_hash(password) #Hash the password so it can be stored in the database securely
-        
+
         if users_collection.find_one({'username': username}): #Check if the username already exists in the database
             res = {'response': 'Username already exists!'}
             return jsonify(res), 400 #Return an error if the username already exists
@@ -267,7 +267,7 @@ def signup():
             token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
             res = {'response': 'Signed Up Successful','token': token}
             return jsonify(res), 200
-    
+
     res = {'response': 'Wrong method'}
     return jsonify(res), 405 #Return an error if the request method is not a post request
 
@@ -281,7 +281,7 @@ def signout():
     else:
         res = {'response': 'Wrong method'}
         return jsonify(res)
-    
+
 @app.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST': #If the request method is a post request then get the username and password from the request body
@@ -304,7 +304,7 @@ def login():
             return jsonify(res), 401 #Return an error if the username or password is invalid
 
 
-    
+
 @app.route("/imageTotext", methods=['post']) # This API is used to convert an image to text using BLIP model
 def imageToText():
     try:
@@ -313,7 +313,7 @@ def imageToText():
           print("Caption to use: " + str(imagecaption));
         except Exception as e:
           print("Unable to determine caption");
-        
+
         uploaded_files = request.files.getlist('file') #Get the image from the request body
         caption = captionGen() #Create a new instance of the captionGen class containing the BLIP model
         for file in uploaded_files: #
@@ -334,20 +334,20 @@ def imageToText():
     except Exception as e:#Return an error if an error occurs
         print(str(e));
         return jsonify({'error': str(e)}), 500
-    
+
 
 @app.route("/generateLLM", methods=['post'])
 def generate_LLM(): #This API takes a caption/description of an image to generate a funny caption using LLM model for instagram posts
     try:
-        try: 
+        try:
           captionGenerated = request.form.get('captionGenerated'); #Get the caption from the request body which was generated from BLIP
           tone = request.form.get('tone'); #Get the tone from the request body
           print("Generated from BLIP and being passed to LLM: " + str(captionGenerated));
           print("With Tone:" + str(tone));
         except Exception as e:
           print("Unable to determine caption");
-        
-        
+
+
         caption = captionGen() #Create a new instance of the captionGen class containing the LLM model
         funnycaption = caption.createCaption(captionGenerated, tone); #Generate a caption based on given tone using the LLM model
         ##image.save("/.")
@@ -358,7 +358,7 @@ def generate_LLM(): #This API takes a caption/description of an image to generat
     except Exception as e:
         print(str(e)); #Return an error if an error occurs
         return jsonify({'error': str(e)}), 500
-    
+
 @app.route("/generate", methods=['post'])
 def generate_image():
     try:
@@ -374,10 +374,10 @@ def generate_image():
         images = []
         if model == 'runwayml/stable-diffusion-v1-5':
           images.append({'image_data': generator.generate(prompt, guidance, inferenceSteps)});
-        else: 
+        else:
           images.append({'image_data': generator.generateDetailed(prompt, guidance, inferenceSteps)});
         # image.save(os.path.join(app.config['GENERATED_FOLDER'],"generated_image1.jpg"))
- 
+
 
         # for i in range(1, 2):  # Assuming there are three images named image1.jpg, image2.jpg, and image3.jpg
         #   image_path = os.path.join(app.config['GENERATED_FOLDER'],f"generated_image{i}.jpg");
@@ -386,14 +386,14 @@ def generate_image():
         #       images.append({'image_data': image_data})
         # print(len(images))
         return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images});
-        
+
     except Exception as e:
         print(str(e));
         return jsonify({'error': str(e)}), 500
 
 @app.route("/editImage", methods=['post']) #This API is used to edit an image based on a given prompt using the Stable Diffusion model
 def edit_image():
-    try:  
+    try:
         uploaded_files = request.files.getlist('file')  # Get the image from the request body
         for file in uploaded_files: #Save the image to the uploads folder
           print("Saving File Name: "+file.filename);
@@ -408,27 +408,19 @@ def edit_image():
         inferenceSteps = int(request.form.get('inferenceSteps'));
         print("Recieved prompt: " + prompt)
         editImageGenerate = ImageEdit(); #Create a new instance of the ImageEdit class containing the Stable Diffusion model
-           
+
         images = []
         # images.append({'image_data': editImageGenerate.generate(pathurl, prompt)}); #Generate an image based on the given prompt
-        
+
         if model == 'runwayml/stable-diffusion-v1-5':
           images.append({'image_data': editImageGenerate.generate(pathurl,prompt,  strength, guidance, inferenceSteps)});
-        else: 
+        else:
           images.append({'image_data': editImageGenerate.generateDetailed(pathurl, prompt,  strength, guidance, inferenceSteps)});
         return jsonify({'message': 'File uploaded successfully','prompt':prompt,'images':images}); #Return a success message with the generated image
 
     except Exception as e: # Return an error if an error occurs
         print(str(e));
         return jsonify({'error': str(e)}), 500
-  
+
 if __name__ == '__main__':
-   app.run(port=5000, debug=True, threaded=True) #Run the server on port 5000 with deubg mode enabled and threading enabled
-
-
-
-
-
-
-
-    
+   app.run(port=80, debug=True, threaded=True) #Run the server on port 5000 with deubg mode enabled and threading enabled
