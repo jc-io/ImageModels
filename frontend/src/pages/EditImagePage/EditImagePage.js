@@ -71,7 +71,12 @@ function EditImagePage() {
     const imageFiles = Array.from(files).filter((file) =>
       file.type.startsWith("image/")
     );
-    setSelectedFile((prevFiles) => [...prevFiles, ...imageFiles]);
+
+    if (selectedFiles.length > 0) {
+      setSelectedFile(imageFiles);
+    } else {
+      setSelectedFile((prevFiles) => [...prevFiles, ...imageFiles]);
+    }
 
     const droppedImage = imageFiles[0]; // Assuming only one image is dropped
     if (droppedImage) {
