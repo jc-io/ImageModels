@@ -64,31 +64,48 @@ function EditImagePage() {
     document.getElementById("prompt-input").value = "";
     setPrompt((prevPrompt) => "");
   };
+  // const handleDrop = (event) => {
+  //   // event.preventDefault();
+  //   // const files = event.dataTransfer.files;
+  //   // const imageFiles = Array.from(files).filter((file) =>
+  //   //   file.type.startsWith("image/")
+  //   // );
+  //   // setSelectedFile((prevFiles) => [...prevFiles, ...imageFiles]);
+  //   // const droppedImage = imageFiles[0]; // Assuming only one image is dropped
+  //   // if (droppedImage && files.length === 1 ) {
+  //   //   const reader = new FileReader();
+  //   //   reader.onload = () => {
+  //   //     setImageSrc(reader.result);
+  //   //   };
+  //   //   reader.readAsDataURL(droppedImage);
+  //   // }
+  //   event.preventDefault();
+  //   // event.stopPropagation();
+  //   const files = event.dataTransfer.files;
+  //   if (files.length === 1 && files[0].type.startsWith("image/")) {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       setImageSrc(reader.result);
+  //     };
+  //     reader.readAsDataURL(files[0]);
+  //     setSelectedFile([files[0]]);
+  //   }
+  // };
+
   const handleDrop = (event) => {
-    // event.preventDefault();
-    // const files = event.dataTransfer.files;
-    // const imageFiles = Array.from(files).filter((file) =>
-    //   file.type.startsWith("image/")
-    // );
-    // setSelectedFile((prevFiles) => [...prevFiles, ...imageFiles]);
-    // const droppedImage = imageFiles[0]; // Assuming only one image is dropped
-    // if (droppedImage && files.length === 1 ) {
-    //   const reader = new FileReader();
-    //   reader.onload = () => {
-    //     setImageSrc(reader.result);
-    //   };
-    //   reader.readAsDataURL(droppedImage);
-    // }
     event.preventDefault();
-    // event.stopPropagation();
     const files = event.dataTransfer.files;
-    if (files.length === 1 && files[0].type.startsWith("image/")) {
+    const imageFiles = Array.from(files).filter((file) =>
+      file.type.startsWith("image/")
+    );
+    setSelectedFile((prevFiles) => [...prevFiles, ...imageFiles]);
+    const droppedImage = imageFiles[0]; // Assuming only one image is dropped
+    if (droppedImage) {
       const reader = new FileReader();
       reader.onload = () => {
         setImageSrc(reader.result);
       };
-      reader.readAsDataURL(files[0]);
-      setSelectedFile([files[0]]);
+      reader.readAsDataURL(droppedImage);
     }
   };
 
