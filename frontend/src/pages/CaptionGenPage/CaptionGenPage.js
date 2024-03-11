@@ -21,6 +21,15 @@ function CaptionGenPage() {
     {/*Drop Down state Managment*/}
     const [showDropdown, setShowDropdown] = useState(false);
 
+    const goBack = () => {
+      setSelectedTone('')
+      setShowDropdown(false);
+      setSelectedFile('')
+      setpageState('main');
+      setIsGenerating(false)
+      setCaption('')
+    };
+
     // This function is called when a tone is selected from the dropdown
     const handleSelectTone = (tone) => {
         setSelectedTone(tone);
@@ -61,6 +70,7 @@ function CaptionGenPage() {
     const handleUpload = () => {
       if (selectedFiles.length > 0) {
         const formData = new FormData();
+        setCaption('Generating...')
         selectedFiles.forEach((file, index) => {
           formData.append(`file`, file);
         });
@@ -71,6 +81,7 @@ function CaptionGenPage() {
         axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
           .then(response => response.data)
           .then(data => {
+
             setCaption(data.caption);
           })
           .catch(error => {
@@ -93,6 +104,7 @@ function CaptionGenPage() {
           .then(response => response.data)
           .then(data => {
             setpageState('result');
+            setCaption(caption);
             setResult(data.result);
           })
           .catch(error => console.error('Error:', error));
@@ -223,7 +235,7 @@ function CaptionGenPage() {
             <textarea
                 readOnly
                 className="w-1/2 py-2 px-2 text-center text-white border rounded-lg focus:outline-none"
-                rows={textareaRows} 
+                rows={textareaRows}
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
                 style={{
@@ -231,7 +243,7 @@ function CaptionGenPage() {
                     padding: '20px',
                     borderRadius: '8px',
                     marginTop: '5px',
-                    resize: 'none' 
+                    resize: 'none'
                 }}
 
             ></textarea>
@@ -259,7 +271,7 @@ function CaptionGenPage() {
             <br/>
             <div className="flex justify-center gap-4">
               <button
-              onClick={() => setpageState('main')}
+              onClick={() => goBack()}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Back
               </button>
@@ -271,8 +283,6 @@ function CaptionGenPage() {
                 >
                 Generate
               </button>
-
-
             </div>
         </div>
         <br/>
@@ -331,7 +341,7 @@ function CaptionGenPage() {
 </div>
 
           <br></br>
-          <button class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
+          <button class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => goBack()}>
 
 
               <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
