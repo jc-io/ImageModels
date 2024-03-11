@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 function CaptionGenPage() {
     const [selectedFiles, setSelectedFile] = useState([]);
     //State var to store caption
-    const [caption, setCaption] = useState('')
+    const [caption, setCaption] = useState('loading...')
     const [textareaRows, setTextareaRows] = useState(1);
 
     const [result, setResult] = useState('')
@@ -81,6 +81,7 @@ function CaptionGenPage() {
 
     const handleMakeIt = () => {
       if (caption && selectedTone) {
+        setCaption('loading...')
         const formDataTwo = new FormData();
         formDataTwo.append(`captionGenerated`, caption);
         formDataTwo.append(`tone`, selectedTone);
@@ -235,10 +236,9 @@ function CaptionGenPage() {
 
             ></textarea>
         </div>
-            <br/><br/>
+            <br/>
 
             {/*Buttons*/}
-            <br/>
               <center>
                 <form className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">
                     <label htmlFor="large" className="block mb-2 text-base font-medium text-gray-900 dark:text-white">Select a Tone</label>
@@ -274,6 +274,7 @@ function CaptionGenPage() {
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Share
               </button>
+
             </div>
 
 
@@ -287,6 +288,8 @@ function CaptionGenPage() {
 
             </div> */}
         </div>
+        <br/>
+        <br/>
         </div>
 
       )}
