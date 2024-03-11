@@ -302,25 +302,30 @@ function CaptionGenPage() {
           <div className='text-white font-extrabold font-size: 20px justify-center'>{caption}</div>
 
 
-{/*Display Caption*/}
+          { /* Display Caption */ }
 <div className="caption-display">
-            <h2 className="text-white font-bold mb-2 py-7">New Generated Caption:</h2>
-            <textarea
-                readOnly
-                className="w-1/2 py-2 px-2 text-center text-white border rounded-lg focus:outline-none"
-                rows={textareaRows} 
-                value={result}
-                onChange={(e) => setCaption(e.target.value)}
-                style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    marginTop: '5px',
-                    resize: 'none' 
-                }}
-
-            ></textarea>
-        </div>
+    <h2 className="text-white font-bold mb-2 py-7">New Generated Caption:</h2>
+    <textarea
+        readOnly
+        className="w-1/2 text-center text-white border rounded-lg focus:outline-none"
+        value={result}
+        style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            padding: '20px',
+            borderRadius: '8px',
+            marginTop: '5px',
+            resize: 'none',
+            overflow: 'hidden',
+            height: 'auto',
+            minHeight: '50px', // Minimum height to start with
+        }}
+        ref={textarea => {
+            if (textarea) {
+                textarea.style.height = `${textarea.scrollHeight}px`;
+            }
+        }}
+    ></textarea>
+</div>
 
           <br></br>
           <button class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
