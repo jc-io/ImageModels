@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 function CaptionGenPage() {
     const [selectedFiles, setSelectedFile] = useState([]);
     //State var to store caption
-    const [caption, setCaption] = useState('Generating...')
+    const [caption, setCaption] = useState('')
     const [textareaRows, setTextareaRows] = useState(1);
 
     const [result, setResult] = useState('')
@@ -66,6 +66,7 @@ function CaptionGenPage() {
 
         console.log("uploading");
         setpageState('blip_phase');
+        setCaption('Generating...');
 
         axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
           .then(response => response.data)
@@ -76,6 +77,7 @@ function CaptionGenPage() {
             console.error('Error:', error);
             toast.error('Inital Caption Failed to Generate.');
           });
+
       }
     };
 
@@ -98,7 +100,7 @@ function CaptionGenPage() {
     //   }
     // };
 
-
+    
     const handleMakeIt = () => {
       if (caption !== "Generating..." && selectedTone) {
         setCaption("Generating..."); // Optionally indicate operation in progress in the original caption box
