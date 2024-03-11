@@ -54,7 +54,6 @@ function CaptionGenPage() {
 
       setCaption('');
 
-
     };
 
     const handleUpload = () => {
@@ -320,7 +319,7 @@ function CaptionGenPage() {
 
 {/*Display Caption*/}
 <div className="caption-display">
-            <h2 className="text-white font-bold mb-2 py-7">Generated Caption:</h2>
+            <h2 className="text-white font-bold mb-2 py-7">New Generated Caption:</h2>
             <textarea
                 readOnly
                 className="w-1/2 py-2 px-2 text-center text-white border rounded-lg focus:outline-none"
@@ -352,7 +351,7 @@ function CaptionGenPage() {
     )}
      {/* <a className="share_linkedin social" title="linkedin" target="popup" onclick="window.open('http://www.linkedin.com/shareArticle?mini=true&url={{content.absolute_url}}','LinkedIn Share','width=600,height=600')"><span class="icon-circle fa-brands fa-linkedin-in">
       asdasdas</span></a>
- <a class="share_facebook social" title="facebook" target="popup" onclick="window.open('http://www.facebook.com/sharer/sharer.php?u={{content.absolute_url}}','Facebook Share','width=600,height=600')"><span class="icon-circle fab fa-facebook"></span></a> */}
+      <a class="share_facebook social" title="facebook" target="popup" onclick="window.open('http://www.facebook.com/sharer/sharer.php?u={{content.absolute_url}}','Facebook Share','width=600,height=600')"><span class="icon-circle fab fa-facebook"></span></a> */}
 
       </div>
     );
