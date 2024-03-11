@@ -420,7 +420,7 @@ function EditImagePage() {
                           type="range"
                           min="0"
                           max="1"
-                          step="0.1"
+                          step="0.05"
                           value={strength}
                           onChange={(e) => setStrength(e.target.value)}
                           className="block w-full mt-1"
