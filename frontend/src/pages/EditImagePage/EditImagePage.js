@@ -14,6 +14,7 @@ function EditImagePage() {
     "runwayml/stable-diffusion-v1-5"
   ); // Default model selection
   const token = localStorage.getItem("token");
+  const [postCount, setPostCount] = useState(0);
   const MAX_CHAR_LIMIT_LOWD = 100;
   const MAX_CHAR_LIMIT_HIGHD = 50;
   const MAX_SELECTED_CHAR_LIMIT =
@@ -27,7 +28,7 @@ function EditImagePage() {
   const [strength, setStrength] = useState(0.8);
   const [inferenceSteps, setInferenceSteps] = useState(50);
   const [dropdownOpen, setDropdownOpen] = useState(false); // Define dropdownOpen state variable
-  const [imageUploaded, setImageUploaded] = useState(false);
+
   const [featuredImage, setFeaturedImage] = useState("");
   //pop
   const [modal, setModal] = useState(false);
@@ -64,34 +65,6 @@ function EditImagePage() {
     document.getElementById("prompt-input").value = "";
     setPrompt((prevPrompt) => "");
   };
-  // const handleDrop = (event) => {
-  //   // event.preventDefault();
-  //   // const files = event.dataTransfer.files;
-  //   // const imageFiles = Array.from(files).filter((file) =>
-  //   //   file.type.startsWith("image/")
-  //   // );
-  //   // setSelectedFile((prevFiles) => [...prevFiles, ...imageFiles]);
-  //   // const droppedImage = imageFiles[0]; // Assuming only one image is dropped
-  //   // if (droppedImage && files.length === 1 ) {
-  //   //   const reader = new FileReader();
-  //   //   reader.onload = () => {
-  //   //     setImageSrc(reader.result);
-  //   //   };
-  //   //   reader.readAsDataURL(droppedImage);
-  //   // }
-  //   event.preventDefault();
-  //   // event.stopPropagation();
-  //   const files = event.dataTransfer.files;
-  //   if (files.length === 1 && files[0].type.startsWith("image/")) {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       setImageSrc(reader.result);
-  //     };
-  //     reader.readAsDataURL(files[0]);
-  //     setSelectedFile([files[0]]);
-  //   }
-  // };
-
   const handleDrop = (event) => {
     event.preventDefault();
     const files = event.dataTransfer.files;
@@ -99,6 +72,7 @@ function EditImagePage() {
       file.type.startsWith("image/")
     );
     setSelectedFile((prevFiles) => [...prevFiles, ...imageFiles]);
+
     const droppedImage = imageFiles[0]; // Assuming only one image is dropped
     if (droppedImage) {
       const reader = new FileReader();
@@ -132,6 +106,17 @@ function EditImagePage() {
     }
   };
 
+  // original function
+  // const handleRemoveFile = (index) => {
+  //   console.log(selectedFiles);
+  //   setSelectedFile((prevFiles) => {
+  //     const updatedFiles = [...prevFiles];
+  //     updatedFiles.splice(index, 1);
+  //     return updatedFiles;
+  //   });
+  //   setImageSrc(null);
+  // };
+
   const handleRemoveFile = (index) => {
     setSelectedFile((prevFiles) => {
       const updatedFiles = [...prevFiles];
@@ -142,11 +127,6 @@ function EditImagePage() {
 
     // Clear the selectedFiles array completely
     setSelectedFile([]);
-  };
-
-  const goBack = () => {
-    handleRemoveFile(0);
-    setpageState("main");
   };
 
   // # This function handles uplaoding the image correctly
@@ -183,6 +163,9 @@ function EditImagePage() {
             : [];
           setImages(imageUrls);
           setPrompt(data.prompt);
+
+          // const generatedImageUrl = URL.createObjectURL(selectedFiles[0]);
+          // setGeneratedImageUrl(generatedImageUrl); // Set the generated image URL
 
           // console.log(data);
           return data ? Promise.resolve(data) : Promise.resolve({});
@@ -344,7 +327,7 @@ function EditImagePage() {
                       </div>
                       <input
                         id="dropzone-file"
-                        multiple={false}
+                        multiple
                         type="file"
                         className="hidden"
                         onChange={handleFileChange}
@@ -601,7 +584,7 @@ function EditImagePage() {
             <div className="flex gap-1 w-full mt-8 justify-between">
               <button
                 className=" bg-blue-500 hover:bg-blue-400 text-white flex gap-2 font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-                onClick={goBack()}
+                onClick={() => setpageState("main")}
               >
                 <svg
                   className="w-5 h-5 rtl:rotate-180"
