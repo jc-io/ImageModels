@@ -13,6 +13,8 @@ function CaptionGenPage() {
     const [result, setResult] = useState('')
     const [pageState, setpageState] = useState('main')
     const [selectedTone, setSelectedTone] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
+
 
     // Handler function to update the selected tone when the user makes a selection
 
@@ -79,8 +81,11 @@ function CaptionGenPage() {
     };
 
     const handleMakeIt = () => {
-      if (caption && selectedTone) {
-        setCaption('Generating...')
+      if (!isGenerating && caption && selectedTone) {
+        setIsGenerating(true); // Disable the button
+        setCaption('Generating...');
+      // if (caption && selectedTone) {
+      //   setCaption('Generating...')
         const formDataTwo = new FormData();
         formDataTwo.append(`captionGenerated`, caption);
         formDataTwo.append(`tone`, selectedTone);
@@ -262,13 +267,11 @@ function CaptionGenPage() {
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={handleMakeIt}
+                disabled={isGenerating}
                 >
                 Generate
               </button>
 
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Share
-              </button>
 
             </div>
         </div>
