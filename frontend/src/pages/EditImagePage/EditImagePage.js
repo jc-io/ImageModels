@@ -111,16 +111,10 @@ function EditImagePage() {
     }
   };
 
-  // original function
-  // const handleRemoveFile = (index) => {
-  //   console.log(selectedFiles);
-  //   setSelectedFile((prevFiles) => {
-  //     const updatedFiles = [...prevFiles];
-  //     updatedFiles.splice(index, 1);
-  //     return updatedFiles;
-  //   });
-  //   setImageSrc(null);
-  // };
+  const goBack = () => {
+    setSelectedFile([]);
+    setpageState("main");
+  };
 
   const handleRemoveFile = (index) => {
     setSelectedFile((prevFiles) => {
@@ -589,7 +583,7 @@ function EditImagePage() {
             <div className="flex gap-1 w-full mt-8 justify-between">
               <button
                 className=" bg-blue-500 hover:bg-blue-400 text-white flex gap-2 font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-                onClick={() => setpageState("main")}
+                onClick={() => goBack()}
               >
                 <svg
                   className="w-5 h-5 rtl:rotate-180"
