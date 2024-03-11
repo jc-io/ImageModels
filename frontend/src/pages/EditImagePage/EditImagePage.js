@@ -54,6 +54,32 @@ function EditImagePage() {
       downloadLink.click();
     }
   };
+  const archiveImage = async () => {
+    console.log("Image Archived!");
+    const formData = new FormData();
+
+    formData.append('image', images[0]);//whatever was selected
+    formData.append('prompt', prompt);
+    formData.append('model', selectedModel); // Include the selected model
+
+    //add information about the model and setting and etc used to generate the image
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/Archive`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        // Handle successful sign out
+        console.log('Archived Image!', response.data);
+        toast('Archived Image!');
+      })
+      .catch(error => {
+        // Handle sign out error
+        toast.error('Error Archiving Image. Please Login.');
+        console.error('Error signing out:', error);
+      });
+
+  };
   const chooseLowDetail = () => {
     setSelectedModel("runwayml/stable-diffusion-v1-5");
     document.getElementById("prompt-input").value = "";
@@ -568,7 +594,7 @@ function EditImagePage() {
 
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={handleUpload}
+                onClick={archiveImage}
               >
                 Archive
               </button>
