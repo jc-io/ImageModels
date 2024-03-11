@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 function CaptionGenPage() {
     const [selectedFiles, setSelectedFile] = useState([]);
     //State var to store caption
-    const [caption, setCaption] = useState('')
+    const [caption, setCaption] = useState('Generating...')
     const [textareaRows, setTextareaRows] = useState(1);
 
     const [result, setResult] = useState('')
@@ -66,7 +66,6 @@ function CaptionGenPage() {
 
         console.log("uploading");
         setpageState('blip_phase');
-        setCaption('Generating...');
 
         axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
           .then(response => response.data)
@@ -77,50 +76,28 @@ function CaptionGenPage() {
             console.error('Error:', error);
             toast.error('Inital Caption Failed to Generate.');
           });
-
       }
     };
 
-    // const handleMakeIt = () => {
-    //   if (caption && selectedTone) {
-    //     setCaption('Generating...')
-    //     const formDataTwo = new FormData();
-    //     formDataTwo.append(`captionGenerated`, caption);
-    //     formDataTwo.append(`tone`, selectedTone);
-    //     axios.post(`${process.env.REACT_APP_BACKEND_URL}/generateLLM`, formDataTwo)
-    //       .then(response => response.data)
-    //       .then(data => {
-    //         setpageState('result');
-    //         setResult(data.result);
-    //       })
-    //       .catch(error => console.error('Error:', error));
-    //   } else {
-    //     console.error('Caption or tone is not available');
-    //     toast.error('Caption or tone is not available');
-    //   }
-    // };
-
-    
     const handleMakeIt = () => {
-      if (caption !== "Generating..." && selectedTone) {
-        setCaption("Generating..."); // Optionally indicate operation in progress in the original caption box
-        const formData = new FormData();
-        formData.append("captionGenerated", caption);
-        formData.append("tone", selectedTone);
-        axios.post(`${process.env.REACT_APP_BACKEND_URL}/generateLLM`, formData)
-          .then((response) => {
-            setResult(response.data.result); // Update the result state with the response
+      if (caption && selectedTone) {
+        setCaption('Generating...')
+        const formDataTwo = new FormData();
+        formDataTwo.append(`captionGenerated`, caption);
+        formDataTwo.append(`tone`, selectedTone);
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/generateLLM`, formDataTwo)
+          .then(response => response.data)
+          .then(data => {
+            setpageState('result');
+            setResult(data.result);
           })
-          .catch((error) => {
-            console.error("Error:", error);
-            setResult("Failed to generate caption."); // Update result state to show error
-          });
+          .catch(error => console.error('Error:', error));
       } else {
-        console.error("Caption or tone is not available");
-        toast.error("Caption or tone is not available");
+        console.error('Caption or tone is not available');
+        toast.error('Caption or tone is not available');
       }
     };
-    
+
     return (
 
       <div className="m-0 bg-second dark:bg-second min-h-screen">
@@ -242,7 +219,7 @@ function CaptionGenPage() {
 
           {/*Display Caption*/}
           <div className="caption-display">
-            <h2 className="text-white font-bold mb-2 py-7">Original Caption:</h2>
+            <h2 className="text-white font-bold mb-2 py-7">Generated Caption:</h2>
             <textarea
                 readOnly
                 className="w-1/2 py-2 px-2 text-center text-white border rounded-lg focus:outline-none"
@@ -300,26 +277,7 @@ function CaptionGenPage() {
 
             </div>
 
-              <br/>
-              {/* Display the result in a new text box */}
-              <div className="caption-display">
-            <h2 className="text-white font-bold mb-2 py-7">New Caption:</h2>
-            <textarea
-                readOnly
-                className="w-1/2 py-2 px-2 text-center text-white border rounded-lg focus:outline-none"
-                rows={textareaRows} // Use the calculated number of rows
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-                style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    marginTop: '5px',
-                    resize: 'none' // Disable textarea resizing
-                }}
 
-            ></textarea>
-        </div>
             {/* <div role="status">
                   <svg aria-hidden="true" class="inline w-12 h-12 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -336,7 +294,27 @@ function CaptionGenPage() {
 
       )}
 
-    
+    {pageState==="result" && (
+      <div>
+
+
+    <div className="caption-display text-center">
+        <h3 className="text-white font-bold">Generated Caption:</h3>
+          <div className='text-white font-extrabold font-size: 20px justify-center'>{result}</div>
+
+
+          <br></br>
+          <button class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
+
+
+              <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+              </svg>
+              <span> Back</span>
+          </button>
+    </div>
+    </div>
+    )}
      {/* <a className="share_linkedin social" title="linkedin" target="popup" onclick="window.open('http://www.linkedin.com/shareArticle?mini=true&url={{content.absolute_url}}','LinkedIn Share','width=600,height=600')"><span class="icon-circle fa-brands fa-linkedin-in">
       asdasdas</span></a>
  <a class="share_facebook social" title="facebook" target="popup" onclick="window.open('http://www.facebook.com/sharer/sharer.php?u={{content.absolute_url}}','Facebook Share','width=600,height=600')"><span class="icon-circle fab fa-facebook"></span></a> */}
