@@ -326,7 +326,7 @@ def imageToText():
           pathurl = os.path.join(app.config['UPLOAD_FOLDER'],file.filename);
           print(pathurl)
           try:
-              captionGenerated = caption.predict(pathurl) #Get the caption from the image using the BLIP model
+              captionGenerated = caption.blipModel(pathurl) #Get the caption from the image using the BLIP model
           except Exception as e:
               print(str(e));
               return jsonify({'error': str(e)}), 500
@@ -354,9 +354,9 @@ def generate_LLM(): #This API takes a caption/description of an image to generat
 
 
         caption = captionGen() #Create a new instance of the captionGen class containing the LLM model
-        funnycaption = caption.createCaption(captionGenerated, tone); #Generate a caption based on given tone using the LLM model
+        llmCaption = caption.llmModel(captionGenerated, tone); #Generate a caption based on given tone using the LLM model
         ##image.save("/.")
-        res = {'message': 'File uploaded successfully',"result":funnycaption}
+        res = {'message': 'File uploaded successfully',"result":llmCaption}
         res_message = jsonify(res); #Return a success message with the generated caption
         return res_message;
 
