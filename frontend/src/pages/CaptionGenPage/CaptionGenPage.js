@@ -165,23 +165,9 @@ function CaptionGenPage() {
               )) }
 
             {/* <p className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">Tone:</p> */}
-            <form className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">
-                <label htmlFor="large" className="block mb-2 text-base font-medium text-gray-900 dark:text-white">Select a Tone</label>
-                <select
-                  id="large"
-                  className="block w-full px-4 py-3 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  value={selectedTone}  // Bind the value of the select element to state
-                  onChange={handleToneChange} // Call the handler function when the value changes
-                >
-                  <option value="">Choose a Tone</option>
-                  <option value="Funny">Funny</option>
-                  <option value="Witty">Witty</option>
-                  <option value="Mysterious">Mysterious</option>
-                  <option value="Satire">Satire</option>
-                </select>
-              </form>
 
-            {/* <br/> */}
+
+            <br/>
             {/* Radio active */}
 
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
@@ -209,21 +195,6 @@ function CaptionGenPage() {
           </div>
 
         )}
-        <form className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">
-            <label htmlFor="large" className="block mb-2 text-base font-medium text-gray-900 dark:text-white">Select a Tone</label>
-            <select
-              id="large"
-              className="block w-full px-4 py-3 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              value={selectedTone}  // Bind the value of the select element to state
-              onChange={handleToneChange} // Call the handler function when the value changes
-            >
-              <option value="">Choose a Tone</option>
-              <option value="Funny">Funny</option>
-              <option value="Witty">Witty</option>
-              <option value="Mysterious">Mysterious</option>
-              <option value="Satire">Satire</option>
-            </select>
-          </form>
 
         {pageState === "loading" && (
           <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
@@ -261,11 +232,31 @@ function CaptionGenPage() {
                     marginTop: '5px',
                     resize: 'none' // Disable textarea resizing
                 }}
+
             ></textarea>
         </div>
             <br/><br/>
 
             {/*Buttons*/}
+            <br/>
+              <center>
+                <form className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">
+                    <label htmlFor="large" className="block mb-2 text-base font-medium text-gray-900 dark:text-white">Select a Tone</label>
+                    <select
+                      id="large"
+                      className="block w-full px-4 py-3 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      value={selectedTone}  // Bind the value of the select element to state
+                      onChange={handleToneChange} // Call the handler function when the value changes
+                    >
+                      <option value="">Choose a Tone</option>
+                      <option value="Funny">Funny</option>
+                      <option value="Witty">Witty</option>
+                      <option value="Mysterious">Mysterious</option>
+                      <option value="Satire">Satire</option>
+                    </select>
+                  </form>
+              </center>
+            <br/>
             <div className="flex justify-center gap-4">
               <button
               onClick={() => setpageState('main')}
