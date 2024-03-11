@@ -2,7 +2,8 @@ import requests
 from PIL import Image
 import torch
 from transformers import BlipProcessor, BlipForConditionalGeneration, AutoModelForCausalLM, AutoTokenizer
-
+import os
+import sys
 # Check if CUDA (GPU support) is available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.cuda.empty_cache() #empty vram
@@ -13,12 +14,16 @@ class captionGen:
         self.model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large").to(device)
 
     def predict(self, imageurl):
-        raw_image = Image.open(imageurl).convert('RGB')
-        text = "a photo of"
-        inputs = self.processor(raw_image, text, return_tensors="pt").to(device)
+        try:
+            raw_image = Image.open(imageurl).convert('RGB')
+            text = "a photo of"
+            inputs = self.processor(raw_image, text, return_tensors="pt").to(device)
 
-        out = self.model.generate(**inputs)
-        return self.processor.decode(out[0], skip_special_tokens=True)
+            out = self.model.generate(**inputs)
+            return self.processor.decode(out[0], skip_special_tokens=True)
+        except Exception as e:
+            raise Exception("File failed to create Caption")
+
 
     def createCaption(self, caption, tone):
         print("Using device: " + str(device))
@@ -65,7 +70,7 @@ class captionGen:
         torch.cuda.empty_cache()
         return generated_joke.partition("<|assistant|>")[2]
 
-    
+
 
 if __name__ == '__main__':
    location = "/Users/mattiwosbelachew/Repos/github.com/CSE115A/ImageModels/backend/uploads/wildcamping.jpg"

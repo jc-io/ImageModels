@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+
 
 
 function CaptionGenPage() {
@@ -7,19 +9,30 @@ function CaptionGenPage() {
     //State var to store caption
     const [caption, setCaption] = useState('')
     const [textareaRows, setTextareaRows] = useState(1);
-    
+
     const [result, setResult] = useState('')
     const [pageState, setpageState] = useState('main')
     const [selectedTone, setSelectedTone] = useState('');
-  
+
     // Handler function to update the selected tone when the user makes a selection
+
+    {/*Drop Down state Managment*/}
+    const [showDropdown, setShowDropdown] = useState(false);
+
+    // This function is called when a tone is selected from the dropdown
+    const handleSelectTone = (tone) => {
+        setSelectedTone(tone);
+        setShowDropdown(false); // Close the dropdown
+        handleMakeIt(); // Trigger the action associated with the tone selection
+    };
+
     const handleToneChange = (event) => {
       setSelectedTone(event.target.value);
     };
     const handleDragOver = (event) => {
       event.preventDefault();
     };
-  
+
     const handleDrop = (event) => {
       event.preventDefault();
       const files = event.dataTransfer.files;
@@ -27,7 +40,7 @@ function CaptionGenPage() {
     };
     const handleFileChange = (event) => {
         const files = event.target.files;
-     
+
         setSelectedFile(Array.from(files));
     };
     const handleRemoveFile =(index)=> {
@@ -40,8 +53,8 @@ function CaptionGenPage() {
       });
 
       setCaption('');
-      
-  
+
+
     };
 
     const handleUpload = () => {
@@ -50,17 +63,22 @@ function CaptionGenPage() {
         selectedFiles.forEach((file, index) => {
           formData.append(`file`, file);
         });
+
         console.log("uploading");
         setpageState('blip_phase');
+
         axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
           .then(response => response.data)
           .then(data => {
             setCaption(data.caption);
           })
-          .catch(error => console.error('Error:', error));
+          .catch(error => {
+            console.error('Error:', error);
+            toast.error('Inital Caption Failed to Generate.');
+          });
       }
     };
-  
+
     const handleMakeIt = () => {
       if (caption && selectedTone) {
         const formDataTwo = new FormData();
@@ -75,6 +93,7 @@ function CaptionGenPage() {
           .catch(error => console.error('Error:', error));
       } else {
         console.error('Caption or tone is not available');
+        toast.error('Caption or tone is not available');
       }
     };
 
@@ -90,7 +109,7 @@ function CaptionGenPage() {
         {/* <br/>
         <br/> */}
         {/* <input type="file" onChange={handleFileChange} /> */}
-        {pageState==="main" && (  
+        {pageState==="main" && (
           <div className="bg-indigo-900 min-h-screen from-gray-100 to-gray-300">
             <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center" onDrop={handleDrop} onDragOver={handleDragOver}>
               <label
@@ -126,7 +145,7 @@ function CaptionGenPage() {
                   onChange={handleFileChange}
                 />
               </label>
-        
+
               {/* Display the list of selected files */}
               {selectedFiles.length > 0 && (selectedFiles.length > 0 && (
                 <div>
@@ -144,7 +163,7 @@ function CaptionGenPage() {
                   </ul>
                 </div>
               )) }
-              
+
             {/* <p className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">Tone:</p> */}
             <form className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">
                 <label htmlFor="large" className="block mb-2 text-base font-medium text-gray-900 dark:text-white">Select a Tone</label>
@@ -166,14 +185,14 @@ function CaptionGenPage() {
             {/* Radio active */}
 
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleUpload}>
-            Upload 
+            Upload
             </button>
           </div>
       </div>
       )}
       {pageState==="blip_phase" && (
         <div>
-      
+
         <div className="text-center">
 
           {/*Preview Image*/}
@@ -188,14 +207,49 @@ function CaptionGenPage() {
               ))}
             </div>
           </div>
-        )}
 
+        )}
+        <form className="max-w-2xl mb-6 font-light lg:mb-8 md:text-lg lg:text-xl text-white">
+            <label htmlFor="large" className="block mb-2 text-base font-medium text-gray-900 dark:text-white">Select a Tone</label>
+            <select
+              id="large"
+              className="block w-full px-4 py-3 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              value={selectedTone}  // Bind the value of the select element to state
+              onChange={handleToneChange} // Call the handler function when the value changes
+            >
+              <option value="">Choose a Tone</option>
+              <option value="Funny">Funny</option>
+              <option value="Witty">Witty</option>
+              <option value="Mysterious">Mysterious</option>
+              <option value="Satire">Satire</option>
+            </select>
+          </form>
+
+        {pageState === "loading" && (
+          <div className="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
+            <h1 className="text-center	  text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+              <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r to-rose-600 from-lime-400">CaptionGem</span>
+            </h1>
+            <br /><br />
+
+            <div className="text-center">
+              <div role="status">
+                <svg aria-hidden="true" class="inline w-12 h-12 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                  <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                </svg>
+                <h3 className="text-white font-bold">Loading...</h3>
+                <p className="text-white font-bold">This may take a few seconds, please don't close this page.</p>
+              </div>
+            </div>
+          </div>
+        )}
 
           {/*Display Caption*/}
           <div className="caption-display">
             <h2 className="text-white font-bold mb-2 py-7">Generated Caption:</h2>
             <textarea
-                readOnly 
+                readOnly
                 className="w-1/2 py-2 px-2 text-center text-white border rounded-lg focus:outline-none"
                 rows={textareaRows} // Use the calculated number of rows
                 value={caption}
@@ -210,16 +264,16 @@ function CaptionGenPage() {
             ></textarea>
         </div>
             <br/><br/>
-            
+
             {/*Buttons*/}
             <div className="flex justify-center gap-4">
-              <button 
+              <button
               onClick={() => setpageState('main')}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Back
               </button>
 
-              <button 
+              <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={handleMakeIt}
                 >
@@ -243,7 +297,7 @@ function CaptionGenPage() {
             </div> */}
         </div>
         </div>
-        
+
       )}
 
     {pageState==="result" && (
@@ -253,7 +307,7 @@ function CaptionGenPage() {
     <div className="caption-display text-center">
         <h3 className="text-white font-bold">Generated Caption:</h3>
           <div className='text-white font-extrabold font-size: 20px justify-center'>{result}</div>
-     
+
 
           <br></br>
           <button class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={() => setpageState('main')}>
@@ -276,5 +330,3 @@ function CaptionGenPage() {
   }
 
   export default CaptionGenPage;
-
-
