@@ -68,7 +68,11 @@ function CaptionGenPage() {
     };
 
     const handleUpload = () => {
+      if (selectedFiles.length <= 0) {
+        toast.warning("Upload a File!", { autoClose: 2000});
+      }
       if (selectedFiles.length > 0) {
+        toast.info("Attempting Image Upload!", { autoClose: false})
         const formData = new FormData();
         setCaption('Generating...')
         selectedFiles.forEach((file, index) => {
@@ -76,24 +80,33 @@ function CaptionGenPage() {
         });
 
         console.log("uploading");
-        setpageState('blip_phase');
 
         axios.post(`${process.env.REACT_APP_BACKEND_URL}/imageTotext`, formData)
           .then(response => response.data)
           .then(data => {
-
+            setpageState('blip_phase');
             setCaption(data.caption);
+            toast.dismiss()
+            toast.success("Success!", { autoClose: 2000});
           })
           .catch(error => {
+            toast.dismiss()
             console.error('Error:', error);
-            toast.error('Inital Caption Failed to Generate.');
+            toast.error('Caption Failed to Generate. Make sure its an image file!');
+            setCaption("Failed to Generate Caption")
           });
+
       }
+
     };
 
     const handleMakeIt = () => {
       if (!isGenerating && caption && selectedTone) {
+        if (selectedTone == "Choose a Tone") {
+          toast.error("");
+        }
         setIsGenerating(true); // Disable the button
+        toast.info(`Attempting to generate a ${selectedTone} Caption!`, { autoClose: false })
         setCaption('Generating...');
       // if (caption && selectedTone) {
       //   setCaption('Generating...')
@@ -106,11 +119,16 @@ function CaptionGenPage() {
             setpageState('result');
             setCaption(caption);
             setResult(data.result);
+            toast.dismiss()
+            toast.success("Success!", { autoClose: 2000});
           })
-          .catch(error => console.error('Error:', error));
+          .catch(error => {
+            toast.dismiss()
+            console.error('Error:', error)
+          });
       } else {
-        console.error('Caption or tone is not available');
-        toast.error('Caption or tone is not available');
+        console.error('This tone is not available');
+        toast.error('This tone is not available');
       }
     };
 
