@@ -3,10 +3,7 @@ import base64
 import torch
 from PIL import Image
 
-from diffusers import DiffusionPipeline  # slow version
-from diffusers import (
-    StableDiffusionPipeline,
-)  # latest version transformers (clips)
+from diffusers import StableDiffusionPipeline, DiffusionPipeline
 
 
 class ImageEdit:
