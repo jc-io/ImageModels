@@ -5,8 +5,6 @@ import base64
 import io
 from PIL import Image
 
-torch.cuda.empty_cache() #empty vram
-
 class ImageGen:
     def __init__(self):
         self.model_id = "runwayml/stable-diffusion-v1-5"
@@ -23,6 +21,7 @@ class ImageGen:
                 num_images_per_prompt=num_images
             ).images[0]
            # Format the base64 string as a data URL for HTML
+        torch.cuda.empty_cache() #empty vram
         return self.covertToimgageJpeg(images);
 
     def generateDetailed(self, prompt="Didn't work sorry", guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
@@ -36,6 +35,7 @@ class ImageGen:
                 num_images_per_prompt=num_images
             ).images[0]
            # Format the base64 string as a data URL for HTML
+        torch.cuda.empty_cache() #empty vram
         return self.covertToimgageJpeg(images);
 
 
