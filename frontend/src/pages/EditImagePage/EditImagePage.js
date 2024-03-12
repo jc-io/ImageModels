@@ -141,6 +141,7 @@ function EditImagePage() {
 
   const goBack = () => {
     handleRemoveFile(0);
+    setPrompt("")
     setpageState("main");
   };
 
@@ -158,13 +159,21 @@ function EditImagePage() {
 
   const handleUpload = () => {
     // You can implement your file upload logic here
-    if (selectedFiles.length > 0) {
+    if (selectedFiles.length <= 0) {
+      toast.warning("Upload a File!", { autoClose: 5000});
+    }
+    if (prompt.length <= 0) {
+      toast.warning("Type a Prompt!", { autoClose: 5000});
+    }
+    if (selectedFiles.length > 0 && prompt.length > 0) {
       // Example: send the file to a server
       const formData = new FormData();
       // Append each file to the FormData
+
       selectedFiles.forEach((file, index) => {
         formData.append(`file`, file);
       });
+
       formData.append("prompt", prompt);
       formData.append("model", selectedModel);
       formData.append("guidance", guidance);
@@ -172,7 +181,7 @@ function EditImagePage() {
       formData.append("strength", strength);
 
       setpageState("loading");
-
+      toast.info("Loading Image Upload! Please wait for it to finish!", { autoClose: false})
       // Add your API call or upload logic here
       // For example using fetch or Axios
       axios
@@ -188,16 +197,15 @@ function EditImagePage() {
             : [];
           setImages(imageUrls);
           setPrompt(data.prompt);
-
+          toast.dismiss()
+          toast.success("Success: Image(s) Generated!", { autoClose: 5000});
           return data ? Promise.resolve(data) : Promise.resolve({});
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert(
-            "An error occurred while uploading the image. Please try again later."
-          );
+          toast.dismiss()
+          toast.error('Image Failed to Generate. Make sure its an image file!', { autoClose: 5000});
           setpageState("main"); // Reset page state
-          return Promise.reject(error);
         });
     }
   };

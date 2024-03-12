@@ -69,10 +69,10 @@ function CaptionGenPage() {
 
     const handleUpload = () => {
       if (selectedFiles.length <= 0) {
-        toast.warning("Upload a File!", { autoClose: 2000});
+        toast.warning("Upload a File!", { autoClose: 5000});
       }
       if (selectedFiles.length > 0) {
-        toast.info("Attempting Image Upload!", { autoClose: false})
+        toast.info("Attempting Image Upload! Please wait for it to finish!", { autoClose: false})
         const formData = new FormData();
         setCaption('Generating...')
         selectedFiles.forEach((file, index) => {
@@ -87,7 +87,7 @@ function CaptionGenPage() {
             setpageState('blip_phase');
             setCaption(data.caption);
             toast.dismiss()
-            toast.success("Success!", { autoClose: 2000});
+            toast.success("Success!", { autoClose: 5000});
           })
           .catch(error => {
             toast.dismiss()
@@ -106,7 +106,7 @@ function CaptionGenPage() {
           toast.error("");
         }
         setIsGenerating(true); // Disable the button
-        toast.info(`Attempting to generate a ${selectedTone} Caption!`, { autoClose: false })
+        toast.info(`Generating a ${selectedTone} Caption! Please wait for it to finish!`, { autoClose: false })
         setCaption('Generating...');
       // if (caption && selectedTone) {
       //   setCaption('Generating...')
@@ -120,7 +120,7 @@ function CaptionGenPage() {
             setCaption(caption);
             setResult(data.result);
             toast.dismiss()
-            toast.success("Success!", { autoClose: 2000});
+            toast.success("Success!", { autoClose: 5000});
           })
           .catch(error => {
             toast.dismiss()
