@@ -205,9 +205,8 @@ function EditImagePage() {
         .catch((error) => {
           console.error("Error:", error);
           toast.dismiss()
-          toast.error('Image Failed to Generate. Make sure its an image file!', { autoClose: 5000});
-          setPrompt("")
-          setpageState("main"); // Reset page state
+          toast.error('Something went Wrong. ImageEdit Failed to Generate!', { autoClose: 5000});
+          goBack();
         });
     }
   };

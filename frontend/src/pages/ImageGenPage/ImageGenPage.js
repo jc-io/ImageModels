@@ -116,7 +116,8 @@ const ImageGenPage = () => {
       } catch (error) {
         console.error('Error:', error);
         toast.dismiss()
-        toast.error('Something went Wrong. Image(s) Failed to Generate!', { autoClose: 5000});
+        toast.error('Something went Wrong. ImageGen Failed to Generate!', { autoClose: 5000});
+        goBack();
       }
     }
   };
@@ -178,9 +179,9 @@ const ImageGenPage = () => {
    * @function goBack
    */
   const goBack = () => {
-    setImages((prevImages) => []);
-    setPostCount((prevCount) => 0);
-    setPrompt((prevPrompt) => "");
+    setImages([]);
+    setPostCount(0);
+    setPrompt("");
     setPageState("main");
   };
 

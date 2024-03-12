@@ -94,6 +94,7 @@ function CaptionGenPage() {
             console.error('Error:', error);
             toast.error('Caption Failed to Generate. Make sure its an image file!');
             setCaption("Failed to Generate Caption")
+            goBack()
           });
 
       }
@@ -101,12 +102,12 @@ function CaptionGenPage() {
     };
 
     const handleMakeIt = () => {
-      if (!isGenerating && caption && selectedTone) {
-        if (selectedTone == "Choose a Tone") {
-          toast.error("");
-        }
+      if (selectedTone == "") {
+        toast.error("Choose a tone!", {autoClose: 5000});
+      }
+      else if (!isGenerating && caption && selectedTone) {
         setIsGenerating(true); // Disable the button
-        toast.info(`Generating a ${selectedTone} Caption! Please wait for it to finish!`, { autoClose: false })
+        toast.info(`Generating a ${selectedTone} Caption! Please wait for it to finish!`, {autoClose: false})
         setCaption('Generating...');
       // if (caption && selectedTone) {
       //   setCaption('Generating...')
@@ -124,11 +125,10 @@ function CaptionGenPage() {
           })
           .catch(error => {
             toast.dismiss()
-            console.error('Error:', error)
+            console.error('Error:', error);
+            toast.error('Something went Wrong. CaptionGen Failed to Generate!', {autoClose: 5000});
+            goBack()
           });
-      } else {
-        console.error('This tone is not available');
-        toast.error('This tone is not available');
       }
     };
 
