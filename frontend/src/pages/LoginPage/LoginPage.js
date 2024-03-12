@@ -84,7 +84,7 @@ const LoginPage = () => {
           }
           routeChange();
         }
-        return data ? Promise.resolve(data) : Promise.resolve({});
+        //return data ? Promise.resolve(data) : Promise.resolve({});
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -95,7 +95,7 @@ const LoginPage = () => {
           // Other error occurred, handle it accordingly
           toast.error("An error occurred. Please try again later.");
         }
-        return Promise.reject(error);
+        //return Promise.reject(error);
       });
   };
 

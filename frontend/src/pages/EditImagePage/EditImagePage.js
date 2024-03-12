@@ -199,13 +199,13 @@ function EditImagePage() {
           setImages(imageUrls);
           setPrompt(data.prompt);
           toast.dismiss()
-          toast.success("Success: Image(s) Generated!", { autoClose: 5000});
+          toast.success("Success: Image Generated!", { autoClose: 5000});
           return data ? Promise.resolve(data) : Promise.resolve({});
         })
         .catch((error) => {
           console.error("Error:", error);
           toast.dismiss()
-          toast.error('Something went Wrong. ImageEdit Failed to Generate!', { autoClose: 5000});
+          toast.error('Edit Image Failed to Generate.', { autoClose: 5000});
           goBack();
         });
     }

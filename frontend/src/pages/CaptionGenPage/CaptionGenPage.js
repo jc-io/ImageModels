@@ -92,7 +92,7 @@ function CaptionGenPage() {
           .catch(error => {
             toast.dismiss()
             console.error('Error:', error);
-            toast.error('Caption Failed to Generate. Make sure its an image file!');
+            toast.error('CaptionGen Failed to Generate.');
             setCaption("Failed to Generate Caption")
             goBack()
           });
@@ -126,7 +126,7 @@ function CaptionGenPage() {
           .catch(error => {
             toast.dismiss()
             console.error('Error:', error);
-            toast.error('Something went Wrong. CaptionGen Failed to Generate!', {autoClose: 5000});
+            toast.error('CaptionGen Failed to Generate.', {autoClose: 5000});
             goBack()
           });
       }

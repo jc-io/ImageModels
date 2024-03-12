@@ -116,7 +116,7 @@ const ImageGenPage = () => {
       } catch (error) {
         console.error('Error:', error);
         toast.dismiss()
-        toast.error('Something went Wrong. ImageGen Failed to Generate!', { autoClose: 5000});
+        toast.error('ImageGen Failed to Generate.', { autoClose: 5000});
         goBack();
       }
     }
