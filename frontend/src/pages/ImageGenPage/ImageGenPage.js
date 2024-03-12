@@ -289,7 +289,6 @@ const ImageGenPage = () => {
                           value={guidance}
                           onChange={(e) => setGuidance(e.target.value)}
                           className='block w-full mt-1'
-                          accept="image/gif, image/jpeg, image/png"
                         />
                         <span className='text-xs text-gray-500'></span>
                       </div>
