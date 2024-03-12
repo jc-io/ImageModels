@@ -99,7 +99,7 @@ const ImageGenPage = () => {
             toast.info("Loading next Image! Please wait for it to finish!", { autoClose: false})
           }
           if (numImages == i+1){
-            toast.info("Success: All Image(s) Generated!", { autoClose: false})
+            toast.info("Success: All Image(s) Generated!", { autoClose: 5000})
           }
         }
       } catch (error) {
