@@ -212,6 +212,15 @@ const ImageModal = ({ image, onClose, setImages }) => {
 
       if (response.status === 200) {
         // Optionally update local state or show a success message
+        var imageId = image._id;
+        setImages((prevImages) =>
+        prevImages.map(
+          (image) =>
+            image._id === imageId
+              ? { ...image, description: response.data.description }
+              : image // Update 'public' property consistently
+        )
+      );
         toast("Description updated successfully!");
       }
     } catch (error) {
@@ -277,7 +286,7 @@ const ImageModal = ({ image, onClose, setImages }) => {
               value={editedDescription}
               onChange={handleDescriptionChange}
             />
-       
+
 
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center" onClick={handleSaveDescription}>Save Description</button>
 
@@ -307,7 +316,7 @@ const ImageModal = ({ image, onClose, setImages }) => {
           </label>
         </div>
 
-        
+
       </div>
     </div>
   ) : null;
