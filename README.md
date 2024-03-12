@@ -1,5 +1,20 @@
 # ImageGen
-## OS Requirments
+### Table of Contents
+1. [OS Requirements](#OS-Requirements)
+2. [Setup Repository](#Setup-Repository)
+3. [Environment](#Environment)
+4. [Virtual Environment Setup](#Virtual-Environment-Setup)
+5. [How to Run the Frontend](#How-to-Run-the-Frontend)
+6. [How to Run the Backend](#How-to-Run-the-Backend)
+7. [Documentation](#Documentation)
+8. [Testing Resources](#Testing-Resources)
+9. [Testing CaptionGen](#Testing-CaptionGen)
+10. [Testing Edit Image](#Testing-Edit-Image)
+11. [Testing ImageGen](#Testing-ImageGen)
+12. [Future Updates](#Future-Updates)
+13. [Known Bugs](#Known-Bugs)
+
+## OS Requirements
 This program uses models that require CUDA cores, ensure GPU requirements are met. 
 Run on Windows 10 64bit using GitBash Terminal.
 ## Setup Repository
@@ -130,6 +145,7 @@ Visit [http://localhost:3000/ImageGen](http://localhost:3000/ImageGen):
 - Allow users to modify more of the model's parameters
 - Edit UI to be more fluid and intuitive for users to select images for archiving
 - Allow users to select more than 1 image to archive at a time
+- Fix the Known Bugs
 
 ## Known Bugs
 - A black image may be returned for Edit Image and ImageGen generation if the model detects NSFW content in the image or prompt, for which the reason is not shown to the user
@@ -138,6 +154,8 @@ Visit [http://localhost:3000/ImageGen](http://localhost:3000/ImageGen):
 - The image preview of the uploaded image for both CaptionGen and Edit Image may appear broken in some system configurations
 - The description for archived images does not save properly if the image is not made public
 - If the backend is stopped and restarted after while the frontend is still running and an account is logged in, the archive/explore page will not work properly
+- Clicking the Advanced Image Settings button in the Edit Image page may have a visual glitch(whitespace) at the bottom of the page
+- The sign up page is accessible through the home page while a user is already logged in
 
 ## Side Note
 
