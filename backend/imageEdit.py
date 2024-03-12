@@ -13,16 +13,12 @@ class ImageEdit:
         self.detailed_model_id = "stabilityai/stable-diffusion-xl-base-1.0"
 
     def preprocess(self, img):
-        try:
-            file = open(img, "rb")
-            og_image = Image.open(file).convert("RGB")
-            og_image = og_image.resize((768, 512))
-            return og_image
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        file = open(img, "rb")
+        og_image = Image.open(file).convert("RGB")
+        og_image = og_image.resize((768, 512))
+        return og_image
 
-    def generate(self, img, prompt="Didn't work sorry", strengthImg=0.8, guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
+    def generate(self, img, prompt="", strengthImg=0.8, guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
         model_input_img = self.preprocess(img)
         self.pipe = StableDiffusionPipeline.from_pretrained(self.model_id, torch_dtype=torch.float16, variant="fp16",use_safetensors=True)
         self.pipe = self.pipe.to("cuda")
@@ -37,7 +33,7 @@ class ImageEdit:
         torch.cuda.empty_cache() #empty vram
         return self.covertToimgageJpeg(images[0]);
 
-    def generateDetailed(self, img, prompt="Didn't work sorry", strengthImg=0.8, guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
+    def generateDetailed(self, img, prompt="", strengthImg=0.8, guidance_scaleImg=7.5, stepsImg=50, negativeImg="", num_images=1):
         model_input_img = self.preprocess(img)
         self.pipe = DiffusionPipeline.from_pretrained(self.detailed_model_id, torch_dtype=torch.float16, variant="fp16",use_safetensors=True)
         self.pipe = self.pipe.to("cuda")
