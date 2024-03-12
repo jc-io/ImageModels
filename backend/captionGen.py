@@ -91,13 +91,13 @@ class captionGen:
 
         generated_joke = tokenizer.decode(output[0], skip_special_tokens=True)
         torch.cuda.empty_cache()  # empty vram
-        return generated_joke.partition("<|assistant|>")[2]
+        return generated_joke.partition("<|assistant|>")[2] # extract caption from LLM chat output
 
 
 if __name__ == "__main__":
-    location = ""
+    location = "uploads/wildcamping.jpg"
     gen = captionGen()
-    caption = gen.predict(location)
-    print("Predicted caption:", caption)
-    funnycaption = gen.makeFunny(caption)
-    print("Funny caption:", funnycaption)
+    caption = gen.blip_create_caption(location)
+    print("Predicted caption: " + caption)
+    funnycaption = gen.llm_create_caption(caption, "Funny")
+    print("Funny caption: " + funnycaption)
