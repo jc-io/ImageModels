@@ -89,6 +89,7 @@ function EditImagePage() {
     setPrompt((prevPrompt) => "");
   };
   const chooseHighDetail = () => {
+    toast.warning("This is the XL-Generator, will take longer to load!", { autoClose: 5000});
     setSelectedModel("stabilityai/stable-diffusion-xl-base-1.0");
     document.getElementById("prompt-input").value = "";
     setPrompt((prevPrompt) => "");
@@ -163,7 +164,7 @@ function EditImagePage() {
       toast.warning("Upload a File!", { autoClose: 5000});
     }
     if (prompt.length <= 0) {
-      toast.warning("Type a Prompt!", { autoClose: 5000});
+      toast.warning("Enter a Prompt!", { autoClose: 5000});
     }
     if (selectedFiles.length > 0 && prompt.length > 0) {
       // Example: send the file to a server
@@ -205,6 +206,7 @@ function EditImagePage() {
           console.error("Error:", error);
           toast.dismiss()
           toast.error('Image Failed to Generate. Make sure its an image file!', { autoClose: 5000});
+          setPrompt("")
           setpageState("main"); // Reset page state
         });
     }
