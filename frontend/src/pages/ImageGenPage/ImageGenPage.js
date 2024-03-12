@@ -30,6 +30,17 @@ const ImageGenPage = () => {
   // Result settings state vars
   const [featuredImage, setFeaturedImage] = useState("");
 
+  // Download image state vars
+  const handleDownload = () => {
+    if (images.length > 0) {
+      const imageUrl = images[images.length - 1];
+      const downloadLink = document.createElement("a");
+      downloadLink.href = imageUrl;
+      downloadLink.download = "generated_image.jpg"; // the filename for download
+
+      downloadLink.click();
+    }
+  };
   /**
    * Sets image generation model to Stable Diffusion v1.5 (Low Detail) and resets prompt input box
    * @function chooseLowDetail
@@ -489,9 +500,9 @@ const ImageGenPage = () => {
                 </button>
                 <button
                   className='inline-flex items-center justify-center bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 w-24 border-b-4 border-blue-700 hover:border-blue-500 rounded'
-                  onClick={() => share()}
+                  onClick={handleDownload}
                 >
-                  <span>Share</span>
+                  <span>Download</span>
                 </button>
               </div>
             </>
