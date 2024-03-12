@@ -333,6 +333,7 @@ function EditImagePage() {
                         type="file"
                         className="hidden"
                         onChange={handleFileChange}
+                        accept="image/gif, image/jpeg, image/png"
                       />
                     </label>
                   </div>
