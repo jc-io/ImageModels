@@ -247,7 +247,8 @@ const ImageGenPage = () => {
                 <button
                   onClick={toggleImageSettings}
                   type='button'
-                  className='inline-flex justify-between w-[27.4rem] rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-200 text-base font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100'
+                  className='inline-flex justify-between w-[27.4rem] rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-200 text-base 
+                  font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100'
                 >
                   <span>Advanced Image Settings</span>
                   {/* Icon for dropdown */}
