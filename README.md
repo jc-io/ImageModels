@@ -121,6 +121,24 @@ Visit [http://localhost:3000/ImageGen](http://localhost:3000/ImageGen):
 ##### Model Failure
 - ```Error Message: "ImageGen Failed to Generate."```
 
+## Future Updates
+- Extend functionality to support batch processing of multiple images.
+- Expanding the range of tones and customizations available for caption refinement.
+- Introduce more granular control over the caption generation process, allowing users to tweak more parameters of the models.
+- Implement additional models and tone options to cater to a broader range of content styles and preferences.
+- Allow users to generate multiple images based on their input image and prompt
+- Allow users to modify more of the model's parameters
+- Edit UI to be more fluid and intuitive for users to select images for archiving
+- Allow users to select more than 1 image to archive at a time
+
+## Known Bugs
+- A black image may be returned for Edit Image and ImageGen generation if the model detects NSFW content in the image or prompt, for which the reason is not shown to the user
+- The account settings page does not correctly save changed settings to the account
+- The account dropdown blob at the top right of the page when logged in may not align with the position of the button
+- The image preview of the uploaded image for both CaptionGen and Edit Image may appear broken in some system configurations
+- The description for archived images does not save properly if the image is not made public
+- If the backend is stopped and restarted after while the frontend is still running and an account is logged in, the archive/explore page will not work properly
+
 ## Side Note
 
 This project utilizes a basic frontend boilerplate based on Facebook's Create React App. You can find more information about it [here](https://github.com/facebook/create-react-app).
