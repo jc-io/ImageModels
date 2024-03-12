@@ -8,11 +8,12 @@ const shareUrl = "https://www.youtube.com/";
 
 
 function EditImagePage() {
+  // Main variables
   const [prompt, setPrompt] = useState("");
   const [selectedFiles, setSelectedFile] = useState([]);
   const [pageState, setpageState] = useState("main");
   const [images, setImages] = useState([]);
-
+  // Model selection and promt limit
   const [selectedModel, setSelectedModel] = useState(
     "runwayml/stable-diffusion-v1-5"
   ); // Default model selection
@@ -30,9 +31,9 @@ function EditImagePage() {
   const [strength, setStrength] = useState(0.8);
   const [inferenceSteps, setInferenceSteps] = useState(50);
   const [dropdownOpen, setDropdownOpen] = useState(false); // Define dropdownOpen state variable
+  const [imageSrc, setImageSrc] = useState(null);
 
-  const [featuredImage, setFeaturedImage] = useState("");
-  //pop
+  // // Pop up button for sharing  
   const [modal, setModal] = useState(false);
   const toggleModal = () => {
     setModal(!modal);
@@ -42,11 +43,11 @@ function EditImagePage() {
   } else {
     document.body.classList.remove("active-modal");
   }
-  //pop
 
-  const [imageSrc, setImageSrc] = useState(null);
-
-  // download function
+  /**
+   * Downloads the generated image locally 
+   * @function handleDownload
+   */
   const handleDownload = () => {
     if (images.length > 0) {
       const imageUrl = images[images.length - 1];
@@ -57,6 +58,11 @@ function EditImagePage() {
       downloadLink.click();
     }
   };
+
+  /**
+   * Stores the image in the user's account
+   * @function archiveImage
+   */
   const archiveImage = async () => {
     console.log("Image Archived!");
     const formData = new FormData();
@@ -83,17 +89,32 @@ function EditImagePage() {
       });
 
   };
+
+  /**
+   * Sets the smaller model for image generation and serets the prompt
+   * @function chooseLowDetail
+   */
   const chooseLowDetail = () => {
     setSelectedModel("runwayml/stable-diffusion-v1-5");
     document.getElementById("prompt-input").value = "";
     setPrompt((prevPrompt) => "");
   };
+
+  /**
+   * Sets the bigger model for image generation and serets the prompt
+   * @function chooseHighDetail
+   */
   const chooseHighDetail = () => {
     toast.warning("This is the XL-Generator, will take longer to load!", { autoClose: 5000});
     setSelectedModel("stabilityai/stable-diffusion-xl-base-1.0");
     document.getElementById("prompt-input").value = "";
     setPrompt((prevPrompt) => "");
   };
+
+  /**
+   * Takes input image from user when dropped to the input box
+   * @function handleDrop
+   */
   const handleDrop = (event) => {
     event.preventDefault();
     const files = event.dataTransfer.files;
@@ -117,19 +138,30 @@ function EditImagePage() {
     }
   };
 
+  /**
+   * Toggles the dropdown menu for image settings
+   * @function toggleImageSettings
+   */
   const toggleImageSettings = () => {
     setImageSettingsVisible(!imageSettingsVisible);
     setDropdownOpen(!dropdownOpen); // Toggle dropdownOpen state
   };
-
+  
+  /**
+   * Prevents default setting when taking input
+   * @function handleDragOver
+   */
   const handleDragOver = (event) => {
     event.preventDefault();
   };
+
+  /**
+   * Saves the files when there is files update
+   * @function handleFileChange
+   */
   const handleFileChange = (event) => {
     const files = event.target.files;
     setSelectedFile(Array.from(files));
-    //
-    //
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -140,12 +172,20 @@ function EditImagePage() {
     }
   };
 
+  /**
+   * Goes back to the main state and clear the promt and image
+   * @function goBack
+   */
   const goBack = () => {
     handleRemoveFile(0);
     setPrompt("")
     setpageState("main");
   };
 
+  /**
+   * Deletes the uploaded file
+   * @function handleRemoveFile
+   */
   const handleRemoveFile = (index) => {
     setSelectedFile((prevFiles) => {
       const updatedFiles = [...prevFiles];
@@ -158,33 +198,38 @@ function EditImagePage() {
     setSelectedFile([]);
   };
 
+  /**
+   * Sends request to the backend after fetching the needed parameters and input
+   * @function handleUpload
+   */
   const handleUpload = () => {
-    // You can implement your file upload logic here
+    // Checks if an image is uploaded
     if (selectedFiles.length <= 0) {
       toast.warning("Upload a File!", { autoClose: 5000});
     }
+    // Checks if prompt was entered
     if (prompt.length <= 0) {
       toast.warning("Enter a Prompt!", { autoClose: 5000});
     }
     if (selectedFiles.length > 0 && prompt.length > 0) {
-      // Example: send the file to a server
+      
       const formData = new FormData();
-      // Append each file to the FormData
 
+      // Append each image to the FormData
       selectedFiles.forEach((file, index) => {
         formData.append(`file`, file);
       });
-
+      // Appends parameters
       formData.append("prompt", prompt);
       formData.append("model", selectedModel);
       formData.append("guidance", guidance);
       formData.append("inferenceSteps", inferenceSteps);
       formData.append("strength", strength);
-
+      // Moves to the loading page
       setpageState("loading");
       toast.info("Loading Image Upload! Please wait for it to finish!", { autoClose: false})
-      // Add your API call or upload logic here
-      // For example using fetch or Axios
+
+      // Sends the request to the backends
       axios
         .post(`${process.env.REACT_APP_BACKEND_URL}/editImage`, formData)
         .then((response) => {
@@ -192,6 +237,7 @@ function EditImagePage() {
         })
         .then((data) => {
           setpageState("result");
+          // Get the generated image from the response if successful 
           // Check if data.images is an array before calling map
           const imageUrls = Array.isArray(data.images)
             ? data.images.map((image) => image.image_data)
@@ -221,7 +267,7 @@ function EditImagePage() {
             </span>
           </h1>
         </div>
-
+        {/* Main state of the page */}
         {pageState === "main" && (
           <div>
             <div
@@ -258,14 +304,14 @@ function EditImagePage() {
                       {/* handleRemoveFile(0) --> this assume that there is only one file */}
                     </div>
                   )}
-
+                  {/* Shows the uploaded files by the user */}
                   <div className="child w-full" style={{ marginLeft: "auto" }}>
                     {selectedFiles.length > 0 && selectedFiles.length > 0 && (
                       <div>
-                        <h2 className="max-w-lg text-3xl font-semibold leading-normal text-gray-900 dark:text-white">
+                        <h2 className="max-w-lg text-3xl font-semibold leading-normal text-gray-900 dark:text-white text-center ">
                           Selected Files:
                         </h2>
-                        <ul className="">
+                        <ul className="text-center ">
                           {selectedFiles.map((file, index) => (
                             <li key={index}>
                               <span className="tracking-tighter text-gray-500 md:text-lg dark:text-gray-400">
@@ -274,7 +320,11 @@ function EditImagePage() {
                               -{" "}
                               <button
                                 type="button"
-                                className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                                className="text-white bg-gradient-to-br from-green-400 
+                                to-blue-600 hover:bg-gradient-to-bl 
+                                focus:ring-4 focus:outline-none focus:ring-green-200 
+                                dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5
+                                 text-center me-2 mb-2"
                                 onClick={() => handleRemoveFile(index)}
                               >
                                 <svg
@@ -284,7 +334,10 @@ function EditImagePage() {
                                   fill="currentColor"
                                   viewBox="0 0 18 20"
                                 >
-                                  <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z" />
+                                  <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 
+                                  2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 
+                                  2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 
+                                  0V8a1 1 0 0 1 2 0v8Z" />
                                 </svg>
                               </button>
                             </li>
@@ -300,7 +353,9 @@ function EditImagePage() {
                   <div className="parent">
                     <label
                       htmlFor="dropzone-file"
-                      className="flex child flex-col items-center justify-center w-96 h-72   border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                      className="flex child flex-col items-center justify-center w-96 h-72   border-2 border-gray-300 border-dashed 
+                      rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 
+                      hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                     >
                       <div className="flex  flex-grow flex-col items-center justify-center pt-5 pb-6">
                         <svg
@@ -315,7 +370,8 @@ function EditImagePage() {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth="2"
-                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 
+                            5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
                           ></path>
                         </svg>
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -339,11 +395,9 @@ function EditImagePage() {
                 </div>
               )}
 
-              {/* Display the list of selected files */}
-
               <br />
               <br />
-
+                {/* The prompt input area*/}
               <label className="block mb-2 text-lg font-medium text-gray-900 dark:text-white w-full">
                 <center>
                   Enter Prompt:
@@ -356,7 +410,9 @@ function EditImagePage() {
                 id="prompt-input"
                 maxLength={MAX_SELECTED_CHAR_LIMIT}
                 placeholder="Example: Change the color of the background to red"
-                className="w-1/3 min-w-[300px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="w-1/3 min-w-[450px] bg-gray-50 border border-gray-300 text-gray-900 
+                text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700
+                 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 onChange={(e) => setPrompt(e.target.value)}
                 //change the size of prompt box
               />
@@ -370,7 +426,9 @@ function EditImagePage() {
                 <button
                   onClick={toggleImageSettings}
                   type="button"
-                  className="inline-flex justify-between w-[27.4rem] rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-200 text-base font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100"
+                  className="inline-flex justify-between w-[27.4rem] rounded-md border border-gray-300 
+                  shadow-sm px-4 py-2 bg-gray-200 text-base font-medium text-gray-700 hover:bg-gray-300 
+                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100"
                 >
                   <span>Advanced Image Settings</span>
                   {/* Icon for dropdown */}
@@ -392,7 +450,8 @@ function EditImagePage() {
                 </button>
                 {/* Dropdown content */}
                 {imageSettingsVisible && (
-                  <div className="origin-top-right absolute right-0 w-[27.4rem] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="origin-top-right absolute right-0 w-[27.4rem] rounded-md shadow-lg
+                   bg-white ring-1 ring-black ring-opacity-5">
                     <div className="p-4">
                       {/* Guidance slider */}
                       <label
@@ -498,7 +557,8 @@ function EditImagePage() {
 
               <div className="flex justify-center mt-8 gap-60">
                 <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center "
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 
+                  rounded items-center "
                   onClick={handleUpload}
                 >
                   Generate
@@ -529,7 +589,7 @@ function EditImagePage() {
                   </div>
                 )}
               </div>
-
+               {/* The spinning loader */}
               <div class="grid justify-items-center w-full">
                 <div class="spinner">
                   <div class="spinner1"></div>
@@ -547,6 +607,7 @@ function EditImagePage() {
         {pageState === "result" && (
           <div className="w-3/5 m-auto max-w-[1220px]">
             <div className="grid gap-x-80 items-center grid-flow-col min-w-48">
+              {/* show the uploaded image */}
               {imageSrc && (
                 <div className="grid justify-items-center w-full">
                   <img
@@ -589,7 +650,8 @@ function EditImagePage() {
             {/* Buttons */}
             <div className="flex gap-1 w-full mt-8 justify-between">
               <button
-                className=" bg-blue-500 hover:bg-blue-400 text-white flex gap-2 font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+                className=" bg-blue-500 hover:bg-blue-400 text-white flex gap-2 font-bold py-2 
+                px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
                 onClick={() => goBack()}
               >
                 <svg
@@ -636,7 +698,8 @@ function EditImagePage() {
                         {/* downbload button */}
                         <button
                           onClick={handleDownload}
-                          class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+                          class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 
+                          px-4 rounded inline-flex items-center"
                         >
                           <svg
                             class="fill-current w-4 h-4 mr-2"
@@ -659,7 +722,8 @@ function EditImagePage() {
                 <>
                   <button
                     onClick={handleDownload}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-full"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 
+                    rounded h-full"
                   >
                     Download
                   </button>
