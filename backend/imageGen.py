@@ -60,7 +60,7 @@ class ImageGen:
             num_images_per_prompt=num_images,
         ).images[0]
         # Format the base64 string as a data URL for HTML
-        #image.save(prompt+".png"); // uncomment for unit testing
+        #image.save(prompt+".png"); # uncomment for unit testing
         torch.cuda.empty_cache()  # empty vram
         return self.covert_to_imgage_jpeg(images)
 
@@ -105,7 +105,7 @@ class ImageGen:
             num_images_per_prompt=num_images,
         ).images[0]
         # Format the base64 string as a data URL for HTML
-        #image.save(prompt+".png"); // uncomment for unit testing
+        #image.save(prompt+".png"); # uncomment for unit testing
         torch.cuda.empty_cache()  # empty vram
         return self.covert_to_imgage_jpeg(images)
 
@@ -131,6 +131,6 @@ class ImageGen:
 
 if __name__ == "__main__":
     prompt = "people playing basketball inside"
-    gen = imageGen();
+    gen = ImageGen();
     gen.generate(prompt);
     gen.generate_xl(prompt);

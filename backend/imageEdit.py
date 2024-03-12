@@ -80,6 +80,7 @@ class ImageEdit:
             num_images_per_prompt=num_images,
         ).images
         torch.cuda.empty_cache()  # empty vram
+        #image.save(prompt+".png"); # uncomment for unit testing
         return self.covert_to_imgage_jpeg(images[0])
 
     def generate_xl(
@@ -129,6 +130,7 @@ class ImageEdit:
             num_images_per_prompt=num_images,
         ).images
         torch.cuda.empty_cache()  # empty vram
+        #image.save(prompt+".png");  # uncomment for unit testing
         return self.covert_to_imgage_jpeg(images[0])
 
     def covert_to_imgage_jpeg(self, image):
@@ -156,3 +158,10 @@ class ImageEdit:
         # Format the base64 string as a data URL for HTML
         data_url = f"data:image/jpeg;base64,{base64_encoded_image_string}"
         return data_url
+
+if __name__ == "__main__":
+    location = "uploads/dogpark.jpg"
+    prompt = "add a cat next to the dog"
+    gen = ImageEdit();
+    gen.generate(location, prompt);
+    gen.generate_xl(location, prompt);
