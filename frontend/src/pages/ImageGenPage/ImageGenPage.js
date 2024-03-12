@@ -73,8 +73,12 @@ const ImageGenPage = () => {
   };
 
   const handleGen = async () => {
+    if (prompt.length <= 0) {
+      toast.warning("Enter a Prompt!", { autoClose: 2000});
+    }
     if (prompt.length > 0 && postCount < 6) {//check model chosen
       setPageState('loading');
+      toast.info("Loading Image(s)! Please wait for it to finish!", { autoClose: false})
 
       try {
         for (let i = 0; i < numImages; i++) {
@@ -90,10 +94,20 @@ const ImageGenPage = () => {
           setImages(prevImages => [...prevImages, ...data.images.map(image => image.image_data)]);
           setPageState('result');
           setPostCount(prevCount => prevCount + 1);
+          toast.dismiss()
+          toast.success(`Success: Image ${i+1} Generated!`, { autoClose: 2000});
+          if (numImages != i+1){
+            toast.info("Loading next Image! Please wait for it to finish!", { autoClose: false})
+          }
+          if (numImages == i+1){
+            toast.info("Success: All Image(s) Generated!", { autoClose: false})
+          }
         }
 
       } catch (error) {
         console.error('Error:', error);
+        toast.dismiss()
+        toast.error('Something went Wrong. Image(s) Failed to Generate!', { autoClose: 3000});
       }
     }
   };
@@ -105,6 +119,7 @@ const ImageGenPage = () => {
   }
   const chooseHighDetail = () => {
     setSelectedModel('stabilityai/stable-diffusion-xl-base-1.0');
+    toast.warning("This is the XL-Generator, will take longer to load!", { autoClose: 5000});
     document.getElementById('prompt-input').value = "";
     setPrompt(prevPrompt => "");
   }
