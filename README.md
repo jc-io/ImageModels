@@ -149,7 +149,6 @@ Visit [http://localhost:3000/ImageGen](http://localhost:3000/ImageGen):
 
 ## Known Bugs
 - A black image may be returned for Edit Image and ImageGen generation if the model detects NSFW content in the image or prompt, for which the reason is not shown to the user
-- The account settings page does not correctly save changed settings to the account
 - The account dropdown blob at the top right of the page when logged in may not align with the position of the button
 - The image preview of the uploaded image for both CaptionGen and Edit Image may appear broken in some system configurations
 - The description for archived images does not save properly if the image is not made public
