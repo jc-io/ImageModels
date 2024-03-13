@@ -147,6 +147,10 @@ Visit [http://localhost:3000/ImageGen](http://localhost:3000/ImageGen):
 - Allow users to select more than 1 image to archive at a time
 - Fix the Known Bugs found [here](docs/KnownBugs.md)
 
+## Scrum Docs
+
+A link for the scrum docs can be found [here] https://drive.google.com/drive/folders/1WqA--leoQyzOhp0f8FiMcF9GcNkjBTGb?usp=sharing
+
 ## Side Note
 
 This project utilizes a basic frontend boilerplate based on Facebook's Create React App. You can find more information about it [here](https://github.com/facebook/create-react-app).
