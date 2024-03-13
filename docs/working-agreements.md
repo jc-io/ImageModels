@@ -42,7 +42,7 @@ their own, and adjust times, communication channels, branch naming policies etc.
 | Project Standup | Mon-Wed-Fri 9:05AM           | 15 min   | Everyone     | Process Lead | What has been accomplished, next steps, blockers                           |
 | Sprint Demo                                           | Tuesday 6PM            | 1 hour   | Everyone     | Dev Lead     | Present work done and sign off on user story completion with the TA                   || Sprint Planning  | Tuesday 6PM           | 1 hour   | Everyone     | PO           | Size and plan user stories for the sprint                                  |
 | Task Creation                                         | After Sprint Planning | -        | Dev Team     | Dev Lead     | Create tasks to clarify and determine velocity                             |
-| Backlog refinement | Wednesday 2PM         | 1 hour   | Dev Lead, PO | PO           | Prepare for next sprint and ensure that stories are ready for next sprint. |
+| Backlog refinement | Monday 8PM         | 1 hour   | Dev Lead, PO | PO           | Prepare for next sprint and ensure that stories are ready for next sprint. |
 
 ## Scrum Master
 
