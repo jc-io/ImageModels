@@ -145,7 +145,7 @@ Visit [http://localhost:3000/ImageGen](http://localhost:3000/ImageGen):
 - Allow users to modify more of the model's parameters
 - Edit UI to be more fluid and intuitive for users to select images for archiving
 - Allow users to select more than 1 image to archive at a time
-- Fix the Known Bugs [docs/](docs/)
+- Fix the Known Bugs found [here](docs/KnownBugs.md)
 
 ## Side Note
 
