@@ -12,7 +12,6 @@
 10. [Testing Edit Image](#Testing-Edit-Image)
 11. [Testing ImageGen](#Testing-ImageGen)
 12. [Future Updates](#Future-Updates)
-13. [Known Bugs](#Known-Bugs)
 
 ## OS Requirements
 This program uses models that require CUDA cores, ensure GPU requirements are met. 
@@ -149,7 +148,7 @@ Visit [http://localhost:3000/ImageGen](http://localhost:3000/ImageGen):
 
 ## Scrum Docs
 
-A link for the scrum docs can be found [here] https://drive.google.com/drive/folders/1WqA--leoQyzOhp0f8FiMcF9GcNkjBTGb?usp=sharing
+A link for the scrum docs can be found [here](https://drive.google.com/drive/folders/1WqA--leoQyzOhp0f8FiMcF9GcNkjBTGb?usp=sharing)
 
 ## Side Note
 
