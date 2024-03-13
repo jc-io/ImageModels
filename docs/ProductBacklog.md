@@ -7,4 +7,4 @@
 - Allow users to modify more of the model's parameters
 - Edit UI to be more fluid and intuitive for users to select images for archiving
 - Allow users to select more than 1 image to archive at a time
-- Fix the Known Bugs found [here](/KnownBugs.md)
+- Fix the Known Bugs found [here](KnownBugs.md)
