@@ -6,3 +6,4 @@
 - If the backend is stopped and restarted after while the frontend is still running and an account is logged in, the archive/explore page will not work properly
 - Clicking the Advanced Image Settings button in the Edit Image page may have a visual glitch(whitespace) at the bottom of the page
 - The sign up page is accessible through the home page while a user is already logged in
+- While a picture is generating in both ImageGen and Edit Image with pending images, clicking back will forcibly put the user in the results page
